@@ -1,0 +1,8 @@
+{% comment %}
+  Repeating diagonal POSTERLEAGUE on room/mockup backgrounds only — not on poster art.
+  @param size {string} optional — pass "sm" for thumbnails
+{% endcomment %}
+<span
+  class="pl-artwork-watermark pl-artwork-watermark--repeat{% if size == 'sm' %} pl-artwork-watermark--sm{% endif %}"
+  aria-hidden="true"
+></span>

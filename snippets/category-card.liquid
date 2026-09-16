@@ -1,0 +1,47 @@
+{%- liquid
+  assign card_image = image
+  assign card_title = title
+  assign card_description = description
+  assign card_link = link
+
+  if card_image == blank and collection != blank
+    if collection.image != blank
+      assign card_image = collection.image
+    elsif collection.products.first != blank and collection.products.first.featured_image != blank
+      assign card_image = collection.products.first.featured_image
+    endif
+  endif
+
+  if card_title == blank and collection != blank
+    assign card_title = collection.title
+  endif
+-%}
+
+<a href="{{ card_link | default: collection.url | default: '#' }}" class="cat-card"{% if shopify_attributes %} {{ shopify_attributes }}{% endif %}
+   style="display:block;position:relative;border-radius:10px;overflow:hidden;text-decoration:none;background:var(--color-bg-secondary);aspect-ratio:3/4;border:1px solid var(--color-border);">
+  {% if card_image != blank %}
+    <img src="{{ card_image | image_url: width: 600 }}"
+         srcset="{{ card_image | image_url: width: 400 }} 400w,
+                 {{ card_image | image_url: width: 600 }} 600w,
+                 {{ card_image | image_url: width: 900 }} 900w"
+         sizes="(min-width:1024px) 16vw,(min-width:768px) 28vw, 46vw"
+         alt="{{ card_title | escape }}"
+         loading="lazy"
+         style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;">
+  {% else %}
+    <div class="cat-card__placeholder" style="width:100%;height:100%;background:linear-gradient(145deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">
+      {{ card_title | escape }}
+    </div>
+  {% endif %}
+
+  <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%);"></div>
+
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:16px;">
+    <h3 style="color:#fff;font-size:16px;font-weight:700;margin:0 0 2px;letter-spacing:0.02em;">{{ card_title | escape }}</h3>
+    {% if card_description != blank %}
+      <p style="color:rgba(255,255,255,0.7);font-size:11px;margin:0;line-height:1.4;">{{ card_description | escape }}</p>
+    {% endif %}
+  </div>
+
+  <div style="position:absolute;top:12px;right:12px;background:var(--color-accent);color:var(--color-text);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;">&rarr;</div>
+</a>

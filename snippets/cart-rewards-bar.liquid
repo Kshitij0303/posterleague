@@ -1,0 +1,170 @@
+{% comment %} Cart rewards — unlock strip with clear badges {% endcomment %}
+
+{% assign shipping_threshold = settings.cart_free_shipping_threshold | default: 999 | times: 100 %}
+{% assign remaining_ship = shipping_threshold | minus: cart.total_price %}
+{% if remaining_ship < 0 %}{% assign remaining_ship = 0 %}{% endif %}
+{% assign shipping_pct = cart.total_price | times: 100 | divided_by: shipping_threshold %}
+{% if shipping_pct > 100 %}{% assign shipping_pct = 100 %}{% endif %}
+{% assign shipping_unlocked = false %}
+{% if cart.total_price >= shipping_threshold %}{% assign shipping_unlocked = true %}{% endif %}
+
+{% assign poster_count = 0 %}
+{% for item in cart.items %}
+  {% assign type_lower = item.product.type | downcase %}
+  {% assign handle_lower = item.product.handle | downcase %}
+  {% assign title_lower = item.product.title | downcase %}
+  {% unless type_lower contains 'accessory' or type_lower contains 'glue' or handle_lower contains 'glue' or title_lower contains 'glue dot' %}
+    {% assign poster_count = poster_count | plus: item.quantity %}
+  {% endunless %}
+{% endfor %}
+
+{% assign tier_1_count = settings.cart_bonus_tier_1_count | default: 5 %}
+{% assign tier_1_bonus = settings.cart_bonus_tier_1_bonus | default: 1 %}
+{% assign tier_2_count = settings.cart_bonus_tier_2_count | default: 10 %}
+{% assign tier_2_bonus = settings.cart_bonus_tier_2_bonus | default: 3 %}
+{% assign tier_3_count = settings.cart_bonus_tier_3_count | default: 15 %}
+{% assign tier_3_bonus = settings.cart_bonus_tier_3_bonus | default: 5 %}
+
+{% assign earned_bonus = 0 %}
+{% assign next_tier_count = tier_1_count %}
+{% assign next_tier_bonus = tier_1_bonus %}
+
+{% if poster_count >= tier_3_count %}
+  {% assign earned_bonus = tier_3_bonus %}
+  {% assign next_tier_count = tier_3_count %}
+{% elsif poster_count >= tier_2_count %}
+  {% assign earned_bonus = tier_2_bonus %}
+  {% assign next_tier_count = tier_3_count %}
+  {% assign next_tier_bonus = tier_3_bonus %}
+{% elsif poster_count >= tier_1_count %}
+  {% assign earned_bonus = tier_1_bonus %}
+  {% assign next_tier_count = tier_2_count %}
+  {% assign next_tier_bonus = tier_2_bonus %}
+{% else %}
+  {% assign next_tier_count = tier_1_count %}
+  {% assign next_tier_bonus = tier_1_bonus %}
+{% endif %}
+
+{% assign needed = next_tier_count | minus: poster_count %}
+{% if needed < 0 %}{% assign needed = 0 %}{% endif %}
+
+{% assign bonus_pct = 0 %}
+{% if poster_count >= tier_3_count %}
+  {% assign bonus_pct = 100 %}
+{% elsif poster_count >= tier_2_count %}
+  {% assign tier_span = tier_3_count | minus: tier_2_count %}
+  {% assign tier_progress = poster_count | minus: tier_2_count %}
+  {% if tier_span > 0 %}{% assign bonus_pct = tier_progress | times: 100 | divided_by: tier_span %}{% endif %}
+{% elsif poster_count >= tier_1_count %}
+  {% assign tier_span = tier_2_count | minus: tier_1_count %}
+  {% assign tier_progress = poster_count | minus: tier_1_count %}
+  {% if tier_span > 0 %}{% assign bonus_pct = tier_progress | times: 100 | divided_by: tier_span %}{% endif %}
+{% else %}
+  {% if tier_1_count > 0 %}{% assign bonus_pct = poster_count | times: 100 | divided_by: tier_1_count %}{% endif %}
+{% endif %}
+{% if bonus_pct > 100 %}{% assign bonus_pct = 100 %}{% endif %}
+
+<div class="cart-rewards cart-rewards--unlock" role="region" aria-label="Cart rewards progress">
+  <div class="cart-unlock">
+
+    <section class="cart-unlock__block{% if shipping_unlocked %} is-done{% endif %}">
+      <div class="cart-unlock__row">
+        <div class="cart-unlock__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        </div>
+        <div class="cart-unlock__main">
+          <div class="cart-unlock__head">
+            <h3 class="cart-unlock__title">Free shipping</h3>
+            {% if shipping_unlocked %}
+              <span class="cart-unlock__pill cart-unlock__pill--win">Unlocked</span>
+            {% else %}
+              <span class="cart-unlock__pill">{{ remaining_ship | money }} away</span>
+            {% endif %}
+          </div>
+          <div
+            class="cart-unlock__bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="{{ shipping_pct }}"
+            aria-label="Free shipping progress"
+          >
+            <div
+              class="cart-unlock__bar-fill cart-unlock__bar-fill--ship cart-progress-fill--animate"
+              data-progress="{{ shipping_pct }}"
+              data-progress-type="bar"
+            ></div>
+          </div>
+          <p class="cart-unlock__msg">
+            {% if shipping_unlocked %}
+              Delivery is on us for this order.
+            {% else %}
+              Add <strong>{{ remaining_ship | money }}</strong> more to hit ₹{{ settings.cart_free_shipping_threshold | default: 999 }}.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cart-unlock__block{% if earned_bonus > 0 %} is-done{% endif %}">
+      <div class="cart-unlock__row">
+        <div class="cart-unlock__icon cart-unlock__icon--gold" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <div class="cart-unlock__main">
+          <div class="cart-unlock__head">
+            <h3 class="cart-unlock__title">Free poster bonus</h3>
+            <div class="cart-unlock__badges">
+              {% if earned_bonus > 0 %}
+                <span class="cart-unlock__pill cart-unlock__pill--win">+{{ earned_bonus }} earned</span>
+              {% endif %}
+              <span class="cart-unlock__pill cart-unlock__pill--count">{{ poster_count }} poster{% if poster_count != 1 %}s{% endif %}</span>
+            </div>
+          </div>
+
+          <div class="cart-unlock__tiers" aria-hidden="true">
+            <span class="cart-unlock__tier{% if poster_count >= tier_1_count %} is-on{% endif %}{% if poster_count < tier_1_count %} is-next{% endif %}">
+              <span class="cart-unlock__tier-bonus">+{{ tier_1_bonus }}</span>
+              <span class="cart-unlock__tier-at">{{ tier_1_count }} posters</span>
+            </span>
+            <span class="cart-unlock__tier{% if poster_count >= tier_2_count %} is-on{% endif %}{% if poster_count >= tier_1_count and poster_count < tier_2_count %} is-next{% endif %}">
+              <span class="cart-unlock__tier-bonus">+{{ tier_2_bonus }}</span>
+              <span class="cart-unlock__tier-at">{{ tier_2_count }} posters</span>
+            </span>
+            <span class="cart-unlock__tier{% if poster_count >= tier_3_count %} is-on{% endif %}{% if poster_count >= tier_2_count and poster_count < tier_3_count %} is-next{% endif %}">
+              <span class="cart-unlock__tier-bonus">+{{ tier_3_bonus }}</span>
+              <span class="cart-unlock__tier-at">{{ tier_3_count }} posters</span>
+            </span>
+          </div>
+
+          <div
+            class="cart-unlock__bar cart-unlock__bar--gold"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="{{ bonus_pct }}"
+            aria-label="Poster bonus progress toward next tier"
+          >
+            <div
+              class="cart-unlock__bar-fill cart-unlock__bar-fill--gold cart-progress-fill--animate"
+              data-progress="{{ bonus_pct }}"
+              data-progress-type="bar"
+            ></div>
+          </div>
+
+          <p class="cart-unlock__msg">
+            <span class="visually-hidden">Milestones: {{ tier_1_count }} posters for +{{ tier_1_bonus }}, {{ tier_2_count }} for +{{ tier_2_bonus }}, {{ tier_3_count }} for +{{ tier_3_bonus }}.</span>
+            {% if poster_count >= tier_3_count %}
+              Max tier — <strong>+{{ earned_bonus }} bonus posters</strong> on this order.
+            {% elsif earned_bonus > 0 %}
+              Nice — <strong>+{{ earned_bonus }} free</strong> locked in. Add <strong>{{ needed }} more</strong> for +{{ next_tier_bonus }}.
+            {% else %}
+              Add <strong>{{ needed }} more poster{% if needed != 1 %}s{% endif %}</strong> to unlock <strong>+{{ next_tier_bonus }} free</strong>.
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

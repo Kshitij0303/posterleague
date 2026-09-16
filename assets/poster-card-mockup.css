@@ -1,0 +1,243 @@
+/**
+ * PosterLeague — Cinematic Product Card Mockups
+ * Loaded from layout/theme.liquid. Backgrounds assigned by poster-card-mockup.js.
+ */
+
+/* ─── Card shell ───────────────────────────────────────────── */
+.product-card.poster-card {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #0B0C10;
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card.poster-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.poster-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─── Mockup stage (fills card image area) ─────────────────── */
+.poster-card__stage {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #12141A;
+  isolation: isolate;
+}
+
+/* Room background image — Liquid sets src, JS shuffles on load */
+.poster-card__bg-layer .poster-card__bg-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: scale(1.02);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  background: #2a3040;
+}
+
+.product-card.poster-card:hover .poster-card__bg-img {
+  transform: scale(1.06);
+}
+
+/* Soft glow + light vignette (keeps room colors visible) */
+.poster-card__fx {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 50% at 50% 38%, rgba(255, 255, 255, 0.18) 0%, transparent 72%),
+    radial-gradient(ellipse 100% 92% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+/* ─── Centered poster ──────────────────────────────────────── */
+.poster-card__poster {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14% 12% 16%;
+  pointer-events: none;
+}
+
+/* Higher specificity than base.css .product-card__image img rules */
+.product-card.poster-card .poster-card__stage .poster-card__poster-img {
+  display: block;
+  width: auto !important;
+  height: 100% !important;
+  max-width: 100%;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 2px;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.38),
+    0 2px 8px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card.poster-card:hover .poster-card__stage .poster-card__poster-img {
+  transform: scale(1.03) translateY(-2px);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.poster-card__poster-img--placeholder {
+  width: 62%;
+  height: 72%;
+  background: linear-gradient(160deg, #2A2F3A 0%, #1A1D24 100%);
+  border-radius: 4px;
+}
+
+/* ─── Badge & hover CTA ────────────────────────────────────── */
+.poster-card__badge {
+  z-index: 4;
+}
+
+.poster-card__hover-btn {
+  z-index: 4;
+}
+
+.poster-card__hover-btn.is-sold-out {
+  background: #666;
+  cursor: default;
+}
+
+/* ─── Card body ────────────────────────────────────────────── */
+.poster-card__body {
+  position: relative;
+  z-index: 3;
+  background: var(--color-bg, #F4F5F7);
+}
+
+
+/* ─── Dark mode ─────────────────────────────────────────────── */
+html[data-theme="dark"] .product-card.poster-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: #0B0C10;
+}
+
+html[data-theme="dark"] .poster-card__body {
+  background: #1F2833;
+}
+
+/* ─── Product page gallery (slide 1) ───────────────────────── */
+.poster-card--gallery,
+.pl-gallery-cinematic {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.poster-card--gallery:hover,
+.pl-gallery-cinematic:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.poster-card__stage--gallery {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  min-height: 0;
+}
+
+.poster-card__poster--gallery {
+  padding: 10% 8% 12%;
+}
+
+/* Keep poster inside frame — generic rule uses height:100% which overflows square stage */
+.poster-card--gallery .poster-card__stage--gallery .poster-card__poster-img,
+.pl-gallery-cinematic .poster-card__stage .poster-card__poster-img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 68% !important;
+  max-height: 76% !important;
+  object-fit: contain !important;
+}
+
+.amazon-main-image-wrap .pl-gallery-cinematic {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+}
+
+.amazon-main-image-wrap:has(.pl-gallery-cinematic) {
+  align-items: stretch;
+}
+
+.amazon-thumb-cinematic-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1A1D24;
+}
+
+.amazon-thumb-cinematic-preview__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.amazon-thumb-cinematic-preview__poster {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 46%;
+  height: auto;
+  max-height: 72%;
+  object-fit: contain;
+  display: block;
+  border-radius: 1px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+  z-index: 3;
+}
+
+/* ─── Reduced motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .product-card.poster-card,
+  .poster-card__bg-img,
+  .poster-card__poster-img {
+    transition: none;
+  }
+
+  .product-card.poster-card:hover {
+    transform: none;
+  }
+}

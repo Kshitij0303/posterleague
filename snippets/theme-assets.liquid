@@ -1,0 +1,11 @@
+{% comment %}
+  Global theme asset URL map — render once from layout/theme.liquid <head>.
+  Used by poster-card-mockup.js for cinematic product card backgrounds.
+{% endcomment %}
+<script>
+  window.themeAssets = window.themeAssets || {};
+  {% for i in (1..30) %}
+    {% capture bg_file %}bg{{ i }}.webp{% endcapture %}
+    window.themeAssets['bg{{ i }}'] = {{ bg_file | asset_url | json }};
+  {% endfor %}
+</script>

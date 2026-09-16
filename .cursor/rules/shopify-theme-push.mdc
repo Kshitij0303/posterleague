@@ -1,0 +1,49 @@
+---
+description: Always push Shopify theme to live after making any theme file changes
+alwaysApply: true
+---
+
+# Shopify Theme — Auto Push After Changes
+
+This workspace is the **POSTERLEAGUE** Shopify theme. After making **any** change to theme files (liquid, css, js, json, assets, snippets, sections, etc.), **always push to the live theme** before ending the turn — do not wait for the user to ask.
+
+## Store & theme
+
+| Key | Value |
+|-----|-------|
+| Store | `posterleague-cz54479w.myshopify.com` |
+| Theme ID | `153070796961` |
+| Local folder | `E:\posterleague-theme` |
+
+## Push command
+
+**Always ignore template JSON and settings_data** so Theme Editor uploads (videos, images, section blocks) are NOT wiped on push:
+
+```powershell
+cd E:\posterleague-theme
+shopify theme push --store posterleague-cz54479w.myshopify.com --theme 153070796961 --allow-live --ignore "templates/*.json" --ignore "config/settings_data.json"
+```
+
+## Why ignore those files?
+
+- `templates/*.json` — homepage hero videos, section blocks, and page layout from Theme Editor live here. Pushing local copies **deletes** uploaded videos.
+- `config/settings_data.json` — global theme settings (floating video, colors toggled in admin) live here.
+
+Only push those files when **intentionally** syncing layout defaults from code (and warn the user first).
+
+## When to push
+
+- After editing sections, snippets, layout, assets, config schema, locales, or CSS/JS
+- After creating or deleting theme files
+- Even for small CSS/JS tweaks — push immediately
+
+## When NOT to push
+
+- Question-only or review-only tasks with no file edits
+- Non-theme files only (e.g. docs outside the theme, cursor rules)
+
+## On push failure
+
+- Report the error clearly
+- Do not claim changes are live until push succeeds
+- Retry once if it looks like a transient network/auth issue

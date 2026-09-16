@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POSTERLEAGUE — Bold Color Directions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Montserrat,sans-serif;background:#000;color:#fff;padding:32px 16px 64px}
+    h1{text-align:center;font-family:Cormorant,serif;font-size:clamp(32px,5vw,50px);margin-bottom:8px}
+    .sub{text-align:center;color:#888;font-size:13px;max-width:520px;margin:0 auto 36px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1320px;margin:0 auto}
+    .c{border-radius:18px;overflow:hidden;border:1px solid #333}
+    .ch{padding:14px 16px;border-bottom:1px solid #333;background:#111}
+    .ch h2{font-family:Cormorant,serif;font-size:22px;margin-bottom:4px}
+    .ch p{font-size:11px;color:#999;line-height:1.5}
+    .tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:100px;margin-bottom:8px}
+    .dual{display:grid;grid-template-columns:1fr 1fr}
+    .mt{font-size:8px;font-weight:700;text-align:center;padding:5px;letter-spacing:.1em;text-transform:uppercase}
+    .pv{min-height:195px;overflow:hidden;position:relative}
+    .pv::after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 60px rgba(0,0,0,.15)}
+    .in{transform:scale(.87);transform-origin:top center;width:115%;margin-left:-7.5%}
+    .ann{font-size:6px;text-align:center;padding:5px;font-weight:600}
+    .hdr{display:flex;justify-content:space-between;padding:7px 10px;font-size:7px;border-bottom:1px solid;font-weight:600}
+    .logo{font-family:Cormorant,serif;font-size:11px;font-weight:700;letter-spacing:.04em}
+    .hero{padding:20px 10px 12px;text-align:center}
+    .pill{font-size:5.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:100px;display:inline-block;margin-bottom:8px}
+    .ttl{font-family:Cormorant,serif;font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:1.05;margin-bottom:6px}
+    .sbt{font-size:6px;line-height:1.5;margin:0 auto 10px;max-width:170px}
+    .btns{display:flex;gap:5px;justify-content:center;margin-bottom:10px}
+    .btn{font-size:5.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:5px;border:none}
+    .btn2{font-size:5.5px;font-weight:600;padding:6px 10px;border-radius:5px;border:1.5px solid;background:transparent}
+    .feats{display:flex;border-top:1px solid;padding-top:8px}
+    .ft{flex:1;text-align:center;border-right:1px solid;padding:0 4px}
+    .ft:last-child{border:none}
+    .ft b{display:block;font-size:7.5px}
+    .ft s{font-size:4.5px;text-transform:uppercase;letter-spacing:.04em}
+  </style>
+</head>
+<body>
+  <h1>Not Boring.</h1>
+  <p class="sub">Bold, high-energy palettes for a poster brand. Saturated accents that pop in dark mode and stay punchy in light.</p>
+  <div class="grid" id="g"></div>
+  <script>
+    const O=[
+      {n:'Hot Pink × Cyan',t:'Street poster energy',
+       d:'Supreme-meets-gallery. Pink CTAs, cyan badges. Loud on purpose.',
+       l:{bg:'#FFF0F5',hdr:'#FFFFFF',txt:'#0A0A0A',mut:'#666',brd:'#FFD6E8',acc:'#FF1F6B',acc2:'#00C8FF',ann:'#0A0A0A',annT:'#FFF'},
+       k:{bg:'#080808',hdr:'#111',txt:'#FFF',mut:'#999',brd:'#2A2A2A',acc:'#FF2D6A',acc2:'#00F0FF',ann:'#FF2D6A',annT:'#000'}},
+      {n:'Sunset Blast',t:'Orange → magenta heat',
+       d:'Sunset gradient energy. Warm but electric — travel poster vibes.',
+       l:{bg:'#FFFAF5',hdr:'#FFF',txt:'#1A0A00',mut:'#7A5A48',brd:'#FFD4B8',acc:'#FF4500',acc2:'#FF006E',ann:'#1A0A00',annT:'#FFF'},
+       k:{bg:'#0A0604',hdr:'#140C08',txt:'#FFF5EE',mut:'#A08070',brd:'#3A2018',acc:'#FF6B35',acc2:'#FF006E',ann:'linear-gradient(90deg,#FF6B35,#FF006E)',annT:'#FFF'}},
+      {n:'Acid Green',t:'Rave / festival / Y2K',
+       d:'Chartreuse on black. Zero subtlety. Your posters become the art, UI is the hype.',
+       l:{bg:'#F8FFF0',hdr:'#FFF',txt:'#0A0A0A',mut:'#5A6A48',brd:'#D4F0A8',acc:'#6BDB00',acc2:'#CCFF00',ann:'#0A0A0A',annT:'#CCFF00'},
+       k:{bg:'#000',hdr:'#0A0A0A',txt:'#FFF',mut:'#888',brd:'#222',acc:'#CCFF00',acc2:'#00FF88',ann:'#CCFF00',annT:'#000'}},
+      {n:'Violet Voltage',t:'Creative studio / Discord energy',
+       d:'Electric purple + yellow spark. Dual accents = more personality.',
+       l:{bg:'#F6F4FF',hdr:'#FFF',txt:'#12082A',mut:'#6B6088',brd:'#DDD6FF',acc:'#6D28D9',acc2:'#FACC15',ann:'#6D28D9',annT:'#FFF'},
+       k:{bg:'#0A0812',hdr:'#120E1E',txt:'#F0ECFF',mut:'#9088A8',brd:'#2A2040',acc:'#8B5CF6',acc2:'#FFD60A',ann:'#8B5CF6',annT:'#FFF'}},
+      {n:'Coral Punch',t:'Bold warm — not boring gold',
+       d:'Vibrant coral-orange. Warm accent that actually has life in it.',
+       l:{bg:'#FFF8F5',hdr:'#FFF',txt:'#1A1008',mut:'#8A6A58',brd:'#FFD0C0',acc:'#FF4338',acc2:'#FF8C42',ann:'#FF4338',annT:'#FFF'},
+       k:{bg:'#0C0A08',hdr:'#161210',txt:'#FFF0EB',mut:'#A08878',brd:'#302820',acc:'#FF5C33',acc2:'#FFB347',ann:'#FF5C33',annT:'#000'}},
+      {n:'Turbo Yellow',t:'Your yellow — turned up',
+       d:'Keep the yellow DNA but add depth: richer gold + black contrast, not flat amber.',
+       l:{bg:'#FFFDF5',hdr:'#FFF',txt:'#0A0A0A',mut:'#666',brd:'#EEE8D0',acc:'#FFC700',acc2:'#FF9500',ann:'#0A0A0A',annT:'#FFC700'},
+       k:{bg:'#000',hdr:'#0A0A0A',txt:'#FFF',mut:'#AAA',brd:'#2A2A2A',acc:'#FFBA00',acc2:'#FF6B00',ann:'#FFBA00',annT:'#000'}}
+    ];
+    function P(t,sec){
+      const annBg=sec&&t.ann.startsWith('linear')?t.ann:t.ann;
+      const annStyle=sec&&t.ann.startsWith('linear')?`background:${t.ann}`:`background:${t.ann};color:${t.annT}`;
+      return`<div class="pv" style="background:${t.bg};color:${t.txt}">
+        <div class="in">
+          <div class="ann" style="${annStyle}">FREE SHIPPING · CODE WALL10</div>
+          <div class="hdr" style="background:${t.hdr};border-color:${t.brd}">
+            <span class="logo">POSTERLEAGUE</span>
+            <span style="font-size:6px">SPLITS <span style="background:${t.acc2};color:#000;padding:1px 4px;border-radius:100px;font-size:5px;font-weight:700">HOT</span></span>
+          </div>
+          <div class="hero">
+            <span class="pill" style="background:${t.acc2}22;border:1px solid ${t.acc2};color:${t.acc2}">New drops weekly</span>
+            <div class="ttl">Your Walls.<br>Your Style.</div>
+            <div class="sbt" style="color:${t.mut}">Premium posters. Zero boring walls.</div>
+            <div class="btns">
+              <span class="btn" style="background:${t.acc};color:${t.acc==='#CCFF00'||t.acc==='#FFC700'||t.acc==='#FFBA00'||t.acc==='#FF5C33'?'#000':'#FFF'}">Shop Now →</span>
+              <span class="btn2" style="border-color:${t.txt};color:${t.txt}">Explore</span>
+            </div>
+            <div class="feats" style="border-color:${t.brd}">
+              <div class="ft" style="border-color:${t.brd}"><b>300gsm</b><s style="color:${t.mut}">Paper</s></div>
+              <div class="ft" style="border-color:${t.brd}"><b>Gloss</b><s style="color:${t.mut}">Finish</s></div>
+              <div class="ft" style="border-color:${t.brd}"><b>Scratch Free</b><s style="color:${t.mut}">Coat</s></div>
+            </div>
+          </div>
+        </div></div>`;
+    }
+    document.getElementById('g').innerHTML=O.map((o,i)=>`
+      <article class="c">
+        <div class="ch">
+          <span class="tag" style="background:${o.k.acc};color:#000">${o.t}</span>
+          <h2>${i+1}. ${o.n}</h2>
+          <p>${o.d}</p>
+        </div>
+        <div class="dual">
+          <div class="mt" style="background:#eee;color:#333">Light</div>
+          <div class="mt" style="background:#111;color:#666">Dark</div>
+          ${P(o.l)}${P(o.k,1)}
+        </div>
+      </article>`).join('');
+  </script>
+</body>
+</html>

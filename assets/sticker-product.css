@@ -1,0 +1,129 @@
+/**
+ * Sticker products — plain PNG on clean solid background (no room mockup, no checkerboard)
+ */
+
+/* ─── Collection / grid card ───────────────────────────────── */
+.product-card.sticker-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-border, #e8e8e8);
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.product-card.sticker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.sticker-card__stage {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f7f7f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16%;
+}
+
+.sticker-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.1));
+  transition: transform 0.28s ease;
+}
+
+.product-card.sticker-card:hover .sticker-card__img {
+  transform: scale(1.04);
+}
+
+.sticker-card__img--placeholder {
+  width: 56%;
+  height: 56%;
+  border-radius: 8px;
+  background: #ececea;
+}
+
+/* ─── Product page gallery ─────────────────────────────────── */
+.product-gallery-amazon--sticker {
+  display: block;
+}
+
+.amazon-main-display--sticker {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(72vh, 720px);
+  background: #f7f7f5;
+  border: 1px solid var(--color-border, #e8e8e8);
+}
+
+.pl-gallery-sticker {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(28px, 7vw, 56px);
+  box-sizing: border-box;
+  background: #f7f7f5;
+}
+
+.pl-gallery-sticker__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
+}
+
+.pl-gallery-sticker__placeholder {
+  width: 42%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  background: #ececea;
+}
+
+/* Dark mode — keep sticker image on a light surface (die-cut white edges read correctly) */
+html[data-theme="dark"] .product-card.sticker-card {
+  background: var(--color-bg-secondary, #1a1c22);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .product-card.sticker-card:hover {
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] .sticker-card__stage {
+  background: #f7f7f5;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="dark"] .amazon-main-display--sticker {
+  background: #f7f7f5;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="dark"] .pl-gallery-sticker {
+  background: #f7f7f5;
+}
+
+html[data-theme="dark"] .sticker-card__img,
+html[data-theme="dark"] .pl-gallery-sticker__img {
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.14));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card.sticker-card,
+  .sticker-card__img {
+    transition: none;
+  }
+}

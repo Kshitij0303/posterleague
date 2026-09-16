@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POSTERLEAGUE — Warm Premium Palettes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: #0E0D0C; color: #EAE4DC; padding: 32px 20px 64px; }
+    .page-title { text-align: center; margin-bottom: 8px; font-family: 'Cormorant', serif; font-size: clamp(28px, 4vw, 42px); font-weight: 700; }
+    .page-sub { text-align: center; color: #9C9590; font-size: 13px; margin-bottom: 12px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.65; }
+    .page-note { text-align: center; color: #C4A574; font-size: 12px; margin-bottom: 36px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 1440px; margin: 0 auto; }
+    .option-card { border-radius: 14px; overflow: hidden; border: 1px solid #2C2826; background: #161412; }
+    .option-card.recommended { border-color: #C4A574; box-shadow: 0 0 0 1px rgba(196,165,116,0.25); }
+    .option-label { padding: 14px 16px 12px; border-bottom: 1px solid #2C2826; }
+    .option-label h2 { font-family: 'Cormorant', serif; font-size: 21px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge { font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 7px; border-radius: 100px; background: #C4A574; color: #121110; }
+    .option-label p { font-size: 11px; color: #8A847C; line-height: 1.5; }
+    .swatches { display: flex; gap: 5px; padding: 10px 16px; border-bottom: 1px solid #2C2826; flex-wrap: wrap; }
+    .swatch { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .swatch span:first-child { width: 26px; height: 26px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
+    .swatch span:last-child { font-size: 7px; color: #666; font-family: monospace; }
+    .modes { display: grid; grid-template-columns: 1fr 1fr; }
+    .mode-tag { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px; text-align: center; }
+    .preview { min-height: 210px; overflow: hidden; }
+    .preview-inner { transform: scale(0.9); transform-origin: top center; width: 111%; margin-left: -5.5%; }
+    .mock-announce { font-size: 6.5px; text-align: center; padding: 5px 8px; letter-spacing: 0.03em; font-weight: 500; }
+    .mock-header { display: flex; align-items: center; justify-content: space-between; padding: 7px 11px; font-size: 7.5px; font-weight: 600; border-bottom: 1px solid; }
+    .mock-logo { font-family: 'Cormorant', serif; font-weight: 700; font-size: 10px; letter-spacing: 0.04em; display: flex; align-items: center; gap: 4px; }
+    .mock-logo-badge { font-family: 'Montserrat', sans-serif; font-size: 6.5px; padding: 2px 4px; border-radius: 3px; font-weight: 700; }
+    .mock-nav { font-size: 6.5px; font-weight: 500; }
+    .mock-hot { font-size: 5.5px; padding: 1px 4px; border-radius: 100px; font-weight: 700; margin-left: 2px; }
+    .mock-hero { padding: 24px 14px 16px; text-align: center; }
+    .mock-pill { display: inline-block; font-size: 5.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 7px; border-radius: 100px; border: 1px solid; margin-bottom: 9px; }
+    .mock-title { font-family: 'Cormorant', serif; font-size: 20px; font-weight: 700; line-height: 1.05; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 7px; }
+    .mock-sub { font-size: 6.5px; line-height: 1.5; max-width: 190px; margin: 0 auto 12px; }
+    .mock-btns { display: flex; gap: 5px; justify-content: center; margin-bottom: 14px; }
+    .mock-btn { font-size: 5.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 5px 9px; border-radius: 4px; border: 1px solid transparent; }
+    .mock-features { display: flex; border-top: 1px solid; padding-top: 9px; }
+    .mock-feat { flex: 1; text-align: center; padding: 0 5px; border-right: 1px solid; }
+    .mock-feat:last-child { border-right: none; }
+    .mock-feat strong { display: block; font-size: 8px; font-weight: 700; margin-bottom: 2px; }
+    .mock-feat span { font-size: 4.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .ref-card { max-width: 1440px; margin: 0 auto 28px; border-radius: 14px; border: 1px dashed #3D3830; padding: 14px 16px; background: #161412; }
+    .ref-card h3 { font-family: 'Cormorant', serif; font-size: 18px; color: #8B7355; margin-bottom: 10px; }
+    .ref-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 680px) { .modes, .ref-modes { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">Warm Premium Palettes</h1>
+  <p class="page-sub">Refined variations in the <strong>Charcoal &amp; Champagne</strong> family — softer creams, cleaner bronzes, and more editorial contrast. All tested for light + dark mode.</p>
+  <p class="page-note">★ = top pick for POSTERLEAGUE</p>
+
+  <div class="ref-card">
+    <h3>Your reference — Original Option 2 (Charcoal &amp; Champagne)</h3>
+    <div class="ref-modes" id="ref-preview"></div>
+  </div>
+
+  <div class="grid" id="options-grid"></div>
+
+  <script>
+    const ref = {
+      name: 'Original Option 2',
+      light: { bg: '#F5F3EF', surface: '#FFFFFF', text: '#1A1814', muted: '#6B6560', border: '#E7E2DB', accent: '#8B7355', accentText: '#FFFFFF', headerBg: '#FFFFFF', announceBg: '#1A1814', announceText: '#EDEBE6' },
+      dark:  { bg: '#121110', surface: '#1A1816', text: '#EDEBE6', muted: '#9C9590', border: '#2C2826', accent: '#C4A574', accentText: '#121110', headerBg: '#1A1816', announceBg: '#000000', announceText: '#EDEBE6' }
+    };
+
+    const options = [
+      {
+        id: 'A', name: 'Soft Linen & Champagne', recommended: true,
+        desc: 'Cleaner cream base, lighter champagne accent — less brown, more boutique hotel.',
+        light: { bg: '#F8F5EF', surface: '#FFFCF7', text: '#1E1B16', muted: '#6E6860', border: '#E8E2D8', accent: '#A68968', accentText: '#FFFFFF', headerBg: '#FFFCF7', announceBg: '#1E1B16', announceText: '#F0EBE3' },
+        dark:  { bg: '#11100E', surface: '#1A1815', text: '#F0EBE3', muted: '#9A948C', border: '#2A2622', accent: '#D4BC9A', accentText: '#11100E', headerBg: '#1A1815', announceBg: '#000000', announceText: '#F0EBE3' }
+      },
+      {
+        id: 'B', name: 'Oyster & Pale Gold', recommended: true,
+        desc: 'Understated taupe neutrals with pale gold CTAs — very high-end, quiet luxury.',
+        light: { bg: '#F5F2EC', surface: '#FDFBF7', text: '#232019', muted: '#6B645A', border: '#E5DFD5', accent: '#9C8570', accentText: '#FFFFFF', headerBg: '#FDFBF7', announceBg: '#232019', announceText: '#F0EBE3' },
+        dark:  { bg: '#100F0D', surface: '#181614', text: '#ECE6DE', muted: '#9A9288', border: '#2B2723', accent: '#E2D4C3', accentText: '#100F0D', headerBg: '#181614', announceBg: '#000000', announceText: '#ECE6DE' }
+      },
+      {
+        id: 'C', name: 'Cognac & Cream',
+        desc: 'Richer cognac accent with warm ivory — feels like premium whiskey & leather.',
+        light: { bg: '#F7F2EA', surface: '#FFFDF9', text: '#1C1814', muted: '#6F665C', border: '#E9E0D4', accent: '#8B6340', accentText: '#FFFFFF', headerBg: '#FFFDF9', announceBg: '#1C1814', announceText: '#F3EDE5' },
+        dark:  { bg: '#14110F', surface: '#1C1916', text: '#F3EDE5', muted: '#A09890', border: '#2E2A26', accent: '#C9A06A', accentText: '#14110F', headerBg: '#1C1916', announceBg: '#000000', announceText: '#F3EDE5' }
+      },
+      {
+        id: 'D', name: 'Dusty Rose Champagne',
+        desc: 'Subtle rose undertone in the accent — fashion editorial, Tom Ford energy.',
+        light: { bg: '#FAF7F4', surface: '#FFFFFF', text: '#2A241E', muted: '#7A7268', border: '#EBE4DC', accent: '#B8956B', accentText: '#FFFFFF', headerBg: '#FFFFFF', announceBg: '#2A241E', announceText: '#F5F0EA' },
+        dark:  { bg: '#12100F', surface: '#1A1715', text: '#F5F0EA', muted: '#9E9690', border: '#2D2926', accent: '#D9BFA8', accentText: '#12100F', headerBg: '#1A1715', announceBg: '#000000', announceText: '#F5F0EA' }
+      },
+      {
+        id: 'E', name: 'Gallery Linen',
+        desc: 'Neutral linen walls + antique brass — museum shop, lets posters pop.',
+        light: { bg: '#F6F3ED', surface: '#FDFCF9', text: '#2A2520', muted: '#6E6760', border: '#E3DDD3', accent: '#7A6B58', accentText: '#FFFFFF', headerBg: '#FDFCF9', announceBg: '#2A2520', announceText: '#EDE8E0' },
+        dark:  { bg: '#131211', surface: '#1B1A18', text: '#EDE8E0', muted: '#969088', border: '#2C2A27', accent: '#BFAF98', accentText: '#131211', headerBg: '#1B1A18', announceBg: '#000000', announceText: '#EDE8E0' }
+      },
+      {
+        id: 'F', name: 'Pearl & Burnished Brass',
+        desc: 'Cooler warm-neutral with brass accent — crisp, modern gallery feel.',
+        light: { bg: '#FAFAF8', surface: '#FFFFFF', text: '#141210', muted: '#64605A', border: '#E6E2DC', accent: '#96785A', accentText: '#FFFFFF', headerBg: '#FFFFFF', announceBg: '#141210', announceText: '#ECE8E2' },
+        dark:  { bg: '#0F0E0D', surface: '#171615', text: '#ECE8E2', muted: '#949088', border: '#282624', accent: '#CDB896', accentText: '#0F0E0D', headerBg: '#171615', announceBg: '#000000', announceText: '#ECE8E2' }
+      }
+    ];
+
+    function renderPreview(t) {
+      return `
+        <div class="preview" style="background:${t.bg};color:${t.text}">
+          <div class="preview-inner">
+            <div class="mock-announce" style="background:${t.announceBg};color:${t.announceText}">Free shipping on orders over ₹999 · Use code WALL10</div>
+            <div class="mock-header" style="background:${t.headerBg};color:${t.text};border-color:${t.border}">
+              <div class="mock-logo"><span class="mock-logo-badge" style="background:${t.text};color:${t.bg}">PL</span> POSTERLEAGUE</div>
+              <div class="mock-nav">POSTERS <span class="mock-hot" style="background:${t.accent};color:${t.accentText}">HOT</span></div>
+            </div>
+            <div class="mock-hero">
+              <div class="mock-pill" style="border-color:${t.border};color:${t.muted}">New drops weekly</div>
+              <div class="mock-title">Your Walls.<br>Your Style.</div>
+              <div class="mock-sub" style="color:${t.muted}">Premium posters & split sets. Museum-grade print quality.</div>
+              <div class="mock-btns">
+                <span class="mock-btn" style="background:${t.accent};color:${t.accentText}">Shop Now →</span>
+                <span class="mock-btn" style="border-color:${t.text};color:${t.text};background:transparent">Explore All</span>
+              </div>
+              <div class="mock-features" style="border-color:${t.border}">
+                <div class="mock-feat" style="border-color:${t.border}"><strong>300gsm</strong><span style="color:${t.muted}">Paper</span></div>
+                <div class="mock-feat" style="border-color:${t.border}"><strong>High Gloss</strong><span style="color:${t.muted}">Finish</span></div>
+                <div class="mock-feat" style="border-color:${t.border}"><strong>Scratch Free</strong><span style="color:${t.muted}">Coating</span></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderModes(opt) {
+      return `
+        <div class="modes">
+          <div class="mode-tag" style="background:#F5F0E8;color:#444">Light</div>
+          <div class="mode-tag" style="background:#1A1816;color:#888">Dark</div>
+          ${renderPreview(opt.light)}
+          ${renderPreview(opt.dark)}
+        </div>`;
+    }
+
+    function renderSwatches(opt) {
+      const keys = [['bg', opt.dark.bg], ['accent', opt.dark.accent], ['text', opt.dark.text], ['muted', opt.dark.muted], ['border', opt.dark.border]];
+      return keys.map(([, hex]) => `<div class="swatch"><span style="background:${hex}"></span><span>${hex}</span></div>`).join('');
+    }
+
+    function renderOption(opt) {
+      return `
+        <article class="option-card${opt.recommended ? ' recommended' : ''}">
+          <div class="option-label">
+            <h2>Option ${opt.id} — ${opt.name}${opt.recommended ? ' <span class="badge">Top pick</span>' : ''}</h2>
+            <p>${opt.desc}</p>
+          </div>
+          <div class="swatches">${renderSwatches(opt)}</div>
+          ${renderModes(opt)}
+        </article>`;
+    }
+
+    document.getElementById('ref-preview').innerHTML = renderModes(ref);
+    document.getElementById('options-grid').innerHTML = options.map(renderOption).join('');
+  </script>
+</body>
+</html>

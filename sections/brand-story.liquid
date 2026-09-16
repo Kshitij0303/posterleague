@@ -1,0 +1,76 @@
+<div class="section" style="background-color: var(--color-bg); padding: 80px 0; text-align: center;">
+  <div class="container">
+    <span class="badge badge--accent" style="margin-bottom: 16px;">{{ section.settings.eyebrow | escape }}</span>
+    <h2 style="margin: 0 0 24px; font-size: 36px;">{{ section.settings.heading | escape }}</h2>
+    <div style="max-width: 640px; margin: 0 auto 48px; color: var(--color-text-muted); font-size: 18px; line-height: 1.6;">
+      {{ section.settings.body_text }}
+    </div>
+    
+    {% if section.blocks.size > 0 %}
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px; max-width: 800px; margin: 0 auto;">
+        {% for block in section.blocks %}
+          <div {{ block.shopify_attributes }}>
+            <div style="font-family: 'Cormorant', Georgia, serif; font-weight: 700; font-size: 36px; color: var(--color-accent); margin-bottom: 8px;">{{ block.settings.number | escape }}</div>
+            <div style="font-size: 14px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;">{{ block.settings.label | escape }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Our Story"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Print That Means Something"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body Text",
+      "default": "<p>We started with a simple idea: your walls should reflect you, not a generic catalog. Every piece we make is crafted to order on premium materials.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Statistic",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Story",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "300gsm", "label": "Premium Paper" } },
+        { "type": "stat", "settings": { "number": "100%", "label": "Custom Made" } },
+        { "type": "stat", "settings": { "number": "24h", "label": "Fast Quotes" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

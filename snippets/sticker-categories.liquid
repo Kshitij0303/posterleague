@@ -1,0 +1,29 @@
+{% comment %}
+  Sticker category list — renders nav, mobile, or filter-pill links.
+  @param context {string} nav | mobile | pills
+  @param stickers_base {string} optional, for pills context
+{% endcomment %}
+{% assign sticker_categories = "anime:Anime,gaming:Gaming,cars-bikes:Cars & Bikes,movies-series:Movies & Series,music:Music,spotify:Spotify,tech-code:Tech & Code,sports:Sports,kpop-pop-culture:K-Pop & Pop Culture,love:Love,food-drinks:Food & Drinks,sarcasm-quotes:Sarcasm & Quotes,abstract:Abstract,animals:Animals,spiritual:Spiritual,warning:Warning" | split: "," %}
+
+{% for item in sticker_categories %}
+  {% assign parts = item | split: ":" %}
+  {% assign genre_handle = parts[0] %}
+  {% assign genre_title = parts[1] %}
+
+  {% if context == 'nav' %}
+    <a href="/collections/stickers/{{ genre_handle }}" class="nav-dropdown__item">
+      <span>{{ genre_title }}</span>
+    </a>
+  {% elsif context == 'mobile' %}
+    <a href="/collections/stickers/{{ genre_handle }}">&bull; {{ genre_title }}</a>
+  {% elsif context == 'pills' %}
+    {% assign genre_active = false %}
+    {% if current_tags contains genre_handle or current_tags contains genre_title or collection.handle == genre_handle %}
+      {% assign genre_active = true %}
+    {% endif %}
+    <a href="{% if genre_active %}{{ stickers_base }}{% else %}{{ stickers_base }}/{{ genre_handle }}{% endif %}"
+       class="filter-pill {% if genre_active %}is-active{% endif %}">
+      {{ genre_title }}
+    </a>
+  {% endif %}
+{% endfor %}

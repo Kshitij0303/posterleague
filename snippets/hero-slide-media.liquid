@@ -1,0 +1,54 @@
+{% comment %}
+  Hero slideshow slide — video (Shopify-hosted or MP4 URL) or image fallback.
+  @param slide_video {object} Shopify video setting
+  @param video_url {string} MP4 URL from Shopify Files or CDN
+  @param image {object} image fallback
+  @param css_class {string}
+  @param loading {string} eager | lazy
+{% endcomment %}
+
+{%- liquid
+  assign media_class = css_class | default: 'hero-media-element'
+  assign img_loading = loading | default: 'lazy'
+  assign has_shopify_video = false
+  if slide_video != blank and slide_video.sources.size > 0
+    assign has_shopify_video = true
+  endif
+-%}
+
+{% if has_shopify_video or video_url != blank %}
+  <video
+    class="{{ media_class }}"
+    autoplay
+    muted
+    loop
+    playsinline
+    webkit-playsinline
+    disablePictureInPicture
+    preload="auto"
+    {% if image != blank %}
+      poster="{{ image | image_url: width: 1600 }}"
+    {% elsif slide_video != blank and slide_video.preview_image != blank %}
+      poster="{{ slide_video.preview_image | image_url: width: 1600 }}"
+    {% endif %}
+  >
+    {% if has_shopify_video %}
+      {% for source in slide_video.sources %}
+        <source src="{{ source.url }}" type="{{ source.mime_type }}">
+      {% endfor %}
+    {% else %}
+      <source src="{{ video_url }}" type="video/mp4">
+    {% endif %}
+  </video>
+{% elsif image != blank %}
+  <img
+    src="{{ image | image_url: width: 1800 }}"
+    srcset="{{ image | image_url: width: 800 }} 800w,
+            {{ image | image_url: width: 1400 }} 1400w,
+            {{ image | image_url: width: 2000 }} 2000w"
+    sizes="100vw"
+    alt="{{ image.alt | default: 'Customer Review Showcase' | escape }}"
+    class="{{ media_class }}"
+    loading="{{ img_loading }}"
+  >
+{% endif %}

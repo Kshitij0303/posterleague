@@ -1,0 +1,48 @@
+---
+description: Use UI/UX Pro Max skill for all UI/UX design, review, and implementation work in this project
+alwaysApply: true
+---
+
+# UI/UX Pro Max — Always Use for Visual Work
+
+When the task involves **UI structure, visual design, interaction patterns, accessibility, layout, typography, color, or perceived quality**, follow the **ui-ux-pro-max** skill before implementing.
+
+## Skill location
+
+`C:\Users\HP\.cursor\skills-cursor\ui-ux-pro-max\SKILL.md`
+
+## Search tool
+
+```bash
+python "C:\Users\HP\.cursor\skills-cursor\ui-ux-pro-max\scripts\search.py" "<query>" --domain <domain>
+python "C:\Users\HP\.cursor\skills-cursor\ui-ux-pro-max\scripts\search.py" "<query>" --design-system -p "POSTERLEAGUE" --output-dir "E:\posterleague-theme"
+python "C:\Users\HP\.cursor\skills-cursor\ui-ux-pro-max\scripts\search.py" "<query>" --stack html-tailwind
+```
+
+## Project design system (persisted)
+
+Before building or redesigning a page, read:
+1. `design-system/posterleague/pages/<page>.md` (page overrides — takes priority)
+2. `design-system/posterleague/MASTER.md` (global rules)
+
+## POSTERLEAGUE brand tokens (override skill defaults when they conflict)
+
+| Token | Value |
+|-------|-------|
+| Primary | `#0C0C0C` |
+| Accent / CTA | `#FFBA00` |
+| Background | `#F4F4F2` |
+| Body font | Plus Jakarta Sans (site-wide) |
+
+## Priority checklist (from skill)
+
+1. Accessibility — contrast 4.5:1, aria-labels, keyboard focus
+2. Touch — min 44×44px targets, loading feedback
+3. Performance — lazy images, no layout shift
+4. Style — SVG icons only (no emojis), consistent premium aesthetic
+5. Responsive — mobile-first, no horizontal scroll
+6. Motion — 150–300ms transitions, respect `prefers-reduced-motion`
+
+## Skip the skill for
+
+Pure backend logic, API/database, infrastructure, or non-visual scripts.

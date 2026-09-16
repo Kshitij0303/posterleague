@@ -1,0 +1,52 @@
+{
+  "general": {
+    "cart": "Cart",
+    "search": "Search",
+    "close": "Close",
+    "loading": "Loading...",
+    "added_to_cart": "Added to cart"
+  },
+  "navigation": {
+    "menu": "Menu"
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "request_quote": "Request Custom Quote",
+    "sold_out": "Sold Out",
+    "from": "From",
+    "size": "Size",
+    "quantity": "Quantity"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "free_shipping": "Free Shipping",
+    "free_poster_bonus": "Free Poster Bonus",
+    "upsells_heading": "Complete your wall setup"
+  },
+  "customizer": {
+    "title": "Customise Your Order",
+    "upload_image": "Upload Your Image",
+    "add_note": "Add a Note",
+    "submit": "Send Quote Request",
+    "success": "Thanks! We'll email you with pricing within 24 hours.",
+    "name_label": "Your Name",
+    "email_label": "Your Email",
+    "message_label": "Customisation Details"
+  },
+  "coming_soon": {
+    "label": "Coming Soon",
+    "notify": "Notify Me",
+    "notify_thanks": "You're on the list!"
+  },
+  "footer": {
+    "newsletter_title": "Stay in the Loop",
+    "newsletter_subtitle": "New drops, custom order updates, and early access.",
+    "newsletter_placeholder": "your@email.com",
+    "newsletter_button": "Subscribe",
+    "copyright": "© 2024 POSTERLEAGUE. All rights reserved."
+  }
+}

@@ -1,0 +1,130 @@
+/**
+ * POSTERLEAGUE — Secure Data Protection (CSS)
+ * -------------------------------------------
+ * Apply class "secure-data" to any element that holds sensitive info
+ * (voucher codes, payment summaries, exclusive digital content).
+ *
+ * This file handles:
+ *   1. Print / Save-as-PDF hiding via @media print
+ *   2. Visual shield when JS adds body.secure-shield-on
+ *
+ * Note: OS-level screenshots cannot be fully blocked by CSS alone.
+ * JS in secure-data-protection.js adds blur + shortcut interception.
+ */
+
+/* ── Base secure container ─────────────────────────────────────────────── */
+
+.secure-data {
+  position: relative;
+  transition: filter 0.22s ease, opacity 0.22s ease;
+}
+
+/* Prevent casual text selection inside protected blocks */
+.secure-data {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow selection inside forms when shield is NOT active (accessibility) */
+.secure-data input,
+.secure-data textarea,
+.secure-data select,
+.secure-data [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ── Live shield (toggled by JS on body.secure-shield-on) ──────────────── */
+
+body.secure-shield-on .secure-data {
+  filter: blur(18px) saturate(0.4);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Overlay label — only visible while shield is active */
+body.secure-shield-on .secure-data::after {
+  content: attr(data-shield-label);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: #0c0c0c;
+  background: rgba(244, 244, 242, 0.92);
+  border: 1px dashed #c8c8c4;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 2;
+  filter: none;
+  opacity: 1;
+}
+
+/* Default shield message when data-shield-label is omitted */
+body.secure-shield-on .secure-data:not([data-shield-label])::after {
+  content: "Protected content hidden";
+}
+
+/* ── Reduced motion: swap blur for solid cover ─────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .secure-data {
+    transition: none;
+  }
+
+  body.secure-shield-on .secure-data {
+    filter: none;
+    opacity: 1;
+  }
+
+  body.secure-shield-on .secure-data > * {
+    visibility: hidden;
+  }
+
+  body.secure-shield-on .secure-data::after {
+    visibility: visible;
+  }
+}
+
+/* ── Print / PDF protection ────────────────────────────────────────────── */
+
+@media print {
+  /* Hide all sensitive content and descendants */
+  .secure-data,
+  .secure-data * {
+    visibility: hidden !important;
+    color: transparent !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Replace with a neutral placeholder message */
+  .secure-data::before {
+    content: attr(data-print-message, "This content is protected and cannot be printed.");
+    visibility: visible !important;
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    font-size: 11pt;
+    font-weight: 600;
+    color: #333 !important;
+    background: #f4f4f2 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Never print the live-shield overlay in print jobs */
+  .secure-data::after {
+    display: none !important;
+  }
+}

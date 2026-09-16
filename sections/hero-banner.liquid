@@ -1,0 +1,455 @@
+<section class="hero-video-slideshow" id="HeroSection-{{ section.id }}">
+  <!-- Background Dynamic Continuous Media Loop (Customer Images & Videos) -->
+  <div class="hero-bg-media-container" id="HeroMediaSlider-{{ section.id }}" data-autoplay-speed="{{ section.settings.slide_duration | default: 4 }}">
+    {%- liquid
+      assign hero_video = section.settings.hero_background_video
+      assign hero_has_video = false
+      if hero_video != blank and hero_video.sources.size > 0
+        assign hero_has_video = true
+      endif
+    -%}
+    {% if hero_has_video or section.settings.hero_background_video_url != blank %}
+      <div class="hero-bg-item is-active">
+        {% render 'hero-slide-media',
+          slide_video: hero_video,
+          video_url: section.settings.hero_background_video_url,
+          image: blank,
+          css_class: 'hero-media-element',
+          loading: 'eager'
+        %}
+      </div>
+    {% elsif section.blocks.size > 0 %}
+      {% for block in section.blocks %}
+        {%- liquid
+          assign slide_has_video = false
+          if block.settings.slide_video != blank and block.settings.slide_video.sources.size > 0
+            assign slide_has_video = true
+          endif
+          assign slide_loading = 'lazy'
+          if forloop.first
+            assign slide_loading = 'eager'
+          endif
+        -%}
+        <div class="hero-bg-item {% if forloop.first %}is-active{% endif %}" {{ block.shopify_attributes }} data-block-id="{{ block.id }}">
+          {% if slide_has_video or block.settings.video_url != blank or block.settings.image != blank %}
+            {% render 'hero-slide-media',
+              slide_video: block.settings.slide_video,
+              video_url: block.settings.video_url,
+              image: block.settings.image,
+              css_class: 'hero-media-element',
+              loading: slide_loading
+            %}
+          {% else %}
+            <div class="hero-media-element hero-default-bg-{{ forloop.index | modulo: 3 }}"></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <!-- Default fallback slides until you upload your customer photos & videos in Theme Editor -->
+      <div class="hero-bg-item is-active">
+        <div class="hero-media-element hero-default-bg-0"></div>
+      </div>
+      <div class="hero-bg-item">
+        <div class="hero-media-element hero-default-bg-1"></div>
+      </div>
+      <div class="hero-bg-item">
+        <div class="hero-media-element hero-default-bg-2"></div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Dark Scrim Overlay (Configurable Opacity in Theme Settings) -->
+  <div class="hero-scrim-overlay" style="opacity: {{ section.settings.overlay_opacity | default: 75 | divided_by: 100.0 }};"></div>
+
+  <!-- Clean Top/Foreground Text Content (Exactly as you wanted) -->
+  <div class="container hero-content-container">
+    <div class="hero-text-block">
+      {% if section.settings.eyebrow != blank %}
+        <div class="hero-eyebrow-pill">
+          {{ section.settings.eyebrow | escape }}
+        </div>
+      {% endif %}
+
+      <h1 class="hero-main-title">
+        {{ section.settings.heading | newline_to_br }}
+      </h1>
+
+      {% if section.settings.subheading != blank %}
+        <p class="hero-subtext">
+          {{ section.settings.subheading | escape }}
+        </p>
+      {% endif %}
+
+      <div class="hero-btn-group">
+        {% if section.settings.cta_primary_label != blank %}
+          <a href="{{ section.settings.cta_primary_url | default: '/collections/posters' }}" class="btn btn--amber hero-action-btn">
+            <span>{{ section.settings.cta_primary_label | escape }}</span> &rarr;
+          </a>
+        {% endif %}
+        {% if section.settings.cta_secondary_label != blank %}
+          <a href="{{ section.settings.cta_secondary_url | default: '/collections/all' }}" class="btn btn--ghost hero-action-btn hero-action-btn--ghost">
+            {{ section.settings.cta_secondary_label | escape }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Bottom Specs Bar -->
+      <div class="hero-features-bar">
+        <div class="hero-feature-col">
+          <div class="feature-val">300gsm</div>
+          <div class="feature-lbl">Paper Weight</div>
+        </div>
+        <div class="feature-sep"></div>
+        <div class="hero-feature-col">
+          <div class="feature-val">High Gloss</div>
+          <div class="feature-lbl">Lamination</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-video-slideshow {
+    position: relative;
+    width: 100%;
+    min-height: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #0A0A0A;
+    overflow: hidden;
+  }
+
+  .hero-bg-media-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-bg-item {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.4s ease-in-out, transform 7s ease-out;
+    transform: scale(1.05);
+  }
+
+  .hero-bg-item.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+
+  .hero-media-element {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Default styled visual ambient slides */
+  .hero-default-bg-0 {
+    background: radial-gradient(circle at 60% 40%, #2b1d1a 0%, #0c0c0c 75%);
+  }
+  .hero-default-bg-1 {
+    background: radial-gradient(circle at 30% 60%, #172129 0%, #0a0a0a 75%);
+  }
+  .hero-default-bg-2 {
+    background: radial-gradient(circle at 50% 50%, #262217 0%, #0c0c0c 75%);
+  }
+
+  .hero-scrim-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.75) 45%, rgba(8,8,8,0.45) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hero-content-container {
+    position: relative;
+    z-index: 3;
+    padding-top: 56px;
+    padding-bottom: 56px;
+    width: 100%;
+  }
+
+  .hero-text-block {
+    max-width: 580px;
+  }
+
+  .hero-eyebrow-pill {
+    display: inline-block;
+    background: transparent;
+    color: #66FCF1;
+    border: 1px solid #66FCF1;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .hero-main-title {
+    font-family: 'Cormorant', Georgia, serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 700;
+    color: #66FCF1;
+    line-height: 1.05;
+    letter-spacing: 0.03em;
+    margin: 0 0 20px;
+    text-transform: uppercase;
+  }
+
+  .hero-subtext {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+    margin: 0 0 32px;
+    max-width: 460px;
+  }
+
+  .hero-btn-group {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .hero-action-btn {
+    padding: 13px 26px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-action-btn.btn--amber {
+    background: transparent;
+    color: #FFFFFF;
+    border: 1.5px solid #66FCF1;
+  }
+
+  .hero-action-btn.btn--amber:hover {
+    background: rgba(102, 252, 241, 0.12);
+    color: #66FCF1;
+    border-color: #66FCF1;
+  }
+
+  .hero-action-btn--ghost {
+    color: #C5C6C7;
+    border: 1.5px solid rgba(197, 198, 199, 0.4);
+    background: transparent;
+    backdrop-filter: blur(8px);
+  }
+  .hero-action-btn--ghost:hover {
+    border-color: #45A29E;
+    background: rgba(69, 162, 158, 0.1);
+    color: #66FCF1;
+  }
+
+  .hero-features-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 24px;
+  }
+
+  .hero-feature-col {
+    text-align: left;
+  }
+
+  .feature-val {
+    font-size: 19px;
+    font-weight: 800;
+    color: #66FCF1;
+    line-height: 1.1;
+  }
+
+  .feature-lbl {
+    font-size: 10px;
+    color: #C5C6C7;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .feature-sep {
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    .hero-video-slideshow { min-height: 520px; }
+    .hero-scrim-overlay {
+      background: linear-gradient(180deg, rgba(8,8,8,0.85) 0%, rgba(8,8,8,0.7) 60%, rgba(8,8,8,0.92) 100%);
+    }
+    .hero-content-container { padding-top: 40px; padding-bottom: 40px; }
+    .hero-text-block { max-width: 100%; text-align: left; }
+    .hero-features-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      max-width: 100%;
+    }
+    .hero-btn-group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .hero-action-btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    const container = document.getElementById('HeroMediaSlider-{{ section.id }}');
+    if (!container) return;
+    const slides = container.querySelectorAll('.hero-bg-item');
+    if (slides.length <= 1) return;
+
+    const intervalSeconds = parseInt(container.getAttribute('data-autoplay-speed'), 10) || 4;
+    let currentIndex = 0;
+    let timer = null;
+
+    function showSlide(index) {
+      slides[currentIndex].classList.remove('is-active');
+      const currentVideo = slides[currentIndex].querySelector('video');
+      if (currentVideo) {
+        currentVideo.pause();
+        currentVideo.currentTime = 0;
+      }
+
+      currentIndex = (index + slides.length) % slides.length;
+      slides[currentIndex].classList.add('is-active');
+
+      const nextVideo = slides[currentIndex].querySelector('video');
+      if (nextVideo) {
+        nextVideo.play().catch(() => {});
+      }
+    }
+
+    function next() {
+      showSlide(currentIndex + 1);
+    }
+
+    timer = setInterval(next, intervalSeconds * 1000);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Video & Review Loop",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero background video"
+    },
+    {
+      "type": "video",
+      "id": "hero_background_video",
+      "label": "Main hero background video",
+      "info": "MP4 only. Wait 1–2 min after upload for Shopify to process. If you see a red error, use “MP4 URL from Files” below instead."
+    },
+    {
+      "type": "text",
+      "id": "hero_background_video_url",
+      "label": "MP4 URL from Files (if upload fails)",
+      "info": "Admin → Content → Files → upload MP4 → copy link → paste here."
+    },
+    {
+      "type": "header",
+      "content": "Hero text & buttons"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Top Eyebrow Badge", "default": "NEW DROPS WEEKLY" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "YOUR WALLS.\nYOUR STYLE." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Custom posters, stickers, bookmarks & magnets — 300gsm. Laminated. Made to order." },
+    { "type": "text", "id": "cta_primary_label", "label": "Primary Button Text", "default": "Shop Now" },
+    { "type": "url", "id": "cta_primary_url", "label": "Primary Button Link" },
+    { "type": "text", "id": "cta_secondary_label", "label": "Secondary Button Text", "default": "Explore All Posters" },
+    { "type": "url", "id": "cta_secondary_url", "label": "Secondary Button Link" },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 30,
+      "max": 95,
+      "step": 5,
+      "unit": "%",
+      "label": "Background Dark Overlay Opacity",
+      "default": 75,
+      "info": "Higher opacity makes the white text easier to read over bright videos or images."
+    },
+    {
+      "type": "range",
+      "id": "slide_duration",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Slide Change Speed (Seconds)",
+      "default": 4,
+      "info": "Only used when no main hero video is set and slide blocks are added below."
+    },
+    {
+      "type": "header",
+      "content": "Background slideshow (optional)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add slides for multiple rotating images/videos. If a main hero video is set above, slideshow blocks are ignored."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review_media",
+      "name": "Slideshow image or video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "slide_video",
+          "label": "Video upload",
+          "info": "MP4 (H.264). Wait 1–2 min after upload. If red error appears, clear this field, save, then use MP4 URL below."
+        },
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "MP4 URL from Files (recommended if upload errors)",
+          "info": "Content → Files → upload your .mp4 → copy the link → paste here. Works with downloaded videos."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Or use image instead",
+          "info": "Poster/fallback when no video is set on this slide"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Video & Review Loop",
+      "blocks": [
+        { "type": "review_media" },
+        { "type": "review_media" },
+        { "type": "review_media" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+

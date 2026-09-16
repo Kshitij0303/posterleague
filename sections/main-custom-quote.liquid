@@ -1,0 +1,89 @@
+<div class="section" style="padding: 48px 0 80px;">
+  <div class="container" style="max-width: 680px; margin: 0 auto;">
+    
+    <div style="text-align: center; margin-bottom: 36px;">
+      <span style="display: inline-block; background: var(--color-accent-light); color: var(--color-text); border: 1px solid var(--color-accent); font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;">
+        Custom Printing Service
+      </span>
+      <h1 style="margin: 0 0 12px; font-size: 32px; font-weight: 700; letter-spacing: -0.02em;">Request a Custom Quote</h1>
+      <p style="color: #666666; font-size: 15px; line-height: 1.5; margin: 0 auto; max-width: 520px;">
+        Upload your own artwork, photo, or anime design. We print on premium 300 GSM paper with ultra-clear matte lamination.
+      </p>
+    </div>
+    
+    <div style="background: #FFFFFF; border: 1px solid #EAEAEA; border-radius: 12px; padding: 32px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+      {% form 'contact' %}
+        <input type="hidden" name="form_type" value="contact">
+        <input type="hidden" name="contact[tags]" value="custom-quote-request">
+        
+        {% if form.posted_successfully? %}
+          <div style="background: var(--color-accent-light); border: 1.5px solid var(--color-accent); padding: 28px 20px; border-radius: 8px; text-align: center;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" style="margin-bottom: 12px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h3 style="font-size: 18px; margin: 0 0 8px; color: #111;">Quote Request Received!</h3>
+            <p style="margin: 0; font-size: 14px; color: #555;">Thanks! We will email you your personalized pricing &amp; mockup preview within 24 hours.</p>
+          </div>
+        {% else %}
+          
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const urlParams = new URLSearchParams(window.location.search);
+              const product = urlParams.get('product');
+              if(product) {
+                const hint = document.getElementById('product-hint');
+                hint.style.display = 'flex';
+                hint.innerHTML = '<span>Requesting quote for: <strong>' + product.replace(/-/g, ' ').toUpperCase() + '</strong></span>';
+                const bodyInput = document.getElementById('ContactFormBody');
+                if(bodyInput) bodyInput.value = 'Product Handle: ' + product + '\nSize Required:\nSpecial Instructions:\n';
+              }
+            });
+          </script>
+          
+          <div id="product-hint" style="display: none; align-items: center; gap: 8px; background: var(--color-accent-light); border: 1px solid var(--color-accent); padding: 12px 16px; border-radius: 6px; margin-bottom: 24px; font-size: 13px; color: var(--color-text);"></div>
+          
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div>
+              <label for="ContactFormName">Your Full Name *</label>
+              <input type="text" id="ContactFormName" name="contact[name]" placeholder="e.g. Rahul Sharma" required>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <label for="ContactFormEmail">Your Email Address *</label>
+                <input type="email" id="ContactFormEmail" name="contact[email]" placeholder="you@example.com" required>
+              </div>
+              <div>
+                <label for="ContactFormPhone">WhatsApp / Phone Number</label>
+                <input type="tel" id="ContactFormPhone" name="contact[phone]" placeholder="+91 98765 43210">
+              </div>
+            </div>
+
+            <div>
+              <label for="ContactFormBody">Customization Details &amp; Image Link *</label>
+              <p style="font-size: 12px; color: #777; margin-top: -2px; margin-bottom: 8px;">
+                Specify the size (A5, A4, A3, or Wall Split), piece count, and share a Google Drive/Dropbox/Imgur link to your image:
+              </p>
+              <textarea id="ContactFormBody" name="contact[body]" rows="5" placeholder="1. Size: A3&#10;2. Quantity: 2&#10;3. Drive Link to Image: https://..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn--primary" style="width: 100%; padding: 16px; font-size: 14px;">
+              Send Custom Quote Request &rarr;
+            </button>
+          </div>
+          
+          {% if form.errors %}
+            <div style="margin-top: 20px; color: #E63946; background: #FFF5F5; padding: 12px 16px; border: 1px solid #FFCDD2; border-radius: 6px; font-size: 13px;">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endform %}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom Quote"
+}
+{% endschema %}

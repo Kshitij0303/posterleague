@@ -1,0 +1,4 @@
+artwork-masters/*
+!artwork-masters/.gitkeep
+artwork-ready/*
+!artwork-ready/.gitkeep

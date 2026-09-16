@@ -1,0 +1,129 @@
+{% comment %}
+  Cart upsell rows — glue dots on cart page + drawer.
+  Link products in Theme settings → Cart drawer → Upsell products.
+{% endcomment %}
+
+{%- liquid
+  assign upsell_1_handle = settings.cart_upsell_1_handle | default: '500-glue-dots'
+  assign upsell_2_handle = settings.cart_upsell_2_handle | default: '200-glue-dots'
+
+  assign upsell_1 = settings.cart_upsell_1
+  if upsell_1 == blank
+    assign upsell_1 = all_products[upsell_1_handle]
+  endif
+
+  assign upsell_2 = settings.cart_upsell_2
+  if upsell_2 == blank
+    assign upsell_2 = all_products[upsell_2_handle]
+  endif
+
+  assign upsell_1_variant_id = ''
+  if upsell_1 != blank
+    for variant in upsell_1.variants
+      if variant.available
+        assign upsell_1_variant_id = variant.id
+        break
+      endif
+    endfor
+    if upsell_1_variant_id == blank and upsell_1.variants.size > 0
+      assign upsell_1_variant_id = upsell_1.variants.first.id
+    endif
+    assign upsell_1_handle = upsell_1.handle
+  endif
+
+  assign upsell_2_variant_id = ''
+  if upsell_2 != blank
+    for variant in upsell_2.variants
+      if variant.available
+        assign upsell_2_variant_id = variant.id
+        break
+      endif
+    endfor
+    if upsell_2_variant_id == blank and upsell_2.variants.size > 0
+      assign upsell_2_variant_id = upsell_2.variants.first.id
+    endif
+    assign upsell_2_handle = upsell_2.handle
+  endif
+
+  assign upsell_1_title = settings.cart_upsell_1_title | default: '500 Glue Dots'
+  assign upsell_1_price = settings.cart_upsell_1_price | default: '₹99'
+  assign upsell_1_compare = settings.cart_upsell_1_compare | default: '₹199'
+  assign upsell_1_subtitle = settings.cart_upsell_1_subtitle | default: 'Covers 80+ posters'
+
+  assign upsell_2_title = settings.cart_upsell_2_title | default: '200 Glue Dots'
+  assign upsell_2_price = settings.cart_upsell_2_price | default: '₹49'
+  assign upsell_2_compare = settings.cart_upsell_2_compare | default: '₹199'
+  assign upsell_2_subtitle = settings.cart_upsell_2_subtitle | default: 'Covers 30+ posters · no holes, no marks'
+-%}
+
+<div id="cart-upsells" class="cart-upsells{% if compact %} cart-upsells--compact{% else %} cart-upsells--rows{% endif %}">
+  {% unless compact %}
+    <div class="cart-upsells__header">
+      <span>Complete Your Wall Setup</span>
+    </div>
+  {% endunless %}
+
+  <div class="cart-upsells__list">
+
+    {% assign upsell_1_hidden = false %}
+    {% if cart %}
+      {% for item in cart.items %}
+        {% if item.product.handle == upsell_1_handle %}{% assign upsell_1_hidden = true %}{% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <div class="cart-upsell-row {% if upsell_1_hidden %}is-hidden{% endif %}{% if upsell_1_variant_id == blank %} cart-upsell-row--unlinked{% endif %}"
+         data-handle="{{ upsell_1_handle }}"
+         {% if upsell_1_variant_id != blank %}data-variant-id="{{ upsell_1_variant_id }}"{% endif %}>
+      {% if upsell_1 != blank and upsell_1.featured_image %}
+        <img src="{{ upsell_1.featured_image | image_url: width: 80 }}" alt="{{ upsell_1.title | escape }}" class="cart-upsell-row__img" width="40" height="40" loading="lazy">
+      {% else %}
+        <div class="cart-upsell-row__img cart-upsell-row__img--placeholder cart-upsell-row__img--warm" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="8" r="2" fill="#FFFFFF" opacity="0.9"/><circle cx="12" cy="6" r="2" fill="#FFFFFF" opacity="0.7"/><circle cx="17" cy="9" r="2" fill="#FFFFFF" opacity="0.8"/></svg>
+        </div>
+      {% endif %}
+      <div class="cart-upsell-row__info">
+        <strong>
+          {% if upsell_1 != blank %}{{ upsell_1.title }}{% else %}{{ upsell_1_title }}{% endif %}
+          · {% if upsell_1 != blank %}{{ upsell_1.price | money }}{% else %}{{ upsell_1_price }}{% endif %}
+        </strong>
+        <span>{{ upsell_1_subtitle }} · <s class="cart-upsell-compare">was {% if upsell_1 != blank and upsell_1.compare_at_price > upsell_1.price %}{{ upsell_1.compare_at_price | money }}{% else %}{{ upsell_1_compare }}{% endif %}</s></span>
+      </div>
+      <button type="button" class="cart-upsell-add"
+              data-handle="{{ upsell_1_handle }}"
+              data-search="500 glue dots"
+              {% if upsell_1_variant_id != blank %}data-variant-id="{{ upsell_1_variant_id }}"{% endif %}>Add</button>
+    </div>
+
+    {% assign upsell_2_hidden = false %}
+    {% if cart %}
+      {% for item in cart.items %}
+        {% if item.product.handle == upsell_2_handle %}{% assign upsell_2_hidden = true %}{% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <div class="cart-upsell-row {% if upsell_2_hidden %}is-hidden{% endif %}{% if upsell_2_variant_id == blank %} cart-upsell-row--unlinked{% endif %}"
+         data-handle="{{ upsell_2_handle }}"
+         {% if upsell_2_variant_id != blank %}data-variant-id="{{ upsell_2_variant_id }}"{% endif %}>
+      {% if upsell_2 != blank and upsell_2.featured_image %}
+        <img src="{{ upsell_2.featured_image | image_url: width: 80 }}" alt="{{ upsell_2.title | escape }}" class="cart-upsell-row__img" width="40" height="40" loading="lazy">
+      {% else %}
+        <div class="cart-upsell-row__img cart-upsell-row__img--placeholder cart-upsell-row__img--cool" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="8" r="2" fill="#FFFFFF" opacity="0.9"/><circle cx="12" cy="6" r="2" fill="#FFFFFF" opacity="0.7"/><circle cx="17" cy="9" r="2" fill="#FFFFFF" opacity="0.8"/></svg>
+        </div>
+      {% endif %}
+      <div class="cart-upsell-row__info">
+        <strong>
+          {% if upsell_2 != blank %}{{ upsell_2.title }}{% else %}{{ upsell_2_title }}{% endif %}
+          · {% if upsell_2 != blank %}{{ upsell_2.price | money }}{% else %}{{ upsell_2_price }}{% endif %}
+        </strong>
+        <span>{{ upsell_2_subtitle }} · <s class="cart-upsell-compare">was {% if upsell_2 != blank and upsell_2.compare_at_price > upsell_2.price %}{{ upsell_2.compare_at_price | money }}{% else %}{{ upsell_2_compare }}{% endif %}</s></span>
+      </div>
+      <button type="button" class="cart-upsell-add"
+              data-handle="{{ upsell_2_handle }}"
+              data-search="200 glue dots"
+              {% if upsell_2_variant_id != blank %}data-variant-id="{{ upsell_2_variant_id }}"{% endif %}>Add</button>
+    </div>
+
+  </div>
+</div>

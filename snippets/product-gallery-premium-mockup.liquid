@@ -1,0 +1,320 @@
+{%- assign poster = product.featured_image -%}
+<div class="pl-premium-mockup" role="img" aria-label="Premium print mockup for {{ product.title | escape }}">
+  <div class="pl-premium-mockup__content">
+  <div class="pl-premium-mockup__inner">
+    <div class="pl-premium-mockup__poster-wrap">
+      <div class="pl-premium-mockup__poster">
+        <div class="pl-premium-mockup__paper pl-artwork-protected">
+          {% if poster %}
+            <img
+              src="{{ poster | image_url: width: 900 }}"
+              srcset="{{ poster | image_url: width: 500 }} 500w, {{ poster | image_url: width: 900 }} 900w"
+              sizes="(max-width: 640px) 42vw, 280px"
+              alt="{{ poster.alt | default: product.title | escape }}"
+              loading="lazy"
+              class="pl-premium-mockup__art"
+            >
+          {% else %}
+            <div class="pl-premium-mockup__art pl-premium-mockup__art--placeholder"></div>
+          {% endif %}
+          <div class="pl-premium-mockup__paper-edge" aria-hidden="true"></div>
+        </div>
+        <div class="pl-premium-mockup__shadow" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <ul class="pl-premium-mockup__features">
+      <li class="pl-premium-mockup__feature">
+        <span class="pl-premium-mockup__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3L4 7v10l8 4 8-4V7l-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
+        </span>
+        <span class="pl-premium-mockup__feature-text">
+          <strong>300 GSM</strong>
+          <small>Thick premium paper</small>
+        </span>
+      </li>
+      <li class="pl-premium-mockup__feature">
+        <span class="pl-premium-mockup__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21l2.3-7-6-4.6h7.6z"/></svg>
+        </span>
+        <span class="pl-premium-mockup__feature-text">
+          <strong>Premium Quality</strong>
+          <small>Museum-grade print</small>
+        </span>
+      </li>
+      <li class="pl-premium-mockup__feature">
+        <span class="pl-premium-mockup__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c4 4 7 7.5 7 11a7 7 0 1 1-14 0c0-3.5 3-7 7-11z"/></svg>
+        </span>
+        <span class="pl-premium-mockup__feature-text">
+          <strong>High Gloss Finish</strong>
+          <small>Protected lamination</small>
+        </span>
+      </li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="pl-premium-mockup__brand" aria-label="PosterLeague">
+    <span class="pl-premium-mockup__brand-badge">PL</span>
+    <span class="pl-premium-mockup__brand-name">POSTERLEAGUE</span>
+  </div>
+</div>
+
+<style>
+  .pl-premium-mockup {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(165deg, #FFFFFF 0%, #F5F5F7 48%, #FAFAFA 100%);
+    padding: 20px 20px 14px;
+    box-sizing: border-box;
+  }
+
+  .pl-premium-mockup__content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .pl-premium-mockup__brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+  }
+
+  .pl-premium-mockup__brand-badge {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: #0B0C10;
+    color: #FFFFFF;
+    padding: 3px 5px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+
+  .pl-premium-mockup__brand-name {
+    font-family: var(--font-heading, 'Cormorant', serif);
+    font-size: clamp(14px, 3.2vw, 17px);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0B0C10;
+    line-height: 1;
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__brand {
+    border-top-color: rgba(255, 255, 255, 0.08);
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__brand-badge {
+    background: #66FCF1;
+    color: #0B0C10;
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__brand-name {
+    color: #F5F5F7;
+  }
+
+  .pl-premium-mockup__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(16px, 5vw, 40px);
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .pl-premium-mockup__poster-wrap {
+    flex: 0 1 46%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 4px;
+  }
+
+  .pl-premium-mockup__poster {
+    position: relative;
+    width: 100%;
+    max-width: 200px;
+    aspect-ratio: 5 / 7;
+  }
+
+  .pl-premium-mockup__paper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      0 12px 28px rgba(0, 0, 0, 0.12),
+      0 24px 48px rgba(0, 0, 0, 0.08);
+    z-index: 2;
+  }
+
+  .pl-premium-mockup__art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .pl-premium-mockup__art--placeholder {
+    background: linear-gradient(145deg, #E8E8ED, #D1D1D6);
+    width: 100%;
+    height: 100%;
+  }
+
+  .pl-premium-mockup__paper-edge {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    pointer-events: none;
+    border-radius: 2px;
+    z-index: 3;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  .pl-premium-mockup__paper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 18%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .pl-premium-mockup__shadow {
+    position: absolute;
+    bottom: -8%;
+    left: 8%;
+    right: 8%;
+    height: 12%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.18) 0%, transparent 72%);
+    filter: blur(8px);
+    z-index: 1;
+  }
+
+  .pl-premium-mockup__features {
+    flex: 1 1 48%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 3vw, 22px);
+  }
+
+  .pl-premium-mockup__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .pl-premium-mockup__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(11, 12, 16, 0.04);
+    color: #45A29E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__icon {
+    background: rgba(102, 252, 241, 0.1);
+    color: #66FCF1;
+  }
+
+  .pl-premium-mockup__feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 2px;
+  }
+
+  .pl-premium-mockup__feature-text strong {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: clamp(12px, 2.8vw, 14px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #0B0C10;
+    line-height: 1.2;
+  }
+
+  .pl-premium-mockup__feature-text small {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: clamp(10px, 2.4vw, 11px);
+    font-weight: 400;
+    color: #6E6E73;
+    letter-spacing: 0.01em;
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup {
+    background: linear-gradient(165deg, #1F2833 0%, #0B0C10 100%);
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__feature-text strong {
+    color: #F5F5F7;
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__feature-text small {
+    color: #C5C6C7;
+  }
+
+  html[data-theme="dark"] .pl-premium-mockup__paper {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 480px) {
+    .pl-premium-mockup {
+      padding: 14px 12px 10px;
+    }
+    .pl-premium-mockup__brand {
+      padding-top: 8px;
+      gap: 6px;
+    }
+    .pl-premium-mockup__brand-badge {
+      font-size: 8px;
+      padding: 2px 4px;
+    }
+    .pl-premium-mockup__inner {
+      gap: 12px;
+    }
+    .pl-premium-mockup__poster {
+      max-width: 130px;
+    }
+    .pl-premium-mockup__icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+    }
+    .pl-premium-mockup__icon svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+</style>

@@ -1,0 +1,356 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "POSTERLEAGUE",
+    "theme_author": "POSTERLEAGUE",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "https://posterleague.com",
+    "theme_support_url": "https://posterleague.com"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Background",
+        "default": "#F4F1EB"
+      },
+      {
+        "type": "color",
+        "id": "color_bg_secondary",
+        "label": "Secondary Background",
+        "default": "#ECEAE3"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#0C0C0C"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Muted Text",
+        "default": "#6B6860"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#C8473A"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_hover",
+        "label": "Accent Hover",
+        "default": "#A8372A"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_light",
+        "label": "Accent Light",
+        "default": "#F9E8E6"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#D8D5CE"
+      },
+      {
+        "type": "color",
+        "id": "color_hero_bg",
+        "label": "Hero Background",
+        "default": "#0C0C0C"
+      },
+      {
+        "type": "color",
+        "id": "color_hero_text",
+        "label": "Hero Text",
+        "default": "#F4F1EB"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading font",
+        "default": "ibm_plex_mono_n7"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body font",
+        "default": "ibm_plex_mono_n4"
+      }
+    ]
+  },
+  {
+    "name": "Spacing",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_width",
+        "min": 960,
+        "max": 1440,
+        "step": 40,
+        "unit": "px",
+        "label": "Container width",
+        "default": 1280
+      },
+      {
+        "type": "range",
+        "id": "section_vertical_padding",
+        "min": 40,
+        "max": 120,
+        "step": 8,
+        "unit": "px",
+        "label": "Section vertical padding",
+        "default": 80
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "range",
+        "id": "button_border_radius",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "label": "Button border radius",
+        "default": 2
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "facebook_url",
+        "label": "Facebook link",
+        "info": "Optional"
+      },
+      {
+        "type": "text",
+        "id": "instagram_url",
+        "label": "Instagram link",
+        "info": "Optional"
+      },
+      {
+        "type": "text",
+        "id": "threads_url",
+        "label": "Threads link",
+        "info": "Optional — replaces Twitter/X"
+      },
+      {
+        "type": "text",
+        "id": "twitter_url",
+        "label": "Twitter link (legacy)",
+        "info": "Optional — used only if Threads link is empty"
+      }
+    ]
+  },
+  {
+    "name": "Announcement bar",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_announcement",
+        "label": "Show announcement",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "announcement_text",
+        "label": "Announcement text",
+        "default": "FREE SHIPPING ABOVE ₹999 · CUSTOM ORDERS VIA EMAIL"
+      }
+    ]
+  },
+  {
+    "name": "Floating Video Widget",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Bottom-left UNBOXING mini player (see reference on homepage). Upload your video below — it saves in Shopify and stays after theme updates."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_floating_video",
+        "label": "Show floating unboxing video",
+        "default": true
+      },
+      {
+        "type": "video",
+        "id": "floating_video",
+        "label": "Unboxing video (upload)",
+        "info": "Click to upload or pick from your Shopify library. MP4 recommended."
+      },
+      {
+        "type": "text",
+        "id": "floating_video_url",
+        "label": "Or paste MP4 URL (optional fallback)",
+        "info": "Only if upload above does not work — paste a direct .mp4 link from Settings → Files"
+      },
+      {
+        "type": "url",
+        "id": "floating_video_link",
+        "label": "Video click destination link"
+      },
+      {
+        "type": "text",
+        "id": "floating_video_caption",
+        "label": "Caption text",
+        "default": "300GSM Print"
+      }
+    ]
+  },
+  {
+    "name": "Cart drawer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Free shipping"
+      },
+      {
+        "type": "number",
+        "id": "cart_free_shipping_threshold",
+        "label": "Free shipping minimum (₹)",
+        "default": 999
+      },
+      {
+        "type": "header",
+        "content": "Free poster bonus tiers"
+      },
+      {
+        "type": "paragraph",
+        "content": "Customers unlock bonus free posters as they add more poster items to cart."
+      },
+      {
+        "type": "number",
+        "id": "cart_bonus_tier_1_count",
+        "label": "Tier 1 — poster count",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "id": "cart_bonus_tier_1_bonus",
+        "label": "Tier 1 — free posters",
+        "default": 1
+      },
+      {
+        "type": "number",
+        "id": "cart_bonus_tier_2_count",
+        "label": "Tier 2 — poster count",
+        "default": 10
+      },
+      {
+        "type": "number",
+        "id": "cart_bonus_tier_2_bonus",
+        "label": "Tier 2 — free posters",
+        "default": 3
+      },
+      {
+        "type": "number",
+        "id": "cart_bonus_tier_3_count",
+        "label": "Tier 3 — poster count",
+        "default": 15
+      },
+      {
+        "type": "number",
+        "id": "cart_bonus_tier_3_bonus",
+        "label": "Tier 3 — free posters",
+        "default": 5
+      },
+      {
+        "type": "header",
+        "content": "Cart upsell suggestions"
+      },
+      {
+        "type": "paragraph",
+        "content": "Glue dots upsells always show in cart. Link real products below, or set handles to auto-connect."
+      },
+      {
+        "type": "product",
+        "id": "cart_upsell_1",
+        "label": "Upsell product 1 (500 Glue Dots)"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_1_handle",
+        "label": "Upsell 1 product handle (fallback)",
+        "default": "500-glue-dots",
+        "info": "Used if product picker above is empty"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_1_title",
+        "label": "Upsell 1 display title",
+        "default": "500 Glue Dots"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_1_price",
+        "label": "Upsell 1 display price",
+        "default": "₹99"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_1_compare",
+        "label": "Upsell 1 compare price",
+        "default": "₹199"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_1_subtitle",
+        "label": "Upsell 1 subtitle",
+        "default": "Covers 80+ posters"
+      },
+      {
+        "type": "product",
+        "id": "cart_upsell_2",
+        "label": "Upsell product 2 (200 Glue Dots)"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_2_handle",
+        "label": "Upsell 2 product handle (fallback)",
+        "default": "200-glue-dots",
+        "info": "Used if product picker above is empty"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_2_title",
+        "label": "Upsell 2 display title",
+        "default": "200 Glue Dots"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_2_price",
+        "label": "Upsell 2 display price",
+        "default": "₹49"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_2_compare",
+        "label": "Upsell 2 compare price",
+        "default": "₹199"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_2_subtitle",
+        "label": "Upsell 2 subtitle",
+        "default": "Covers 30+ posters · no holes, no marks"
+      }
+    ]
+  }
+]
+

@@ -1,0 +1,61 @@
+{% layout none %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gift Card — {{ shop.name }}</title>
+  {{ 'secure-data-protection.css' | asset_url | stylesheet_tag }}
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f4f4f2;
+      color: #0c0c0c;
+      margin: 0;
+      padding: 2rem;
+    }
+    .gift-card {
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .gift-card h1 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+    }
+    .gift-card__code {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 1rem;
+      background: #f4f4f2;
+      border-radius: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="gift-card">
+    <h1>Your Gift Card</h1>
+    <p>Use this code at checkout:</p>
+
+    {%- comment -%}
+      Example: wrap voucher / code blocks with .secure-data
+    {%- endcomment -%}
+    <div class="secure-data gift-card__code"
+         data-shield-label="Gift card code hidden"
+         data-print-message="Gift card codes cannot be printed. Screenshot this page only when needed.">
+      {{ gift_card.code | format_code }}
+    </div>
+
+    <p style="margin-top:1rem;font-size:0.875rem;color:#666;">
+      Balance: {{ gift_card.balance | money }}
+    </p>
+  </div>
+
+  <script src="{{ 'secure-data-protection.js' | asset_url }}" defer></script>
+</body>
+</html>

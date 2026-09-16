@@ -1,0 +1,944 @@
+<div class="section" style="padding: 40px 0;">
+  <div class="container">
+    <nav class="breadcrumb" style="font-size: 13.5px; margin-bottom: 24px; color: var(--color-text-muted);">
+      <a href="/" style="color: inherit; text-decoration: none;">Home</a> 
+      {% if collection %}
+        > <a href="{{ collection.url }}" style="color: inherit; text-decoration: none;">{{ collection.title }}</a> 
+      {% endif %}
+      > <span style="color: var(--color-text); font-weight: 600;">{{ product.title }}</span>
+    </nav>
+    
+    {%- liquid
+      assign is_sticker = false
+      if product.tags contains 'sticker' or product.tags contains 'stickers'
+        assign is_sticker = true
+      endif
+    -%}
+
+    {%- unless is_sticker -%}
+    {%- assign gallery_tick = 'now' | date: '%S' | plus: 0 -%}
+    {%- assign gallery_bg_num = product.id | plus: gallery_tick | modulo: 30 | plus: 1 -%}
+    {%- capture gallery_bg_asset %}bg{{ gallery_bg_num }}.webp{% endcapture -%}
+    {%- endunless -%}
+
+    <div class="product-layout">
+      {% if is_sticker %}
+      <div class="product-gallery-amazon product-gallery-amazon--sticker">
+        <div class="amazon-main-display amazon-main-display--sticker">
+          <button type="button" class="amazon-share-btn" id="ProductShareBtn" aria-label="Share product" title="Share this sticker">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+              <polyline points="16 6 12 2 8 6"></polyline>
+              <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+          </button>
+          {% render 'product-gallery-sticker', product: product %}
+        </div>
+      </div>
+      {% else %}
+      <!-- Amazon-Style Gallery with Vertical Left Thumbnails & Distinct Infographics/Mockups -->
+      <div class="product-gallery-amazon">
+        
+        <!-- Left: Vertical Thumbnails Column -->
+        <div class="amazon-thumbnails-col" id="AmazonThumbsCol">
+
+          <!-- 1. Cinematic room mockup -->
+          <div class="amazon-thumb-item amazon-thumb-cinematic is-active"
+               data-type="cinematic"
+               tabindex="0" role="button" title="Poster Print">
+            <div class="amazon-thumb-cinematic-preview" aria-hidden="true">
+              <img
+                class="amazon-thumb-cinematic-preview__bg"
+                src="{{ gallery_bg_asset | asset_url }}"
+                alt=""
+                width="58"
+                height="58"
+                loading="lazy"
+                decoding="async"
+              >
+              {% render 'pl-artwork-watermark', size: 'sm' %}
+              <img
+                class="amazon-thumb-cinematic-preview__poster"
+                src="{{ product.featured_image | image_url: width: 140 }}"
+                alt="{{ product.title | escape }}"
+                width="42"
+                height="56"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+          </div>
+
+          <!-- 2. Premium specs mockup -->
+          <div class="amazon-thumb-item amazon-thumb-mockup"
+               data-type="mockup"
+               tabindex="0" role="button" title="300 GSM &amp; Premium Finish">
+            <div class="amazon-thumb-mockup-preview" aria-hidden="true">
+              <img src="{{ product.featured_image | image_url: width: 140 }}" alt="">
+              <span class="amazon-thumb-mockup-badge">SPEC</span>
+            </div>
+          </div>
+
+          <!-- 3. Size guide mockup -->
+          <div class="amazon-thumb-item amazon-thumb-size-guide"
+               data-type="size-guide"
+               tabindex="0" role="button" title="PosterLeague Size Guide">
+            <div class="amazon-thumb-size-preview" aria-hidden="true">
+              <span class="amazon-thumb-size-preview__a5"></span>
+              <span class="amazon-thumb-size-preview__a4"></span>
+              <span class="amazon-thumb-size-preview__a3"></span>
+              <span class="amazon-thumb-mockup-badge">SIZE</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Main Display Box -->
+        <div class="amazon-main-display">
+          <!-- Top Right Floating Share Button -->
+          <button type="button" class="amazon-share-btn" id="ProductShareBtn" aria-label="Share product" title="Share this poster">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+              <polyline points="16 6 12 2 8 6"></polyline>
+              <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+          </button>
+
+          <!-- Main Image Display — cinematic mockup (slide 1) -->
+          <div class="amazon-main-image-wrap" id="MainImageWrap">
+            {% render 'product-gallery-cinematic-mockup', product: product, bg_num: gallery_bg_num %}
+          </div>
+
+          <!-- Premium specs mockup (slide 2) -->
+          <div class="amazon-main-mockup-wrap" id="MainMockupWrap" style="display: none;">
+            {% render 'product-gallery-premium-mockup', product: product %}
+          </div>
+
+          <!-- Size guide mockup (slide 3) -->
+          <div class="amazon-main-mockup-wrap" id="MainSizeGuideWrap" style="display: none;">
+            {% render 'product-gallery-size-guide-mockup', product: product %}
+          </div>
+        </div>
+
+      </div>
+      {% endif %}
+      
+      <!-- Right Column: Product Information & Purchase Actions -->
+      <div class="product-info">
+        {% if product.tags contains 'bestseller' %}
+          <span class="badge badge--accent" style="margin-bottom: 12px; display: inline-block;">BESTSELLER</span>
+        {% endif %}
+        <h1 style="font-size: clamp(28px, 4vw, 36px); font-weight: 800; margin: 0 0 14px; line-height: 1.15;">{{ product.title }}</h1>
+        
+        {%- assign current_variant = product.selected_or_first_available_variant -%}
+        <div class="product-price" style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">
+          <span id="ProductPrice">{{ current_variant.price | money }}</span>
+          <s
+            id="ComparePrice"
+            style="color: var(--color-text-muted); font-size: 17px; font-weight: 400; margin-left: 8px;{% unless current_variant.compare_at_price > current_variant.price %} display: none;{% endunless %}"
+          >{% if current_variant.compare_at_price > current_variant.price %}{{ current_variant.compare_at_price | money }}{% endif %}</s>
+        </div>
+
+        {% form 'product', product %}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" id="ProductSelect">
+          
+          {% unless product.has_only_default_variant %}
+            <div class="pl-product-options">
+              {% for option in product.options_with_values %}
+                <fieldset class="pl-option-group">
+                  <legend class="pl-option-group__label">{{ option.name }}</legend>
+                  <div class="pl-option-pills" role="group" aria-label="{{ option.name }}">
+                    {% for value in option.values %}
+                      <button
+                        type="button"
+                        class="pl-option-pill{% if option.selected_value == value %} is-selected{% endif %}"
+                        data-value="{{ value | escape }}"
+                        aria-pressed="{% if option.selected_value == value %}true{% else %}false{% endif %}"
+                      >
+                        {{ value }}
+                      </button>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <div class="pl-qty">
+            <label class="pl-qty__label" for="Quantity" id="QuantityLabel">Quantity</label>
+            <div class="pl-qty__control">
+              <button type="button" class="pl-qty__btn" data-qty-action="decrease" aria-label="Decrease quantity">−</button>
+              <input
+                type="number"
+                id="Quantity"
+                name="quantity"
+                class="pl-qty__input"
+                value="1"
+                min="1"
+                inputmode="numeric"
+                aria-labelledby="QuantityLabel"
+              >
+              <button type="button" class="pl-qty__btn" data-qty-action="increase" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          
+          <div class="product-actions" style="margin-bottom: 16px;">
+            <button
+              type="submit"
+              name="add"
+              id="AddToCart"
+              class="btn btn--primary"
+              style="width: 100%; padding: 14px;"
+              {% unless product.available %}disabled="disabled"{% endunless %}
+            >
+              <span class="btn-atc__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </span>
+              <span id="AddToCartText">
+                {% if product.available %}Add to Cart{% else %}Sold Out{% endif %}
+              </span>
+            </button>
+          </div>
+
+          <button type="button" class="btn-wishlist-toggle btn btn--ghost"
+                  style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 28px; font-size: 13px; padding: 11px;"
+                  data-product-handle="{{ product.handle }}"
+                  data-product-title="{{ product.title | escape }}"
+                  data-product-price="{{ product.price | money }}"
+                  data-product-image="{{ product.featured_image | image_url: width: 300 }}"
+                  data-product-url="{{ product.url }}">
+            {% render 'icon-heart-swap' %}
+            <span class="wishlist-text">Add to Wishlist</span>
+          </button>
+        {% endform %}
+        
+        <details class="product-description" open style="border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+          <summary style="font-weight: 700; font-size: 16px; padding: 16px 0; cursor: pointer; outline: none; list-style: none; display: flex; justify-content: space-between;">
+            Description
+          </summary>
+          <div class="rte" style="padding-bottom: 16px; color: var(--color-text-muted); font-size: 14.5px; line-height: 1.6;">
+            {{ product.description }}
+            <p style="margin-top: 16px; font-size: 13.5px;">
+              <strong>Specs:</strong> 300gsm &bull; High Gloss Lamination &bull; Waterproof &amp; Scratch-Free
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+    
+    <!-- Trust Standards -->
+    <div class="product-trust-section" style="margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--color-border);">
+      <div class="trust-layout" style="display: grid; gap: 36px; align-items: center;">
+        <div class="trust-image" style="background: var(--color-bg-secondary); border: 1px solid var(--color-border); padding: 24px; border-radius: 8px; text-align: center;">
+          <div class="pl-artwork-frame pl-artwork-protected" style="display: inline-block; max-width: 100%;">
+            <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" style="max-width: 100%; height: auto; max-height: 380px; object-fit: contain; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); margin: 0 auto; display: block;">
+          </div>
+          <div style="margin-top: 16px;">
+            <div style="color: var(--color-accent); font-size: 18px; letter-spacing: 2px; margin-bottom: 4px;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p style="font-size: 13.5px; font-weight: 700; margin: 0;">Trust of 10,000+ Orders &amp; 900+ 5-Star Reviews</p>
+          </div>
+        </div>
+        
+        <div class="trust-bullets">
+          <h2 style="font-size: 24px; margin-bottom: 20px; font-weight: 800;">Premium Build Standards</h2>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px;">
+            <li style="display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color: var(--color-accent); flex-shrink: 0; margin-top: 2px;">
+                <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="2"/>
+                <path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span><strong>Premium Heavy 300gsm Paper</strong> &mdash; Rigid, durable museum-grade cardstock.</span>
+            </li>
+            <li style="display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color: var(--color-accent); flex-shrink: 0; margin-top: 2px;">
+                <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="2"/>
+                <path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span><strong>8K Ultra-Vivid Print Quality</strong> &mdash; Deep, rich color fidelity that pops on your wall.</span>
+            </li>
+            <li style="display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color: var(--color-accent); flex-shrink: 0; margin-top: 2px;">
+                <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="2"/>
+                <path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span><strong>High Gloss Waterproof Lamination</strong> &mdash; Scratch-free protective shield against dust &amp; moisture.</span>
+            </li>
+            <li style="display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="color: var(--color-accent); flex-shrink: 0; margin-top: 2px;">
+                <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="2"/>
+                <path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span><strong>Safe Damage-Proof Delivery</strong> &mdash; Secure hard tubes &amp; rigid packaging delivered across India.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    max-width: 100%;
+  }
+
+  .product-layout > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .product-info {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .product-info .rte,
+  .product-info .rte p,
+  .product-info .rte li,
+  .product-info .rte span,
+  .product-info .rte div {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  .product-info .rte img,
+  .product-info .rte table {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .product-description .rte {
+    padding-bottom: 16px;
+    color: var(--color-text-muted);
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+
+  .product-actions .btn {
+    min-width: 0;
+  }
+
+  /* Product form — size pills + quantity (inline so layout always applies) */
+  .product-info .pl-product-options {
+    margin-bottom: 20px;
+  }
+
+  .product-info .pl-option-group {
+    margin: 0 0 18px;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .product-info .pl-option-group__label {
+    display: block;
+    margin-bottom: 10px;
+    padding: 0;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--color-text);
+  }
+
+  .product-info .pl-option-pills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .product-info .pl-option-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    border: 1.5px solid var(--color-text);
+    background: var(--color-bg-secondary, #fff);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    width: auto;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  }
+
+  .product-info .pl-option-pill.is-selected {
+    background: var(--color-text);
+    color: #fff;
+    border-color: var(--color-text);
+  }
+
+  .product-info .pl-option-pill:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .product-info .pl-qty {
+    margin-bottom: 24px;
+  }
+
+  .product-info .pl-qty__label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--color-text);
+  }
+
+  .product-info .pl-qty__control {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: auto;
+    max-width: 160px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg-secondary, #fff);
+    overflow: hidden;
+  }
+
+  .product-info .pl-qty__btn {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-info .pl-qty__btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .product-info .pl-qty__input {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 40px;
+    max-width: 72px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-left: 1.5px solid var(--color-border);
+    border-right: 1.5px solid var(--color-border);
+    border-radius: 0;
+    background: transparent;
+    text-align: center;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .product-info .pl-qty__input::-webkit-outer-spin-button,
+  .product-info .pl-qty__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .product-info .pl-qty__input:focus {
+    outline: none;
+    border-color: var(--color-border);
+  }
+
+  @media (max-width: 520px) {
+    .product-info .pl-option-pill {
+      font-size: 12px;
+      padding: 10px 14px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .product-actions {
+      flex-direction: column;
+    }
+    .product-actions .btn {
+      width: 100%;
+      flex: none;
+    }
+  }
+
+  @media (min-width: 880px) {
+    .product-layout {
+      grid-template-columns: 1.25fr 1fr;
+      align-items: flex-start;
+    }
+    .trust-layout {
+      grid-template-columns: 1fr 1.2fr;
+    }
+  }
+
+  /* Amazon-Style Gallery Layout */
+  .product-gallery-amazon {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  /* Vertical Thumbnail Column on the Left */
+  .amazon-thumbnails-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 68px;
+    flex-shrink: 0;
+  }
+
+  .amazon-thumb-item {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    border: 1.5px solid #E0E0E0;
+    background: #FFFFFF;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    transition: all 0.18s ease;
+  }
+
+  .amazon-thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  .amazon-thumb-item:hover {
+    border-color: #888888;
+    transform: translateY(-1px);
+  }
+
+  .amazon-thumb-item.is-active {
+    border-color: #007185; /* Amazon teal blue active focus */
+    border-width: 2px;
+    box-shadow: 0 0 0 2px rgba(0, 113, 133, 0.25);
+  }
+
+  /* Video Thumbnail Badge */
+  .amazon-thumb-video {
+    background: #181818;
+  }
+
+  .amazon-thumb-video img {
+    opacity: 0.65;
+  }
+
+  .amazon-video-icon-wrap {
+    position: absolute;
+    z-index: 2;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.7);
+    border: 1.5px solid rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .amazon-video-tag {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.88);
+    color: #FFFFFF;
+    font-size: 8.5px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    padding: 1px 0;
+  }
+
+  /* "+N" / "2+" More Button */
+  .amazon-more-btn {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    border: 1.5px solid #007185;
+    background: #FFFFFF;
+    color: #007185;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .amazon-more-btn:hover {
+    background: #F0F8FA;
+    border-color: #005F70;
+    color: #005F70;
+    transform: scale(1.04);
+  }
+
+  .amazon-thumb-item.is-extra-hidden {
+    display: none !important;
+  }
+
+  /* Main Display Column */
+  .amazon-main-display {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    background: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .amazon-main-image-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAFAFA;
+  }
+
+  .amazon-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.2s ease;
+  }
+
+  .amazon-main-mockup-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    background: #FAFAFA;
+  }
+
+  .amazon-thumb-mockup-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #FFFFFF, #F0F0F2);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .amazon-thumb-mockup-preview img {
+    width: 42%;
+    height: 72%;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    margin-right: 8%;
+  }
+
+  .amazon-thumb-mockup-badge {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #45A29E;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+
+  .amazon-thumb-size-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #F8F7F4;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 6px 10px;
+    box-sizing: border-box;
+  }
+
+  .amazon-thumb-size-preview__a5,
+  .amazon-thumb-size-preview__a4,
+  .amazon-thumb-size-preview__a3 {
+    background: #0B0C10;
+    border-radius: 1px;
+    opacity: 0.85;
+  }
+
+  .amazon-thumb-size-preview__a5 { width: 10px; height: 14px; }
+  .amazon-thumb-size-preview__a4 { width: 14px; height: 20px; }
+  .amazon-thumb-size-preview__a3 { width: 20px; height: 28px; }
+
+  /* Floating Share Button */
+  .amazon-share-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #333333;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+  }
+
+  .amazon-share-btn:hover {
+    background: #FFFFFF;
+    color: #111111;
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 640px) {
+    .product-gallery-amazon {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+    .amazon-main-display {
+      width: 100%;
+      flex: none;
+    }
+    .amazon-thumbnails-col {
+      flex-direction: row;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .amazon-thumb-item, .amazon-more-btn {
+      width: 58px;
+      height: 58px;
+      flex-shrink: 0;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mainImgWrap = document.getElementById('MainImageWrap');
+    const mainMockupWrap = document.getElementById('MainMockupWrap');
+    const mainSizeGuideWrap = document.getElementById('MainSizeGuideWrap');
+    const thumbs = document.querySelectorAll('.amazon-thumb-item');
+    const shareBtn = document.getElementById('ProductShareBtn');
+
+    // Thumbnail Activation (posters only)
+    thumbs.forEach(thumb => {
+      function activate() {
+        thumbs.forEach(t => t.classList.remove('is-active'));
+        thumb.classList.add('is-active');
+
+        const type = thumb.getAttribute('data-type');
+        if (mainMockupWrap) mainMockupWrap.style.display = 'none';
+        if (mainSizeGuideWrap) mainSizeGuideWrap.style.display = 'none';
+
+        function hideAllMainViews() {
+          if (mainImgWrap) mainImgWrap.style.display = 'none';
+          if (mainMockupWrap) mainMockupWrap.style.display = 'none';
+          if (mainSizeGuideWrap) mainSizeGuideWrap.style.display = 'none';
+        }
+
+        if (type === 'cinematic') {
+          hideAllMainViews();
+          if (mainImgWrap) mainImgWrap.style.display = 'flex';
+          if (window.PLPosterCard) window.PLPosterCard.init(mainImgWrap);
+        } else if (type === 'mockup') {
+          hideAllMainViews();
+          if (mainMockupWrap) mainMockupWrap.style.display = 'flex';
+        } else if (type === 'size-guide') {
+          hideAllMainViews();
+          if (mainSizeGuideWrap) mainSizeGuideWrap.style.display = 'flex';
+        }
+      }
+
+      thumb.addEventListener('click', activate);
+      thumb.addEventListener('mouseenter', activate);
+    });
+
+    // Share Button
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function() {
+        if (navigator.share) {
+          navigator.share({
+            title: document.title,
+            url: window.location.href
+          }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(window.location.href);
+          alert('Link copied to clipboard!');
+        }
+      });
+    }
+
+    // Horizontal size pills + variant price update
+    const variants = {{ product.variants | json }};
+    const optionGroups = document.querySelectorAll('.pl-option-group');
+    const optionPills = document.querySelectorAll('.pl-option-pill');
+    const mainSelect = document.getElementById('ProductSelect');
+    const priceDisplay = document.getElementById('ProductPrice');
+    const comparePriceDisplay = document.getElementById('ComparePrice');
+    const moneyFormat = {{ shop.money_format | json }};
+    const addToCartBtn = document.getElementById('AddToCart');
+    const addToCartText = document.getElementById('AddToCartText');
+    const qtyInput = document.getElementById('Quantity');
+    const qtyLabel = document.getElementById('QuantityLabel');
+
+    optionPills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        const group = pill.closest('.pl-option-group');
+        if (!group) return;
+        group.querySelectorAll('.pl-option-pill').forEach(function (p) {
+          p.classList.remove('is-selected');
+          p.setAttribute('aria-pressed', 'false');
+        });
+        pill.classList.add('is-selected');
+        pill.setAttribute('aria-pressed', 'true');
+        updateVariant();
+      });
+    });
+
+    document.querySelectorAll('.pl-qty__btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (!qtyInput) return;
+        const step = btn.dataset.qtyAction === 'increase' ? 1 : -1;
+        const next = Math.max(1, (parseInt(qtyInput.value, 10) || 1) + step);
+        qtyInput.value = String(next);
+      });
+    });
+
+    if (qtyInput) {
+      qtyInput.addEventListener('change', function () {
+        const val = parseInt(qtyInput.value, 10);
+        qtyInput.value = String(!val || val < 1 ? 1 : val);
+      });
+    }
+
+    function getSelectedOptions() {
+      return Array.from(optionGroups).map(function (group) {
+        const selected = group.querySelector('.pl-option-pill.is-selected');
+        return selected ? selected.dataset.value : '';
+      });
+    }
+
+    function formatVariantMoney(cents) {
+      if (window.Shopify && typeof window.Shopify.formatMoney === 'function') {
+        return window.Shopify.formatMoney(cents, moneyFormat);
+      }
+      return '₹' + (cents / 100).toLocaleString('en-IN', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function updateQtyLabel(cart) {
+      if (!qtyLabel || !mainSelect) return;
+      const variantId = String(mainSelect.value);
+      const inCart = cart && cart.items
+        ? cart.items.filter(function (item) { return String(item.variant_id) === variantId; })
+            .reduce(function (sum, item) { return sum + item.quantity; }, 0)
+        : 0;
+      qtyLabel.textContent = inCart > 0 ? 'Quantity (' + inCart + ' in cart)' : 'Quantity';
+    }
+
+    function updateVariant() {
+      const selectedOptions = getSelectedOptions();
+      const matchedVariant = variants.find(function (variant) {
+        return variant.options.every(function (opt, index) {
+          return opt === selectedOptions[index];
+        });
+      });
+
+      if (!matchedVariant) return;
+
+      if (mainSelect) mainSelect.value = matchedVariant.id;
+
+      if (priceDisplay) {
+        priceDisplay.textContent = formatVariantMoney(matchedVariant.price);
+      }
+
+      if (comparePriceDisplay) {
+        if (matchedVariant.compare_at_price && matchedVariant.compare_at_price > matchedVariant.price) {
+          comparePriceDisplay.textContent = formatVariantMoney(matchedVariant.compare_at_price);
+          comparePriceDisplay.style.display = '';
+        } else {
+          comparePriceDisplay.style.display = 'none';
+        }
+      }
+
+      if (matchedVariant.available) {
+        if (addToCartBtn) addToCartBtn.disabled = false;
+        if (addToCartText) addToCartText.textContent = 'Add to Cart';
+      } else {
+        if (addToCartBtn) addToCartBtn.disabled = true;
+        if (addToCartText) addToCartText.textContent = 'Sold Out';
+      }
+
+      fetch('/cart.js')
+        .then(function (res) { return res.json(); })
+        .then(updateQtyLabel)
+        .catch(function () {});
+    }
+
+    updateVariant();
+  });
+</script>
+
+{{ 'product-form-options.css' | asset_url | stylesheet_tag }}
+{{ 'add-to-cart-key.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": []
+}
+{% endschema %}

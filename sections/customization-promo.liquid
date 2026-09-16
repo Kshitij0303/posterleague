@@ -1,0 +1,100 @@
+<div class="section">
+  <div class="container">
+    <div class="custom-promo {% if section.settings.image_position == 'right' %}custom-promo--reverse{% endif %}">
+      <div class="custom-promo__image">
+        {% if section.settings.image %}
+          <img srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
+                       {{ section.settings.image | image_url: width: 1000 }} 1000w,
+                       {{ section.settings.image | image_url: width: 1500 }} 1500w"
+               sizes="(min-width: 768px) 50vw, 100vw"
+               src="{{ section.settings.image | image_url: width: 1000 }}"
+               alt="{{ section.settings.image.alt | default: section.settings.heading }}"
+               loading="lazy"
+               width="{{ section.settings.image.width }}"
+               height="{{ section.settings.image.height }}">
+        {% else %}
+          <div class="placeholder-box"></div>
+        {% endif %}
+      </div>
+      <div class="custom-promo__content">
+        <span class="badge badge--accent">{{ section.settings.eyebrow | escape }}</span>
+        <h2 class="h2">{{ section.settings.heading | escape }}</h2>
+        <div class="rte">{{ section.settings.body_text }}</div>
+        {% if section.settings.cta_label != blank %}
+          <a href="{{ section.settings.cta_url }}" class="btn btn--primary" style="margin-top: 24px; display: inline-block;">{{ section.settings.cta_label | escape }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.custom-promo { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: center; }
+@media(min-width: 768px) {
+  .custom-promo { grid-template-columns: 1fr 1fr; gap: 64px; }
+  .custom-promo--reverse .custom-promo__image { order: 2; }
+  .custom-promo--reverse .custom-promo__content { order: 1; }
+}
+.custom-promo__image img { width: 100%; height: auto; border-radius: 2px; }
+.placeholder-box { width: 100%; aspect-ratio: 4/3; background: var(--color-bg-secondary); border-radius: 2px; }
+.badge { text-transform: uppercase; letter-spacing: 0.05em; font-size: 12px; font-weight: bold; }
+.badge--accent { color: var(--color-accent); background: var(--color-accent-light); padding: 4px 8px; border-radius: 2px; display: inline-block; margin-bottom: 16px; }
+</style>
+
+{% schema %}
+{
+  "name": "Customization Promo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Made For You"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Custom Prints, Your Way"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body Text",
+      "default": "<p>Upload your image or idea. We'll handle the rest — 300gsm paper, precision lamination, and a pricing quote sent straight to your inbox. No checkout confusion, no upfront payment for custom work.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA Label",
+      "default": "Request a Custom Quote"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA Link",
+      },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image Position on Desktop",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customization Promo"
+    }
+  ]
+}
+{% endschema %}
+

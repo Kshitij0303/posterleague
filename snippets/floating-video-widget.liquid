@@ -1,0 +1,215 @@
+<!-- Floating Bottom-Left Continuous Video Widget (Social Proof / Unboxing Video) -->
+{% unless settings.show_floating_video == false %}
+<div class="floating-video-widget" id="FloatingVideoWidget">
+  <div class="floating-video-card">
+    
+    <!-- Close / Dismiss Button -->
+    <button type="button" class="floating-video-close" id="FloatingVideoClose" aria-label="Dismiss video" title="Close video">
+      &#x2715;
+    </button>
+
+    <!-- Clickable Container (Navigates to posters or custom quote) -->
+    <a href="{{ settings.floating_video_link | default: '/collections/posters' }}" class="floating-video-link" aria-label="Explore Poster Collection">
+      <video id="FloatingVideoElement" 
+             class="floating-video-media" 
+             autoplay 
+             muted 
+             loop 
+             playsinline 
+             webkit-playsinline
+             disablePictureInPicture
+             preload="auto"
+             {% if settings.floating_video != blank and settings.floating_video.preview_image %}
+               poster="{{ settings.floating_video.preview_image | image_url: width: 400 }}"
+             {% endif %}>
+        {% if settings.floating_video != blank %}
+          {% for source in settings.floating_video.sources %}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {% endfor %}
+        {% elsif settings.floating_video_url != blank %}
+          <source src="{{ settings.floating_video_url }}" type="video/mp4">
+        {% else %}
+          <source src="https://cdn.shopify.com/videos/c/o/v/a86f9d2d885848bb9aebe95191b7e415.mp4" type="video/mp4">
+        {% endif %}
+      </video>
+    </a>
+
+    <!-- Sound Toggle Button -->
+    <button type="button" class="floating-video-mute-btn" id="FloatingVideoMuteBtn" aria-label="Toggle Sound" title="Toggle audio">
+      <svg id="MuteIconOff" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15"></line>
+        <line x1="17" y1="9" x2="23" y2="15"></line>
+      </svg>
+      <svg id="MuteIconOn" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
+    </button>
+
+  </div>
+</div>
+
+<style>
+  .floating-video-widget {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 9990;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    animation: floatingWidgetEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes floatingWidgetEntrance {
+    0% {
+      opacity: 0;
+      transform: translateY(30px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .floating-video-widget.is-closed {
+    opacity: 0 !important;
+    transform: translateY(40px) scale(0.8) !important;
+    pointer-events: none !important;
+  }
+
+  .floating-video-card {
+    position: relative;
+    width: 180px;
+    height: 210px;
+    border-radius: 14px;
+    background: #111111;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #FFFFFF;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .floating-video-card:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.45);
+    border-color: var(--color-accent);
+  }
+
+  .floating-video-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .floating-video-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: #000000;
+  }
+
+  /* Dismiss Button */
+  .floating-video-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #FFFFFF;
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s ease;
+  }
+
+  .floating-video-close:hover {
+    background: #E63946;
+    border-color: #E63946;
+  }
+
+  /* Sound Mute Toggle */
+  .floating-video-mute-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    z-index: 10;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  @media (max-width: 640px) {
+    .floating-video-widget {
+      bottom: 16px;
+      left: 14px;
+    }
+    .floating-video-card {
+      width: 130px;
+      height: 165px;
+      border-radius: 12px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const widget = document.getElementById('FloatingVideoWidget');
+    const closeBtn = document.getElementById('FloatingVideoClose');
+    const video = document.getElementById('FloatingVideoElement');
+    const muteBtn = document.getElementById('FloatingVideoMuteBtn');
+    const muteOff = document.getElementById('MuteIconOff');
+    const muteOn = document.getElementById('MuteIconOn');
+
+    // Close button dismisses widget for current session
+    if (closeBtn && widget) {
+      closeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        widget.classList.add('is-closed');
+        if (video) video.pause();
+      });
+    }
+
+    // Audio toggle
+    if (muteBtn && video) {
+      muteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        video.muted = !video.muted;
+        if (video.muted) {
+          muteOff.style.display = 'block';
+          muteOn.style.display = 'none';
+        } else {
+          muteOff.style.display = 'none';
+          muteOn.style.display = 'block';
+        }
+      });
+    }
+
+    // Autoplay enforcement
+    if (video) {
+      video.play().catch(() => {});
+    }
+  });
+</script>
+{% endunless %}

@@ -1,0 +1,171 @@
+/**
+ * POSTERLEAGUE — animated social icons (tooltip bounce on hover).
+ * Inspired by Uiverse (david-mohsen), adapted for footer + dark theme.
+ */
+
+/* Override .site-footer ul { flex-direction: column } */
+.site-footer ul.pl-social {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  padding: 0 !important;
+  margin: 48px 0 0 !important;
+  overflow: visible;
+}
+
+.pl-social {
+  display: inline-flex;
+  list-style: none;
+  margin: 48px 0 0;
+  padding: 0;
+  gap: 10px;
+  align-items: center;
+  overflow: visible;
+}
+
+.site-footer ul.pl-social li,
+.pl-social__item {
+  position: relative;
+  width: auto;
+  flex: 0 0 auto;
+}
+
+/* Don't inherit footer link gray / accent hover */
+.site-footer ul.pl-social a.pl-social__link {
+  color: #c5c6c7;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.pl-social__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  color: #c5c6c7;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+  transition: all 0.22s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.pl-social__link:hover {
+  transform: translateY(-2px);
+}
+
+.pl-social__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.pl-social__tooltip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  background: #ffffff;
+  color: #ffffff;
+  padding: 5px 9px;
+  border-radius: 6px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 2;
+}
+
+.pl-social__tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #ffffff;
+  top: -3px;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  transition: all 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.pl-social__link:hover .pl-social__tooltip,
+.pl-social__link:focus-visible .pl-social__tooltip {
+  top: calc(100% + 14px);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Brand hovers */
+.pl-social__item--facebook .pl-social__link:hover,
+.pl-social__item--facebook .pl-social__link:focus-visible {
+  background: #1877f2;
+  color: #ffffff;
+}
+
+.pl-social__item--facebook .pl-social__link:hover .pl-social__tooltip,
+.pl-social__item--facebook .pl-social__link:hover .pl-social__tooltip::before,
+.pl-social__item--facebook .pl-social__link:focus-visible .pl-social__tooltip,
+.pl-social__item--facebook .pl-social__link:focus-visible .pl-social__tooltip::before {
+  background: #1877f2;
+  color: #ffffff;
+}
+
+.pl-social__item--instagram .pl-social__link:hover,
+.pl-social__item--instagram .pl-social__link:focus-visible {
+  background: #e4405f;
+  color: #ffffff;
+}
+
+.pl-social__item--instagram .pl-social__link:hover .pl-social__tooltip,
+.pl-social__item--instagram .pl-social__link:hover .pl-social__tooltip::before,
+.pl-social__item--instagram .pl-social__link:focus-visible .pl-social__tooltip,
+.pl-social__item--instagram .pl-social__link:focus-visible .pl-social__tooltip::before {
+  background: #e4405f;
+  color: #ffffff;
+}
+
+.pl-social__item--threads .pl-social__link:hover,
+.pl-social__item--threads .pl-social__link:focus-visible {
+  background: #000000;
+  color: #ffffff;
+}
+
+.pl-social__item--threads .pl-social__link:hover .pl-social__tooltip,
+.pl-social__item--threads .pl-social__link:hover .pl-social__tooltip::before,
+.pl-social__item--threads .pl-social__link:focus-visible .pl-social__tooltip,
+.pl-social__item--threads .pl-social__link:focus-visible .pl-social__tooltip::before {
+  background: #000000;
+  color: #ffffff;
+}
+
+.pl-social__link.is-unlinked {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.pl-social__link svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-social__link,
+  .pl-social__tooltip,
+  .pl-social__tooltip::before {
+    transition: none !important;
+  }
+
+  .pl-social__link:hover {
+    transform: none;
+  }
+}

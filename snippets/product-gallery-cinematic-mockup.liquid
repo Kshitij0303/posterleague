@@ -1,0 +1,58 @@
+{% comment %}
+  Product gallery slide 1 — poster on random cinematic room background.
+{% endcomment %}
+{%- assign poster = product.featured_image -%}
+{%- unless bg_num -%}
+  {%- assign tick = 'now' | date: '%S' | plus: 0 -%}
+  {%- assign bg_num = product.id | plus: tick | modulo: 30 | plus: 1 -%}
+{%- endunless -%}
+{%- capture bg_asset %}bg{{ bg_num }}.webp{% endcapture -%}
+
+<div
+  class="pl-gallery-cinematic poster-card poster-card--gallery"
+  data-poster-card
+  data-product-handle="{{ product.handle }}"
+  data-product-id="{{ product.id }}"
+  data-poster-card-index="gallery-main"
+  data-bg-assigned="{{ bg_num }}"
+  role="img"
+  aria-label="{{ product.title | escape }} — room mockup"
+>
+  <div class="poster-card__stage poster-card__stage--gallery">
+    <div class="poster-card__bg-layer" aria-hidden="true">
+      <img
+        class="poster-card__bg-img"
+        src="{{ bg_asset | asset_url }}"
+        alt=""
+        loading="eager"
+        decoding="async"
+        width="1080"
+        height="1440"
+      >
+      {% render 'pl-artwork-watermark' %}
+    </div>
+
+    <div class="poster-card__fx" aria-hidden="true"></div>
+
+    <div class="poster-card__poster poster-card__poster--gallery pl-artwork-protected">
+      {% if poster %}
+        <img
+          class="poster-card__poster-img"
+          src="{{ poster | image_url: width: 1200 }}"
+          srcset="{{ poster | image_url: width: 600 }} 600w,
+                  {{ poster | image_url: width: 900 }} 900w,
+                  {{ poster | image_url: width: 1200 }} 1200w,
+                  {{ poster | image_url: width: 1600 }} 1600w"
+          sizes="(min-width: 768px) 50vw, 100vw"
+          alt="{{ poster.alt | default: product.title | escape }}"
+          loading="eager"
+          decoding="async"
+          width="1200"
+          height="1600"
+        >
+      {% else %}
+        <div class="poster-card__poster-img poster-card__poster-img--placeholder" role="presentation"></div>
+      {% endif %}
+    </div>
+  </div>
+</div>

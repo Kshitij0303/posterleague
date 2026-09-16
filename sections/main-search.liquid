@@ -1,0 +1,101 @@
+<div class="section search-page" style="padding: 64px 0;">
+  <div class="container">
+    <div class="search-page__head">
+      <h1 class="search-page__title">Search</h1>
+
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page-form">
+        <div class="t-clear search-field{% if search.terms != blank %} has-value{% endif %}">
+          <input
+            type="text"
+            name="q"
+            id="SearchInput"
+            value="{{ search.terms | escape }}"
+            placeholder="Search posters..."
+            autocomplete="off"
+            inputmode="search"
+            enterkeyhint="search"
+            aria-label="Search posters"
+          >
+          <div class="t-clear-mirror" aria-hidden="true">
+            {% if search.terms != blank %}{{ search.terms | escape }}{% endif %}
+          </div>
+          <div class="t-clear-placeholder" aria-hidden="true">Search posters...</div>
+          <div class="t-clear-glow" aria-hidden="true"></div>
+          <button type="button" class="t-clear-btn" aria-label="Clear search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <button type="submit" class="btn btn--primary search-page-form__submit">Search</button>
+      </form>
+    </div>
+
+    {% if search.performed %}
+      <p class="search-page__meta">
+        {{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;
+      </p>
+
+      {% if search.results_count == 0 %}
+        <div class="search-page__empty">
+          <p>No results found. Try different keywords or browse posters.</p>
+          <a href="/collections/posters" class="btn btn--ghost">Browse posters</a>
+        </div>
+      {% else %}
+        <div class="search-page__grid">
+          {% for item in search.results %}
+            {% if item.object_type == 'product' %}
+              {% render 'product-card', product: item, card_index: forloop.index %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+{{ 'input-clear.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'input-clear.js' | asset_url }}" defer></script>
+
+<style>
+  .search-page__head {
+    max-width: 640px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+  .search-page__title {
+    margin: 0 0 24px;
+    font-size: clamp(28px, 5vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .search-page__meta {
+    text-align: center;
+    margin: 0 0 32px;
+    color: var(--color-text-muted, #666);
+    font-size: 14px;
+  }
+  .search-page__empty {
+    text-align: center;
+    padding: 32px 0;
+  }
+  .search-page__empty p {
+    margin: 0 0 16px;
+    color: #666;
+  }
+  .search-page__grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 768px) {
+    .search-page__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .search-page__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Search"
+}
+{% endschema %}

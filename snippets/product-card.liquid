@@ -1,0 +1,144 @@
+{% comment %}
+  PosterLeague Product Card — posters use room mockup; stickers use plain PNG.
+{% endcomment %}
+
+{% assign show_vendor = show_vendor | default: false %}
+{% assign show_badge = show_badge | default: true %}
+{% assign lazy = lazy | default: true %}
+
+{%- liquid
+  assign is_sticker = false
+  if product.tags contains 'sticker' or product.tags contains 'stickers'
+    assign is_sticker = true
+  endif
+-%}
+
+{% unless is_sticker %}
+{% assign tick = 'now' | date: '%S' | plus: 0 %}
+{% assign idx = card_index | default: 1 | plus: 0 %}
+{% assign bg_num = product.id | plus: tick | plus: idx | modulo: 30 | plus: 1 %}
+{% capture bg_asset %}bg{{ bg_num }}.webp{% endcapture %}
+{% endunless %}
+
+<div
+  class="product-card{% unless is_sticker %} poster-card{% endunless %}{% if is_sticker %} sticker-card{% endif %}"
+  {% unless is_sticker %}data-poster-card data-bg-assigned="{{ bg_num }}"{% endunless %}
+  data-product-handle="{{ product.handle }}"
+  data-product-id="{{ product.id }}"
+  data-poster-card-index="{{ card_index | default: product.id }}"
+>
+  <button
+    type="button"
+    class="card-wishlist-btn btn-wishlist-toggle"
+    data-product-handle="{{ product.handle }}"
+    data-product-title="{{ product.title | escape }}"
+    data-product-price="{{ product.price | money }}"
+    data-product-image="{{ product.featured_image | image_url: width: 300 }}"
+    data-product-url="{{ product.url }}"
+    aria-label="Add to wishlist"
+    title="Save to wishlist"
+  >
+    {% render 'icon-heart-swap', icon_size: 16 %}
+  </button>
+
+  <a href="{{ product.url }}" class="product-card__link{% unless is_sticker %} poster-card__link{% endunless %}">
+    <div class="product-card__image{% if is_sticker %} sticker-card__stage{% else %} poster-card__stage{% endif %}">
+      {% if is_sticker %}
+        {% if product.featured_image %}
+          <img
+            class="sticker-card__img pl-artwork-protected"
+            src="{{ product.featured_image | image_url: width: 600 }}"
+            srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
+                    {{ product.featured_image | image_url: width: 600 }} 600w,
+                    {{ product.featured_image | image_url: width: 900 }} 900w,
+                    {{ product.featured_image | image_url: width: 1200 }} 1200w"
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            alt="{{ product.featured_image.alt | escape }}"
+            {% if lazy %}loading="lazy"{% endif %}
+            decoding="async"
+            width="600"
+            height="600"
+          >
+        {% else %}
+          <div class="sticker-card__img sticker-card__img--placeholder" role="presentation"></div>
+        {% endif %}
+      {% else %}
+      <div class="poster-card__bg-layer" aria-hidden="true">
+        <img
+          class="poster-card__bg-img"
+          src="{{ bg_asset | asset_url }}"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          width="1080"
+          height="1440"
+        >
+        {% render 'pl-artwork-watermark' %}
+      </div>
+
+      <div class="poster-card__fx" aria-hidden="true"></div>
+
+      <div class="poster-card__poster pl-artwork-protected">
+        {% if product.featured_image %}
+          <img
+            class="poster-card__poster-img"
+            src="{{ product.featured_image | image_url: width: 600 }}"
+            srcset="{{ product.featured_image | image_url: width: 400 }} 400w,
+                    {{ product.featured_image | image_url: width: 600 }} 600w,
+                    {{ product.featured_image | image_url: width: 900 }} 900w,
+                    {{ product.featured_image | image_url: width: 1200 }} 1200w,
+                    {{ product.featured_image | image_url: width: 1600 }} 1600w"
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            alt="{{ product.featured_image.alt | escape }}"
+            {% if lazy %}loading="lazy"{% endif %}
+            decoding="async"
+            width="600"
+            height="800"
+          >
+        {% else %}
+          <div class="poster-card__poster-img poster-card__poster-img--placeholder" role="presentation"></div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if show_badge %}
+        <div class="product-card__badge poster-card__badge">
+          {% unless product.available %}
+            <span class="badge badge--dark">Sold Out</span>
+          {% else %}
+            {% if product.tags contains 'bestseller' %}
+              <span class="badge badge--amber">Bestseller</span>
+            {% elsif product.tags contains 'new' %}
+              <span class="badge badge--dark">New</span>
+            {% elsif product.tags contains 'custom' %}
+              <span class="badge badge--amber">Custom</span>
+            {% endif %}
+          {% endunless %}
+        </div>
+      {% endif %}
+
+      {% if product.tags contains 'custom' %}
+        <div class="product-card__hover-btn poster-card__hover-btn is-custom">Request Custom Quote &rarr;</div>
+      {% elsif product.available %}
+        <div class="product-card__hover-btn poster-card__hover-btn">View Details</div>
+      {% else %}
+        <div class="product-card__hover-btn poster-card__hover-btn is-sold-out">Sold Out</div>
+      {% endif %}
+    </div>
+
+    <div class="product-card__body poster-card__body">
+      <h3 class="product-card__title poster-card__title">{{ product.title }}</h3>
+      <div class="product-card__price poster-card__price">
+        {% if product.price_min != product.price_max %}
+          From {{ product.price_min | money }}
+        {% else %}
+          {% if product.compare_at_price > product.price %}
+            {{ product.price | money }}<s>{{ product.compare_at_price | money }}</s>
+          {% else %}
+            {{ product.price | money }}
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </a>
+</div>

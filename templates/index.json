@@ -1,0 +1,71 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "eyebrow": "NEW DROPS WEEKLY",
+        "heading": "YOUR WALLS.\nYOUR STYLE.",
+        "subheading": "Custom posters, stickers, bookmarks & magnets — 300gsm. Laminated. Made to order.",
+        "cta_primary_label": "Shop Now",
+        "cta_secondary_label": "Explore All Posters",
+        "overlay_opacity": 75,
+        "slide_duration": 4
+      },
+      "blocks": {
+        "slide_1": { "type": "review_media", "settings": {} },
+        "slide_2": { "type": "review_media", "settings": {} },
+        "slide_3": { "type": "review_media", "settings": {} }
+      },
+      "block_order": ["slide_1", "slide_2", "slide_3"]
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": {}
+    },
+    "customization_promo": {
+      "type": "customization-promo",
+      "settings": {}
+    },
+    "coming_soon": {
+      "type": "coming-soon",
+      "settings": {},
+      "blocks": {
+        "frames": {
+          "type": "coming_soon_item",
+          "settings": {
+            "title": "Frames",
+            "description": "Premium frames for your prints.",
+            "expected_text": "Coming 2025"
+          }
+        },
+        "metal_art": {
+          "type": "coming_soon_item",
+          "settings": {
+            "title": "Metal Art",
+            "description": "Brushed metal finish wall art.",
+            "expected_text": "Coming 2025"
+          }
+        }
+      },
+      "blocks_order": ["frames","metal_art"]
+    },
+    "brand_story": {
+      "type": "brand-story",
+      "settings": {}
+    },
+    "reviews": {
+      "type": "reviews",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {}
+    }
+  },
+  "order": ["hero","featured","customization_promo","coming_soon","brand_story","reviews","newsletter","faq"]
+}
+

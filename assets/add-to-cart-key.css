@@ -1,0 +1,79 @@
+/**
+ * Add to Cart — press animation ONLY (shape/colors stay on .btn--primary).
+ */
+
+.product-info #AddToCart.btn--primary.is-busy {
+  cursor: pointer;
+  pointer-events: none;
+}
+
+.product-info #AddToCart.btn--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.product-info #AddToCart .btn-atc__icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.product-info #AddToCart .btn-atc__icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Keycap-style press — no shape / tilt at rest */
+.product-info #AddToCart.btn--primary:active:not(:disabled),
+.product-info #AddToCart.btn--primary.is-pressing:not(:disabled) {
+  transform: translateY(3px) scale(0.98);
+  box-shadow:
+    0 0 0 rgba(0, 0, 0, 0),
+    inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.product-info #AddToCart.btn--primary.is-added:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-info #AddToCart.btn--primary,
+  .product-info #AddToCart.btn--primary:active:not(:disabled),
+  .product-info #AddToCart.btn--primary.is-pressing:not(:disabled) {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Dark mode — keep dark pill look on product page (not inverted white) */
+html[data-theme="dark"] .product-info #AddToCart.btn--primary {
+  background-color: #1f2833;
+  color: #ffffff;
+  border: 1px solid #2a3540;
+}
+
+html[data-theme="dark"] .product-info #AddToCart.btn--primary:hover {
+  background-color: #2a3540;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .product-info #AddToCart .btn-atc__icon {
+  color: #66fcf1;
+}
+
+html[data-theme="dark"] .product-info #AddToCart.btn--primary.is-added:not(:disabled) {
+  background-color: #66fcf1;
+  color: #0b0c10;
+  border-color: #66fcf1;
+}
+
+html[data-theme="dark"] .product-info #AddToCart.btn--primary.is-added .btn-atc__icon {
+  color: #0b0c10;
+}

@@ -1,0 +1,432 @@
+{%- assign poster = product.featured_image -%}
+<div class="pl-size-guide" role="img" aria-label="PosterLeague size guide — A5, A4, A3 comparison">
+  <div class="pl-size-guide__inner">
+    <header class="pl-size-guide__header">
+      <h2 class="pl-size-guide__title">PosterLeague Size Guide</h2>
+      <p class="pl-size-guide__subtitle">Compare A5, A4 &amp; A3 before you buy.</p>
+    </header>
+
+    <div class="pl-size-guide__row">
+      {%- comment -%} A5 — 148 × 210 mm {%- endcomment -%}
+      <div class="pl-size-guide__col" style="--pl-w: 42px;">
+        <div class="pl-size-guide__stack">
+          <div class="pl-size-guide__poster-block">
+            <div class="pl-size-guide__measure pl-size-guide__measure--w">
+              <i></i><span>14.8 cm</span>
+            </div>
+            <div class="pl-size-guide__measure pl-size-guide__measure--h">
+              <span>21 cm</span><i></i>
+            </div>
+            <div class="pl-size-guide__poster">
+              {% if poster %}
+                <img src="{{ poster | image_url: width: 240 }}" alt="" class="pl-size-guide__art" loading="lazy">
+              {% else %}
+                <div class="pl-size-guide__art pl-size-guide__art--ph"></div>
+              {% endif %}
+            </div>
+          </div>
+          <img
+            class="pl-size-guide__monitor"
+            src="{{ 'size-guide-monitor.png' | asset_url }}"
+            alt=""
+            width="428"
+            height="314"
+            loading="lazy"
+            aria-hidden="true"
+          >
+        </div>
+        <p class="pl-size-guide__label"><strong>A5</strong> – Small Accent</p>
+      </div>
+
+      {%- comment -%} A4 — 210 × 297 mm {%- endcomment -%}
+      <div class="pl-size-guide__col" style="--pl-w: 59px;">
+        <div class="pl-size-guide__stack">
+          <div class="pl-size-guide__poster-block">
+            <div class="pl-size-guide__measure pl-size-guide__measure--w">
+              <i></i><span>21 cm</span>
+            </div>
+            <div class="pl-size-guide__measure pl-size-guide__measure--h">
+              <span>29.7 cm</span><i></i>
+            </div>
+            <div class="pl-size-guide__poster">
+              {% if poster %}
+                <img src="{{ poster | image_url: width: 340 }}" alt="" class="pl-size-guide__art" loading="lazy">
+              {% else %}
+                <div class="pl-size-guide__art pl-size-guide__art--ph"></div>
+              {% endif %}
+            </div>
+          </div>
+          <img
+            class="pl-size-guide__monitor"
+            src="{{ 'size-guide-monitor.png' | asset_url }}"
+            alt=""
+            width="428"
+            height="314"
+            loading="lazy"
+            aria-hidden="true"
+          >
+        </div>
+        <p class="pl-size-guide__label"><strong>A4</strong> – Everyday Favorite</p>
+      </div>
+
+      {%- comment -%} A3 — 297 × 420 mm {%- endcomment -%}
+      <div class="pl-size-guide__col" style="--pl-w: 84px;">
+        <div class="pl-size-guide__stack">
+          <div class="pl-size-guide__poster-block">
+            <div class="pl-size-guide__measure pl-size-guide__measure--w">
+              <i></i><span>29.7 cm</span>
+            </div>
+            <div class="pl-size-guide__measure pl-size-guide__measure--h">
+              <span>42 cm</span><i></i>
+            </div>
+            <div class="pl-size-guide__poster">
+              {% if poster %}
+                <img src="{{ poster | image_url: width: 480 }}" alt="" class="pl-size-guide__art" loading="lazy">
+              {% else %}
+                <div class="pl-size-guide__art pl-size-guide__art--ph"></div>
+              {% endif %}
+            </div>
+          </div>
+          <img
+            class="pl-size-guide__monitor"
+            src="{{ 'size-guide-monitor.png' | asset_url }}"
+            alt=""
+            width="428"
+            height="314"
+            loading="lazy"
+            aria-hidden="true"
+          >
+        </div>
+        <p class="pl-size-guide__label"><strong>A3</strong> – Statement Piece</p>
+      </div>
+    </div>
+
+    <footer class="pl-size-guide__footer">
+      <div class="pl-size-guide__wordmark">
+        <span class="pl-size-guide__badge">PL</span>
+        <span class="pl-size-guide__name">POSTERLEAGUE</span>
+      </div>
+      <p class="pl-size-guide__tagline">Own Your Wall.</p>
+    </footer>
+  </div>
+</div>
+
+<style>
+  .pl-size-guide {
+    width: 100%;
+    height: 100%;
+    background: #F8F7F4;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .pl-size-guide__inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 2.2vw, 14px);
+    padding: clamp(12px, 2.5vw, 18px) clamp(8px, 2vw, 14px);
+    box-sizing: border-box;
+  }
+
+  .pl-size-guide__header {
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .pl-size-guide__title {
+    font-family: var(--font-heading, 'Cormorant', serif);
+    font-size: clamp(16px, 4vw, 22px);
+    font-weight: 600;
+    color: #0B0C10;
+    margin: 0 0 5px;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+  }
+
+  .pl-size-guide__subtitle {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: clamp(8px, 2.1vw, 10.5px);
+    font-weight: 400;
+    color: #6E6E73;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .pl-size-guide__row {
+    --pl-monitor-w: clamp(130px, 34vw, 168px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: clamp(8px, 2.5vw, 18px);
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 460px;
+  }
+
+  .pl-size-guide__col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pl-size-guide__poster-block {
+    display: grid;
+    grid-template-columns: 18px var(--pl-w);
+    column-gap: 4px;
+    row-gap: 5px;
+    align-items: end;
+  }
+
+  .pl-size-guide__poster-block .pl-size-guide__measure--w {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+
+  .pl-size-guide__poster-block .pl-size-guide__measure--h {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .pl-size-guide__poster-block .pl-size-guide__poster {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  /* Measurement lines — width (above poster) */
+  .pl-size-guide__measure--w {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    width: var(--pl-w);
+  }
+
+  .pl-size-guide__measure--w i {
+    display: block;
+    width: 100%;
+    height: 0;
+    border-top: 1px solid #AEAEB2;
+    position: relative;
+  }
+
+  .pl-size-guide__measure--w i::before,
+  .pl-size-guide__measure--w i::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 1px;
+    height: 5px;
+    background: #AEAEB2;
+  }
+
+  .pl-size-guide__measure--w i::before { left: 0; }
+  .pl-size-guide__measure--w i::after { right: 0; }
+
+  /* Measurement lines — height (left of poster, poster height only) */
+  .pl-size-guide__measure--h {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
+    align-self: stretch;
+    min-height: calc(var(--pl-w) * 210 / 148);
+  }
+
+  .pl-size-guide__measure--h i {
+    display: block;
+    align-self: stretch;
+    width: 0;
+    border-left: 1px solid #AEAEB2;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .pl-size-guide__measure--h i::before,
+  .pl-size-guide__measure--h i::after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    width: 5px;
+    height: 1px;
+    background: #AEAEB2;
+  }
+
+  .pl-size-guide__measure--h i::before { top: 0; }
+  .pl-size-guide__measure--h i::after { bottom: 0; }
+
+  .pl-size-guide__measure span {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: 6px;
+    font-weight: 500;
+    color: #8E8E93;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .pl-size-guide__measure--h span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 5.5px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .pl-size-guide__stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Unframed paper poster */
+  .pl-size-guide__poster {
+    position: relative;
+    width: var(--pl-w);
+    aspect-ratio: 148 / 210;
+    background: #FFFFFF;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 4px 14px rgba(0, 0, 0, 0.1),
+      0 12px 28px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  .pl-size-guide__art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pl-size-guide__art--ph {
+    background: linear-gradient(160deg, #ECECEF 0%, #D8D8DD 100%);
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Monitor PNG — black bezel + white screen + stand (~53 cm / 24″ reference) */
+  .pl-size-guide__monitor {
+    width: var(--pl-monitor-w);
+    height: auto;
+    display: block;
+    flex-shrink: 0;
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1));
+  }
+
+  .pl-size-guide__label {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: clamp(7px, 1.9vw, 9px);
+    font-weight: 400;
+    color: #48484A;
+    margin: 10px 0 0;
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+  }
+
+  .pl-size-guide__label strong {
+    font-weight: 600;
+    color: #0B0C10;
+  }
+
+  .pl-size-guide__footer {
+    flex-shrink: 0;
+    text-align: center;
+    padding-top: 8px;
+    margin-top: 2px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .pl-size-guide__wordmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+
+  .pl-size-guide__badge {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: 7px;
+    font-weight: 700;
+    background: #0B0C10;
+    color: #FFFFFF;
+    padding: 2px 5px;
+    border-radius: 3px;
+    line-height: 1;
+  }
+
+  .pl-size-guide__name {
+    font-family: var(--font-heading, 'Cormorant', serif);
+    font-size: clamp(12px, 3vw, 15px);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #0B0C10;
+  }
+
+  .pl-size-guide__tagline {
+    font-family: var(--font-body, 'Montserrat', sans-serif);
+    font-size: clamp(8px, 2vw, 10px);
+    font-weight: 500;
+    color: #6E6E73;
+    margin: 5px 0 0;
+    letter-spacing: 0.05em;
+  }
+
+  html[data-theme="dark"] .pl-size-guide {
+    background: #1A1A1C;
+  }
+
+  html[data-theme="dark"] .pl-size-guide__title,
+  html[data-theme="dark"] .pl-size-guide__name,
+  html[data-theme="dark"] .pl-size-guide__label strong {
+    color: #F5F5F7;
+  }
+
+  html[data-theme="dark"] .pl-size-guide__badge {
+    background: #66FCF1;
+    color: #0B0C10;
+  }
+
+  html[data-theme="dark"] .pl-size-guide__poster {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  html[data-theme="dark"] .pl-size-guide__measure--w i,
+  html[data-theme="dark"] .pl-size-guide__measure--w i::before,
+  html[data-theme="dark"] .pl-size-guide__measure--w i::after,
+  html[data-theme="dark"] .pl-size-guide__measure--h i,
+  html[data-theme="dark"] .pl-size-guide__measure--h i::before,
+  html[data-theme="dark"] .pl-size-guide__measure--h i::after {
+    border-color: #6E6E73;
+    background: #6E6E73;
+  }
+
+  html[data-theme="dark"] .pl-size-guide__measure span {
+    color: #AEAEB2;
+  }
+
+  @media (max-width: 480px) {
+    .pl-size-guide__row {
+      gap: 5px;
+      --pl-monitor-w: 110px;
+    }
+
+    .pl-size-guide__col[style*="42px"] { --pl-w: 31px !important; }
+    .pl-size-guide__col[style*="59px"] { --pl-w: 44px !important; }
+    .pl-size-guide__col[style*="84px"] { --pl-w: 62px !important; }
+  }
+</style>

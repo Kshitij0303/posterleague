@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POSTERLEAGUE — Fresh Color Directions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: #080808; color: #ddd; padding: 36px 18px 72px; }
+    h1 { text-align: center; font-family: 'Cormorant', serif; font-size: clamp(30px, 5vw, 46px); margin-bottom: 10px; }
+    .sub { text-align: center; color: #777; font-size: 13px; max-width: 560px; margin: 0 auto 40px; line-height: 1.6; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; max-width: 1380px; margin: 0 auto; }
+    .card { border-radius: 16px; overflow: hidden; border: 1px solid #2a2a2a; background: #111; }
+    .card-head { padding: 16px; border-bottom: 1px solid #222; }
+    .card-head h2 { font-family: 'Cormorant', serif; font-size: 22px; margin-bottom: 6px; }
+    .vibe { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .card-head p { font-size: 11px; color: #888; line-height: 1.5; }
+    .sw { display: flex; gap: 5px; padding: 10px 16px; border-bottom: 1px solid #222; flex-wrap: wrap; }
+    .sw i { width: 24px; height: 24px; border-radius: 6px; border: 1px solid rgba(255,255,255,.06); }
+    .sw span { font-size: 7px; color: #555; font-family: monospace; display: block; text-align: center; margin-top: 2px; }
+    .sw div { text-align: center; }
+    .dual { display: grid; grid-template-columns: 1fr 1fr; }
+    .tag { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-align: center; padding: 5px; }
+    .pv { min-height: 200px; overflow: hidden; }
+    .pv-in { transform: scale(.88); transform-origin: top center; width: 113.6%; margin-left: -6.8%; }
+    .ann { font-size: 6px; text-align: center; padding: 5px; font-weight: 500; }
+    .hdr { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; font-size: 7px; border-bottom: 1px solid; }
+    .logo { font-family: 'Cormorant', serif; font-weight: 700; font-size: 10px; letter-spacing: .04em; }
+    .hero { padding: 22px 12px 14px; text-align: center; }
+    .pill { font-size: 5.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 3px 7px; border-radius: 100px; border: 1px solid; display: inline-block; margin-bottom: 8px; }
+    .ttl { font-family: 'Cormorant', serif; font-size: 19px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; line-height: 1.05; margin-bottom: 6px; }
+    .sbt { font-size: 6px; line-height: 1.5; max-width: 180px; margin: 0 auto 10px; }
+    .btns { display: flex; gap: 5px; justify-content: center; margin-bottom: 12px; }
+    .btn { font-size: 5.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 4px; border: 1px solid transparent; }
+    .feats { display: flex; border-top: 1px solid; padding-top: 8px; }
+    .ft { flex: 1; text-align: center; border-right: 1px solid; padding: 0 4px; }
+    .ft:last-child { border-right: none; }
+    .ft b { display: block; font-size: 7.5px; }
+    .ft small { font-size: 4.5px; text-transform: uppercase; letter-spacing: .04em; }
+  </style>
+</head>
+<body>
+  <h1>Six Fresh Directions</h1>
+  <p class="sub">Premium palettes built from scratch for a poster brand — each with light &amp; dark mode. No gold/champagne defaults.</p>
+  <div class="grid" id="g"></div>
+  <script>
+    const O = [
+      { n:'Ink & Signal Red', v:'Swiss editorial · bold poster energy',
+        d:'Pure neutrals with one sharp red hit. Confident, graphic, lets artwork scream.',
+        l:{bg:'#FAFAFA',hdr:'#FFFFFF',txt:'#0A0A0A',mut:'#6B6B6B',brd:'#E0E0E0',acc:'#D62828',accT:'#FFFFFF',ann:'#0A0A0A',annT:'#FAFAFA'},
+        k:{bg:'#0A0A0A',hdr:'#111111',txt:'#F2F2F2',mut:'#8A8A8A',brd:'#2A2A2A',acc:'#FF3B3B',accT:'#0A0A0A',ann:'#000000',annT:'#F2F2F2'} },
+      { n:'Midnight & Cobalt', v:'Digital gallery · modern collector',
+        d:'Deep ink navy with electric cobalt. Tech-meets-art, younger premium.',
+        l:{bg:'#F4F6FB',hdr:'#FFFFFF',txt:'#0C1222',mut:'#5C6678',brd:'#D8DEE8',acc:'#3B5BDB',accT:'#FFFFFF',ann:'#0C1222',annT:'#F4F6FB'},
+        k:{bg:'#080C14',hdr:'#0F1520',txt:'#E8ECF4',mut:'#7A8494',brd:'#1C2434',acc:'#5B7FFF',accT:'#080C14',ann:'#000000',annT:'#E8ECF4'} },
+      { n:'Moss & Copper', v:'Botanical luxury · earthy premium',
+        d:'Forest-depth greens with copper foil accent. Organic, tactile, Aesop-adjacent.',
+        l:{bg:'#F3F1EC',hdr:'#FAF9F6',txt:'#1A1F1C',mut:'#5E6560',brd:'#D9D5CC',acc:'#B87333',accT:'#FFFFFF',ann:'#1A1F1C',annT:'#F3F1EC'},
+        k:{bg:'#0C100E',hdr:'#141A16',txt:'#E4E8E5',mut:'#7E8A82',brd:'#243028',acc:'#D4956A',accT:'#0C100E',ann:'#000000',annT:'#E4E8E5'} },
+      { n:'Void & Violet', v:'Night gallery · creative edge',
+        d:'True black with vivid violet accent. Music-festival-meets-fine-art.',
+        l:{bg:'#F9F8FC',hdr:'#FFFFFF',txt:'#12101A',mut:'#64607A',brd:'#E4E0EC',acc:'#7C3AED',accT:'#FFFFFF',ann:'#12101A',annT:'#F9F8FC'},
+        k:{bg:'#060508',hdr:'#100E14',txt:'#EEEAF4',mut:'#8A8498',brd:'#221E2C',acc:'#A78BFA',accT:'#060508',ann:'#000000',annT:'#EEEAF4'} },
+      { n:'Slate & Saffron', v:'Mediterranean sun · warm but not brown',
+        d:'Cool grey stone base with saffron pop. Sunlit gallery, travel-poster vibe.',
+        l:{bg:'#F5F5F3',hdr:'#FFFFFF',txt:'#1C1C1A',mut:'#6E6E68',brd:'#DCDCD6',acc:'#E09F3E',accT:'#1C1C1A',ann:'#1C1C1A',annT:'#F5F5F3'},
+        k:{bg:'#121211',hdr:'#1A1A18',txt:'#EDEDEA',mut:'#909088',brd:'#2C2C28',acc:'#F0B429',accT:'#121211',ann:'#000000',annT:'#EDEDEA'} },
+      { n:'Porcelain & Ink', v:'Japanese minimal · ultra clean',
+        d:'Almost no color in the UI. Black ink on porcelain white. Art is the only saturation.',
+        l:{bg:'#FDFDFB',hdr:'#FFFFFF',txt:'#111110',mut:'#737370',brd:'#E8E8E4',acc:'#111110',accT:'#FDFDFB',ann:'#111110',annT:'#FDFDFB'},
+        k:{bg:'#0E0E0D',hdr:'#161615',txt:'#F5F5F2',mut:'#949490',brd:'#2A2A28',acc:'#F5F5F2',accT:'#0E0E0D',ann:'#000000',annT:'#F5F5F2'} }
+    ];
+
+    function P(t) {
+      return `<div class="pv" style="background:${t.bg};color:${t.txt}">
+        <div class="pv-in">
+          <div class="ann" style="background:${t.ann};color:${t.annT}">Free shipping over ₹999</div>
+          <div class="hdr" style="background:${t.hdr};border-color:${t.brd}">
+            <span class="logo">POSTERLEAGUE</span>
+            <span style="font-size:6px">POSTERS · SPLITS</span>
+          </div>
+          <div class="hero">
+            <div class="pill" style="border-color:${t.brd};color:${t.mut}">New drops weekly</div>
+            <div class="ttl">Your Walls.<br>Your Style.</div>
+            <div class="sbt" style="color:${t.mut}">Premium posters & split sets.</div>
+            <div class="btns">
+              <span class="btn" style="background:${t.acc};color:${t.accT}">Shop Now</span>
+              <span class="btn" style="border-color:${t.txt};color:${t.txt}">Explore</span>
+            </div>
+            <div class="feats" style="border-color:${t.brd}">
+              <div class="ft" style="border-color:${t.brd}"><b>300gsm</b><small style="color:${t.mut}">Paper</small></div>
+              <div class="ft" style="border-color:${t.brd}"><b>Gloss</b><small style="color:${t.mut}">Finish</small></div>
+              <div class="ft" style="border-color:${t.brd}"><b>Scratch Free</b><small style="color:${t.mut}">Coat</small></div>
+            </div>
+          </div>
+        </div></div>`;
+    }
+
+    document.getElementById('g').innerHTML = O.map((o,i) => `
+      <article class="card">
+        <div class="card-head">
+          <div class="vibe">${o.v}</div>
+          <h2>${i+1}. ${o.n}</h2>
+          <p>${o.d}</p>
+        </div>
+        <div class="sw">
+          ${[['bg',o.k.bg],['acc',o.k.acc],['txt',o.k.txt],['mut',o.k.mut],['brd',o.k.brd]].map(([k,h])=>`<div><i style="background:${h}"></i><span>${h}</span></div>`).join('')}
+        </div>
+        <div class="dual">
+          <div class="tag" style="background:#eee;color:#333">Light</div>
+          <div class="tag" style="background:#1a1a1a;color:#666">Dark</div>
+          ${P(o.l)}${P(o.k)}
+        </div>
+      </article>`).join('');
+  </script>
+</body>
+</html>

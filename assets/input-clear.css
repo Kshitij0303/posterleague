@@ -1,0 +1,174 @@
+/* Transitions.dev — Input clear with dissolve (POSTERLEAGUE) */
+
+:root {
+  --clear-dur: 1000ms;
+  --clear-out-dur: 400ms;
+  --clear-in-dur: 400ms;
+  --clear-out-fly: 12px;
+  --clear-in-fly: 12px;
+  --clear-out-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --clear-in-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --clear-blur: 2px;
+  --glow-delay: 50ms;
+  --glow-peak-at: 0.15;
+  --glow-opacity: 0.85;
+  --glow-spread: 1.5;
+}
+
+.t-clear {
+  position: relative;
+  overflow: hidden;
+}
+
+.t-clear-mirror,
+.t-clear-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.t-clear-mirror { opacity: 0; }
+
+.t-clear.has-value .t-clear-mirror,
+.t-clear.is-clearing .t-clear-mirror { opacity: 1; }
+
+/* Mirror owns text when blurred; while typing show native input + caret */
+.t-clear.has-value > input:not(:focus),
+.t-clear.is-clearing > input:not(:focus) {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.t-clear.has-value > input:focus,
+.t-clear.is-clearing > input:focus {
+  color: #0C0C0C;
+  -webkit-text-fill-color: #0C0C0C;
+  caret-color: #0C0C0C;
+}
+
+.t-clear.has-value > input:focus ~ .t-clear-mirror,
+.t-clear.is-clearing > input:focus ~ .t-clear-mirror {
+  opacity: 0 !important;
+}
+
+.t-clear.has-value .t-clear-placeholder { opacity: 0; }
+
+.t-clear-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  mix-blend-mode: multiply;
+}
+
+.t-clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #F4F4F4;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0C0C0C;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.t-clear-btn:hover {
+  background: #EBEBEB;
+}
+
+.t-clear-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.t-clear.has-value .t-clear-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Search page field */
+.search-page-form {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  border: 1.5px solid #E8E8E8;
+  border-radius: 100px;
+  background: #FFFFFF;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.search-field:focus-within {
+  border-color: #0C0C0C;
+  box-shadow: 0 0 0 3px rgba(12, 12, 12, 0.1);
+}
+
+.search-field input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0 44px 0 18px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #0C0C0C;
+  caret-color: #0C0C0C;
+  outline: none;
+  border-radius: 100px;
+}
+
+/* Hide browser-native clear on search inputs (we use .t-clear-btn) */
+.search-field input[type="search"]::-webkit-search-cancel-button,
+.search-field input[type="search"]::-webkit-search-decoration,
+.search-field input[type="search"]::-webkit-search-results-button,
+.search-field input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.search-field .t-clear-mirror,
+.search-field .t-clear-placeholder {
+  padding: 0 44px 0 18px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1;
+  color: #0C0C0C;
+}
+
+.search-field .t-clear-placeholder {
+  color: #8A8A8A;
+  opacity: 1;
+}
+
+.search-page-form__submit {
+  flex-shrink: 0;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 100px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-clear-glow { opacity: 0 !important; }
+}

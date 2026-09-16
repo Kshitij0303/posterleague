@@ -1,0 +1,84 @@
+<div class="section">
+  <div class="container">
+    <div class="section__header" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px;">
+      <div>
+        <h2 style="font-size: 26px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em;">{{ section.settings.heading | escape }}</h2>
+        <p style="font-size: 13px; color: #666666; margin: 0;">Top trending designs & customer favorites</p>
+      </div>
+      {% assign target_coll = section.settings.collection | default: collections.all %}
+      {% if section.settings.show_view_all and target_coll != blank %}
+        <a href="{{ target_coll.url | default: '/collections/all' }}" style="font-size: 13px; font-weight: 600; text-decoration: underline; color: #111111;">View All &rarr;</a>
+      {% endif %}
+    </div>
+
+    {% assign featured = target_coll.products | limit: section.settings.products_to_show %}
+    {% if featured.size > 0 %}
+      <div class="grid-4col">
+        {% for product in featured %}
+          {% render 'product-card', product: product, card_index: forloop.index %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="background: #F9F9F9; border: 1px dashed #DDD; padding: 48px 24px; text-align: center; border-radius: 8px;">
+        <h3 style="font-size: 18px; margin-bottom: 8px; color: #111;">No products found yet</h3>
+        <p style="font-size: 13px; color: #666; max-width: 400px; margin: 0 auto 20px;">Upload products in your Shopify Admin, and they will automatically appear right here!</p>
+        <a href="/admin/products/new" class="btn btn--primary btn--sm" target="_blank">Add Product in Admin</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+.grid-4col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media(min-width: 768px) {
+  .grid-4col { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+}
+
+@media(min-width: 1024px) {
+  .grid-4col { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured Art Prints"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection (defaults to All Products if empty)"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 16,
+      "step": 4,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View All' link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}

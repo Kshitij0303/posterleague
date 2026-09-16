@@ -1,0 +1,34 @@
+{% comment %}
+  Custom collection pagination — flat markup, no nested spans
+  Usage: {% render 'collection-pagination', paginate: paginate %}
+{% endcomment %}
+
+{% if paginate.pages > 1 %}
+  <nav class="pl-pagination" aria-label="Pagination">
+    <div class="pl-pagination__controls">
+      {% if paginate.previous %}
+        <a href="{{ paginate.previous.url }}" class="pl-pagination__nav">{{ paginate.previous.title }}</a>
+      {% else %}
+        <span class="pl-pagination__nav is-disabled" aria-disabled="true">&laquo; Previous</span>
+      {% endif %}
+
+      {% if paginate.next %}
+        <a href="{{ paginate.next.url }}" class="pl-pagination__nav">{{ paginate.next.title }}</a>
+      {% else %}
+        <span class="pl-pagination__nav is-disabled" aria-disabled="true">Next &raquo;</span>
+      {% endif %}
+    </div>
+
+    <div class="pl-pagination__pages">
+      {% for part in paginate.parts %}
+        {% if part.is_link %}
+          <a href="{{ part.url }}" class="pl-pagination__page">{{ part.title }}</a>
+        {% elsif part.title == paginate.current_page %}
+          <span class="pl-pagination__page is-current" aria-current="page">{{ part.title }}</span>
+        {% else %}
+          <span class="pl-pagination__page is-gap" aria-hidden="true">{{ part.title }}</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </nav>
+{% endif %}

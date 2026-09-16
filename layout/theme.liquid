@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    {{ page_title }}{% if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+  </title>
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% if settings.favicon %}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {% endif %}
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {% if page_description %}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  <script>
+    (function() {
+      try {
+        var stored = localStorage.getItem('pl-theme');
+        var dark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'notification-badge.css' | asset_url | stylesheet_tag }}
+  {{ 'icon-swap.css' | asset_url | stylesheet_tag }}
+  {{ 'shimmer-text.css' | asset_url | stylesheet_tag }}
+  {{ 'theme-toggle.css' | asset_url | stylesheet_tag }}
+  {{ 'dark-mode.css' | asset_url | stylesheet_tag }}
+  {{ 'poster-card-mockup.css' | asset_url | stylesheet_tag }}
+  {{ 'sticker-product.css' | asset_url | stylesheet_tag }}
+  {{ 'image-watermark.css' | asset_url | stylesheet_tag }}
+  {{ 'secure-data-protection.css' | asset_url | stylesheet_tag }}
+  {{ 'social-icons.css' | asset_url | stylesheet_tag }}
+  {{ 'cart-toast.css' | asset_url | stylesheet_tag }}
+  {% if request.page_type == 'product' %}
+    {{ 'product-form-options.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  {% render 'theme-assets' %}
+
+  <style>
+    :root {
+      --color-bg: #F4F5F7;
+      --color-bg-secondary: #FFFFFF;
+      --color-text: #0B0C10;
+      --color-text-muted: #5C6370;
+      --color-accent: #45A29E;
+      --color-accent-hover: #3B8A87;
+      --color-accent-light: #E6F7F6;
+      --color-accent-secondary: #66FCF1;
+      --color-accent-on: #FFFFFF;
+      --color-border: #DDE2E8;
+      --mobile-header-height: 70px;
+      --site-nav-top: 108px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    .announcement-bar {
+      background: #1F2833;
+      color: #C5C6C7;
+      text-align: center;
+      padding: 9px 40px 9px 16px;
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .announcement-bar > span {
+      min-width: 0;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    @media (max-width: 480px) {
+      .announcement-bar {
+        font-size: 10px;
+        padding: 8px 36px 8px 12px;
+      }
+    }
+
+    .announcement-bar span b {
+      color: #66FCF1;
+      font-weight: 700;
+    }
+
+    .announcement-bar__close {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #FFFFFF;
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .announcement-bar__close:hover {
+      opacity: 1;
+    }
+
+    .site-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid #EAEAEA;
+      position: sticky;
+      top: 0;
+      z-index: 10001;
+      width: 100%;
+    }
+
+    .site-header .header-container {
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 82px;
+      gap: 20px;
+      box-sizing: border-box;
+    }
+
+    .site-header__left {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .site-header__logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Cormorant', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #000000;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .site-header__logo-badge {
+      font-family: 'Montserrat', sans-serif;
+      background: #000000;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      letter-spacing: 0;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+    .site-header__icons {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .site-header__icons a,
+    .site-header__icons button {
+      color: #111111;
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 50%;
+      transition: background 0.15s ease, color 0.15s ease;
+      position: relative;
+    }
+
+    .site-header__icons a:hover,
+    .site-header__icons button:hover {
+      background: #F4F4F4;
+    }
+
+    .site-header__menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #111111;
+      padding: 4px;
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 1080px) {
+      .site-header__nav { display: none !important; }
+      .site-header__menu-btn { display: flex !important; }
+      .site-header .header-container {
+        height: var(--mobile-header-height);
+        padding: 0 16px;
+        gap: 12px;
+      }
+      .site-header__left {
+        gap: 12px;
+        min-width: 0;
+        flex: 1;
+      }
+      .site-header__logo {
+        font-size: 16px;
+        flex: 1;
+        min-width: 0;
+        max-width: 100%;
+        gap: 8px;
+      }
+      .site-header__logo > span:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+      }
+      .site-header__icons {
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .site-header__icons a,
+      .site-header__icons button {
+        padding: 5px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .site-header__logo > span:last-child {
+        display: none;
+      }
+    }
+
+    @media (min-width: 1081px) {
+      .site-header__menu-btn { display: none !important; }
+    }
+
+    .mobile-nav-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(320px, 88vw);
+      height: 100dvh;
+      background: #FFFFFF;
+      z-index: 10002;
+      padding: 0;
+      border-right: 1px solid #EAEAEA;
+      border-radius: 0;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 12px 0 40px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .mobile-nav-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-drawer__topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: var(--mobile-header-height, 70px);
+      padding: 12px 16px;
+      border-bottom: 1px solid #EAEAEA;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    .mobile-nav-drawer__brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-family: 'Cormorant', Georgia, serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #0B0C10;
+      text-decoration: none;
+    }
+
+    .mobile-nav-drawer__badge {
+      font-family: 'Montserrat', sans-serif;
+      background: #0B0C10;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .mobile-nav-drawer__brand > span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mobile-nav-drawer__close {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #DDE2E8;
+      border-radius: 8px;
+      background: #F4F5F7;
+      color: #0B0C10;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .mobile-nav-drawer__close:hover {
+      background: #E6F7F6;
+      border-color: #45A29E;
+      color: #45A29E;
+    }
+
+    .mobile-nav-drawer__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 16px 28px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 9998;
+    }
+
+    .mobile-nav-overlay.is-open {
+      display: block;
+    }
+
+    .mobile-nav-drawer nav a,
+    .mobile-nav-drawer .mobile-accordion-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #111111;
+      border-bottom: 1px solid #F0F0F0;
+      text-decoration: none;
+      text-transform: uppercase;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      width: 100%;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .mobile-nav-drawer nav a:hover,
+    .mobile-nav-drawer .mobile-accordion-toggle:hover {
+      color: var(--color-accent);
+    }
+
+    .site-footer {
+      background: #0F0F0F;
+      color: #CCCCCC;
+      padding: 60px 0 32px;
+      margin-top: 64px;
+      border-top: 1px solid #222222;
+      width: 100%;
+      max-width: 100%;
+      overflow: visible;
+      box-sizing: border-box;
+    }
+
+    .site-footer__brand {
+      overflow: visible;
+      position: relative;
+    }
+
+    .site-footer .footer-container {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .site-footer__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    @media (min-width: 768px) {
+      .site-footer__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .site-footer__grid {
+        grid-template-columns: 1.4fr 1fr 1fr 1.6fr;
+        gap: 48px;
+      }
+    }
+
+    .site-footer h4 {
+      color: #FFFFFF;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .site-footer ul {
+      list-style: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .site-footer ul li {
+      list-style: none !important;
+    }
+
+    .site-footer ul a {
+      color: #8E8E8E;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s ease;
+    }
+
+    .site-footer ul a:hover {
+      color: var(--color-accent);
+    }
+  </style>
+
+  {{ content_for_header }}
+</head>
+
+<body>
+  {% if settings.show_announcement %}
+    <div class="announcement-bar">
+      <span>{{ settings.announcement_text }}</span>
+      <button class="announcement-bar__close" aria-label="Close">&#x2715;</button>
+    </div>
+  {% endif %}
+
+  <header class="site-header">
+    <div class="header-container">
+      <div class="site-header__left">
+        <button
+          type="button"
+          class="site-header__menu-btn"
+          id="mobile-menu-toggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-nav-drawer"
+        >
+          {% render 'icon-menu-swap', swap_id: 'mobile-menu-icon' %}
+        </button>
+
+        <a href="/" class="site-header__logo">
+          <span class="site-header__logo-badge">PL</span>
+          <span>POSTERLEAGUE</span>
+        </a>
+
+        <!-- Navigation Bar with Exact Poster Categories -->
+        <nav class="site-header__nav">
+          
+          <!-- Dropdown: Posters -->
+          <div class="nav-item--has-dropdown">
+            <a href="/collections/posters" class="nav-item__link">
+              <span class="t-shimmer" data-text="Posters">Posters</span>
+              <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            
+            <div class="nav-dropdown">
+              <a href="/collections/posters" class="nav-dropdown__item nav-dropdown__item--featured">
+                <span>All Posters</span>
+                <span style="font-size: 12px; color: #888;">&rarr;</span>
+              </a>
+              <div class="nav-dropdown__divider"></div>
+              <a href="/collections/posters/anime" class="nav-dropdown__item">
+                <span>Anime</span>
+                <span class="dropdown-badge">Popular</span>
+              </a>
+              <a href="/collections/posters/cars" class="nav-dropdown__item">
+                <span>Cars</span>
+              </a>
+              <a href="/collections/posters/bikes" class="nav-dropdown__item">
+                <span>Bikes</span>
+              </a>
+              <a href="/collections/posters/movies-series" class="nav-dropdown__item">
+                <span>Movies &amp; Series</span>
+              </a>
+              <a href="/collections/posters/gaming" class="nav-dropdown__item">
+                <span>Gaming</span>
+              </a>
+              <a href="/collections/posters/sports" class="nav-dropdown__item">
+                <span>Sports</span>
+              </a>
+              <a href="/collections/posters/spiritual" class="nav-dropdown__item">
+                <span>Spiritual</span>
+              </a>
+              <div class="nav-dropdown__divider"></div>
+              <a href="/pages/custom-quote" class="nav-dropdown__item nav-dropdown__item--custom">
+                <span>Make Your Own Poster (Custom)</span>
+                <span style="font-size: 12px;">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Dropdown: Splits -->
+          <div class="nav-item--has-dropdown">
+            <a href="/collections/splits" class="nav-item__link highlight-link">
+              <span class="t-shimmer" data-text="Splits">Splits</span> <span class="nav-pill-badge">HOT</span>
+              <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <div class="nav-dropdown">
+              <a href="/collections/splits" class="nav-dropdown__item nav-dropdown__item--featured">
+                <span>All Split Sets</span>
+                <span style="font-size: 12px; color: #888;">&rarr;</span>
+              </a>
+              <div class="nav-dropdown__divider"></div>
+              <a href="/collections/splits/3-piece" class="nav-dropdown__item">
+                <span>3-Piece Wall Sets</span>
+                <span class="dropdown-badge">Popular</span>
+              </a>
+              <a href="/collections/splits/4-piece" class="nav-dropdown__item">
+                <span>4-Piece Grid Sets</span>
+              </a>
+              <a href="/collections/splits/8-piece" class="nav-dropdown__item">
+                <span>8-Piece Panel Sets</span>
+              </a>
+              <div class="nav-dropdown__divider"></div>
+              <a href="/pages/custom-quote" class="nav-dropdown__item nav-dropdown__item--custom">
+                <span>Custom Wall Split Quote</span>
+                <span style="font-size: 12px;">&rarr;</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Dropdown: Stickers -->
+          <div class="nav-item--has-dropdown">
+            <a href="/collections/stickers" class="nav-item__link">
+              <span class="t-shimmer" data-text="Stickers">Stickers</span>
+              <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <div class="nav-dropdown nav-dropdown--stickers">
+              <a href="/collections/stickers" class="nav-dropdown__item nav-dropdown__item--featured">
+                <span>All Stickers</span>
+                <span style="font-size: 12px; color: #888;">&rarr;</span>
+              </a>
+              <div class="nav-dropdown__divider"></div>
+              {% render 'sticker-categories', context: 'nav' %}
+            </div>
+          </div>
+
+          <!-- Other Navigation Items -->
+          <a href="/collections/bookmarks">Bookmarks</a>
+          <a href="/collections/magnets">Magnets</a>
+          <a href="/collections/trading-cards">Cards</a>
+          <a href="/pages/custom-quote" class="nav-link--custom">
+            <span>Custom</span>
+          </a>
+          <a href="#coming-soon" class="nav-link--coming-soon">Coming Soon</a>
+        </nav>
+      </div>
+
+      <!-- Header Action Icons: Theme, Search, Wishlist, Cart -->
+      <div class="site-header__icons">
+        {% render 'theme-toggle' %}
+
+        <a href="/search" aria-label="Search" title="Search posters">
+          {% render 'icon-search' %}
+        </a>
+
+        <!-- Wishlist Icon & Counter -->
+        <button type="button" id="wishlist-trigger" aria-label="View Wishlist" title="View your saved wishlist">
+          {% render 'icon-heart-swap', swap_id: 'wishlist-header-icon' %}
+          <span class="t-badge" id="wishlist-count-badge" data-open="false" aria-hidden="true">
+            <span class="t-badge-dot">0</span>
+          </span>
+        </button>
+
+        <!-- Cart Icon & Counter — links to full cart page -->
+        <a href="/cart" id="cart-trigger" aria-label="Cart" title="Shopping Cart">
+          {% render 'icon-cart' %}
+          <span
+            class="t-badge"
+            id="cart-count-badge"
+            data-open="{% if cart.item_count > 0 %}true{% else %}false{% endif %}"
+            aria-hidden="{% if cart.item_count > 0 %}false{% else %}true{% endif %}"
+          >
+            <span class="t-badge-dot">{{ cart.item_count }}</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
+    <div class="mobile-nav-drawer__topbar">
+      <a href="/" class="mobile-nav-drawer__brand" onclick="document.getElementById('mobile-nav-drawer').classList.remove('is-open'); document.getElementById('mobile-nav-overlay').classList.remove('is-open'); document.body.classList.remove('mobile-nav-open');">
+        <span class="mobile-nav-drawer__badge">PL</span>
+        <span>POSTERLEAGUE</span>
+      </a>
+      <button type="button" class="mobile-nav-drawer__close" id="mobile-nav-close" aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-nav-drawer__body">
+    <nav>
+      <!-- Mobile Posters Accordion -->
+      <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-posters-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-posters-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
+        <span><span class="t-shimmer" data-text="Posters">Posters</span> (Categories)</span>
+        <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
+      </button>
+      <div class="mobile-submenu" id="mobile-posters-sub">
+        <a href="/collections/posters" class="mobile-submenu__featured">&bull; All Posters</a>
+        <a href="/collections/posters/anime">&bull; Anime</a>
+        <a href="/collections/posters/cars">&bull; Cars</a>
+        <a href="/collections/posters/bikes">&bull; Bikes</a>
+        <a href="/collections/posters/movies-series">&bull; Movies &amp; Series</a>
+        <a href="/collections/posters/gaming">&bull; Gaming</a>
+        <a href="/collections/posters/sports">&bull; Sports</a>
+        <a href="/collections/posters/spiritual">&bull; Spiritual</a>
+        <a href="/pages/custom-quote" style="color: #926300 !important; font-weight: 700;">Custom Quote</a>
+      </div>
+
+      <!-- Mobile Splits Accordion -->
+      <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-splits-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-splits-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
+        <span><span class="t-shimmer" data-text="Split Posters">Split Posters</span> (3, 4, 8 Piece) <span style="background:var(--color-accent-secondary);color:#000;font-size:9px;padding:2px 6px;border-radius:100px;margin-left:4px;">HOT</span></span>
+        <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
+      </button>
+      <div class="mobile-submenu" id="mobile-splits-sub">
+        <a href="/collections/splits" class="mobile-submenu__featured">&bull; All Split Posters</a>
+        <a href="/collections/splits/3-piece">&bull; 3-Piece Wall Sets</a>
+        <a href="/collections/splits/4-piece">&bull; 4-Piece Grid Sets</a>
+        <a href="/collections/splits/8-piece">&bull; 8-Piece Panel Sets</a>
+        <a href="/pages/custom-quote" style="color: #926300 !important; font-weight: 700;">Custom Split Request</a>
+      </div>
+
+      <!-- Mobile Stickers Accordion -->
+      <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-stickers-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-stickers-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
+        <span><span class="t-shimmer" data-text="Stickers">Stickers</span> (Categories)</span>
+        <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
+      </button>
+      <div class="mobile-submenu" id="mobile-stickers-sub">
+        <a href="/collections/stickers" class="mobile-submenu__featured">&bull; All Stickers</a>
+        {% render 'sticker-categories', context: 'mobile' %}
+      </div>
+
+      <a href="/collections/bookmarks">Bookmarks</a>
+      <a href="/collections/magnets">Magnets</a>
+      <a href="/collections/trading-cards">Trading Cards</a>
+      <a href="/pages/custom-quote">Custom Orders</a>
+      <a href="#wishlist" onclick="event.preventDefault(); document.querySelector('.mobile-nav-drawer').classList.remove('is-open'); document.getElementById('mobile-nav-overlay').classList.remove('is-open'); document.getElementById('wishlist-trigger').click();">
+        Saved Wishlist
+      </a>
+      <a href="#coming-soon" style="color:#888888;">Coming Soon</a>
+    </nav>
+    </div>
+  </div>
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+  <main role="main" id="MainContent">
+    {{ content_for_layout }}
+  </main>
+
+  <!-- Drawers & Widgets -->
+  {% render 'wishlist-drawer' %}
+  {% render 'floating-video-widget' %}
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="site-footer__grid">
+        
+        <!-- Col 1: Brand -->
+        <div class="site-footer__brand">
+          <a href="/" style="display:inline-flex;align-items:center;gap:8px;color:#FFFFFF;text-decoration:none;margin-bottom:16px;">
+            <span style="background:var(--color-accent);color:var(--color-accent-on);font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;">PL</span>
+            <span style="font-weight:700;font-size:16px;letter-spacing:-0.01em;">POSTERLEAGUE</span>
+          </a>
+          <p style="font-size:13px;line-height:1.6;color:#8E8E8E;max-width:300px;margin-bottom:0;">
+            Premium 300gsm laminated prints &amp; custom wall art. Made to order with love.
+          </p>
+          {% render 'social-icons' %}
+        </div>
+
+        <!-- Col 2: Shop -->
+        <div>
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="/collections/posters">Posters</a></li>
+            <li><a href="/collections/splits">Split Posters</a></li>
+            <li><a href="/collections/stickers">Stickers</a></li>
+            <li><a href="/collections/bookmarks">Bookmarks</a></li>
+            <li><a href="/collections/magnets">Magnets</a></li>
+            <li><a href="/collections/trading-cards">Trading Cards</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Help -->
+        <div>
+          <h4>Help</h4>
+          <ul>
+            <li><a href="/pages/about">About Us</a></li>
+            <li><a href="/pages/faq">FAQ</a></li>
+            <li><a href="/pages/shipping">Shipping Policy</a></li>
+            <li><a href="/pages/returns">Returns &amp; Refunds</a></li>
+            <li><a href="/pages/custom-quote">Custom Order Quote</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Newsletter -->
+        <div>
+          <h4>{{ 'footer.newsletter_title' | t }}</h4>
+          <p style="font-size:12.5px;line-height:1.5;color:#8E8E8E;margin-bottom:14px;">
+            {{ 'footer.newsletter_subtitle' | t }}
+          </p>
+          <form method="post" action="/contact#contact_form" id="contact_form" accept-charset="UTF-8">
+            <input type="hidden" name="form_type" value="customer">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div style="display:flex;gap:8px;">
+              <input type="email" name="contact[email]" placeholder="Your email address" required style="flex:1;background:#1E1E1E;border:1px solid #333333;color:#FFFFFF;padding:10px 12px;font-size:12.5px;border-radius:6px;">
+              <button type="submit" class="btn btn--amber btn--sm" style="flex-shrink:0;">{{ 'footer.newsletter_button' | t }}</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <div style="border-top:1px solid #222222;padding-top:24px;display:flex;justify-content:space-between;align-items:center;color:#666666;font-size:12px;flex-wrap:wrap;gap:12px;">
+        <div>{{ 'footer.copyright' | t }}</div>
+        <div>300GSM Laminated &bull; Made in India</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  <script src="{{ 'notification-badge.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-toast.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-drawer.js' | asset_url }}" defer></script>
+  <script src="{{ 'cart-upsells.js' | asset_url }}" defer></script>
+  <script src="{{ 'dark-mode.js' | asset_url }}" defer></script>
+  <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
+  <script src="{{ 'poster-card-mockup.js' | asset_url }}" defer></script>
+  <script src="{{ 'image-protection.js' | asset_url }}" defer></script>
+  <script src="{{ 'secure-data-protection.js' | asset_url }}" defer></script>
+</body>
+</html>
+
+
+

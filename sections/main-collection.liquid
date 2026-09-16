@@ -1,0 +1,226 @@
+<div class="section" style="padding: 32px 0 64px;">
+  <div class="container">
+    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb collection-breadcrumb">
+      <a href="/">Home</a> &gt;
+      <span class="collection-breadcrumb__current">{{ collection.title }}</span>
+      {% if current_tags %}
+        &gt; <span class="collection-breadcrumb__tag">{{ current_tags | join: ', ' | capitalize }}</span>
+      {% endif %}
+    </nav>
+
+    <!-- Collection Header -->
+    <header class="collection-header">
+      <div>
+        <h1 class="collection-header__title">
+          {{ collection.title }}
+          {% if current_tags %}
+            <span class="collection-header__tag-label">({{ current_tags | join: ', ' | capitalize }})</span>
+          {% endif %}
+        </h1>
+        {% if collection.description != blank %}
+          <div class="collection-header__desc">{{ collection.description }}</div>
+        {% elsif collection.handle == 'splits' %}
+          <div class="collection-header__desc">Multi-panel connected wall art sets. Available in 3-Piece, 4-Piece, and 8-Piece formats on 300 GSM laminated paper.</div>
+        {% endif %}
+      </div>
+      <div class="collection-header__count">
+        {{ collection.products_count }} items available
+      </div>
+    </header>
+
+    <!-- Category / Piece Count Filter Pills Bar -->
+    <div class="filter-pills-wrapper" style="margin-bottom: 32px;">
+      <div class="filter-pills-bar">
+        <a href="{{ collection.url }}" class="filter-pill {% unless current_tags %}is-active{% endunless %}">
+          {% if collection.handle == 'splits' %}All Splits{% else %}All{% endif %}
+        </a>
+        {% if collection.handle == 'splits' %}
+          <a href="{{ collection.url }}/3-piece" class="filter-pill {% if current_tags contains '3-piece' %}is-active{% endif %}">3-Piece</a>
+          <a href="{{ collection.url }}/4-piece" class="filter-pill {% if current_tags contains '4-piece' %}is-active{% endif %}">4-Piece</a>
+          <a href="{{ collection.url }}/8-piece" class="filter-pill {% if current_tags contains '8-piece' %}is-active{% endif %}">8-Piece</a>
+        {% elsif collection.handle == 'stickers' or collection.url contains '/collections/stickers/' %}
+          {% assign stickers_base = '/collections/stickers' %}
+          {% render 'sticker-categories', context: 'pills', stickers_base: stickers_base %}
+        {% elsif collection.handle == 'posters' or collection.url contains '/collections/posters/' %}
+          {% assign posters_base = '/collections/posters' %}
+          {% assign popular_genres = "anime:Anime,cars:Cars,bikes:Bikes,movies-series:Movies & Series,gaming:Gaming,sports:Sports,spiritual:Spiritual" | split: "," %}
+          {% for item in popular_genres %}
+            {% assign parts = item | split: ":" %}
+            {% assign genre_handle = parts[0] %}
+            {% assign genre_title = parts[1] %}
+            {% assign genre_active = false %}
+            {% if current_tags contains genre_handle or current_tags contains genre_title or collection.handle == genre_handle %}
+              {% assign genre_active = true %}
+            {% endif %}
+            <a href="{% if genre_active %}{{ posters_base }}{% else %}{{ posters_base }}/{{ genre_handle }}{% endif %}"
+               class="filter-pill {% if genre_active %}is-active{% endif %}">
+              {{ genre_title }}
+            </a>
+          {% endfor %}
+        {% endif %}
+        <a href="/pages/custom-quote" class="filter-pill filter-pill--custom">Custom</a>
+      </div>
+    </div>
+
+    <!-- Product Grid & Pagination -->
+    {% paginate collection.products by 16 %}
+      {% if collection.products.size == 0 %}
+        <div class="collection-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5" style="margin-bottom: 16px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <h3 style="font-size: 18px; margin-bottom: 8px; font-weight: 700;">No products found in this selection</h3>
+          <p class="collection-empty__text">Upload products in your Shopify Admin with matching tags or clear the active filter.</p>
+          <a href="{{ collection.url }}" class="btn btn--primary btn--sm">View All {{ collection.title }} &rarr;</a>
+        </div>
+      {% else %}
+        <div class="grid-4col" style="display: grid; gap: 20px; grid-template-columns: repeat(2, 1fr);">
+          {% for product in collection.products %}
+            {% render 'product-card', product: product, card_index: forloop.index %}
+          {% endfor %}
+        </div>
+
+        {% render 'collection-pagination', paginate: paginate %}
+      {% endif %}
+    {% endpaginate %}
+
+  </div>
+</div>
+
+<style>
+  .collection-breadcrumb {
+    font-size: 13px;
+    margin-bottom: 20px;
+    color: var(--color-text-muted);
+  }
+  .collection-breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .collection-breadcrumb__current {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .collection-breadcrumb__tag {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+  .collection-header {
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .collection-header__title {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+  .collection-header__tag-label {
+    font-size: 20px;
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+  .collection-header__desc {
+    color: var(--color-text-muted);
+    font-size: 14px;
+    max-width: 680px;
+    line-height: 1.5;
+  }
+  .collection-header__count {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+  .collection-empty {
+    background: var(--color-bg-secondary);
+    border: 1px dashed var(--color-border);
+    padding: 64px 24px;
+    text-align: center;
+    border-radius: 8px;
+    margin: 32px 0;
+  }
+  .collection-empty__text {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    max-width: 420px;
+    margin: 0 auto 24px;
+  }
+
+  .filter-pills-wrapper {
+    position: relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+
+  .filter-pills-wrapper::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .filter-pills-wrapper::-webkit-scrollbar-thumb {
+    background: #E0E0E0;
+    border-radius: 100px;
+  }
+
+  .filter-pills-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    min-width: max-content;
+  }
+
+  .filter-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: #F4F4F4;
+    color: #222222;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 100px;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .filter-pill:hover {
+    background: #EAEAEA;
+    color: #000000;
+  }
+
+  .filter-pill.is-active {
+    background: var(--color-accent);
+    color: #000000;
+    border-color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .filter-pill--custom {
+    background: var(--color-accent-light);
+    border-color: #FFD54F;
+    color: #926300;
+  }
+
+  @media(min-width: 768px) {
+    .grid-4col { grid-template-columns: repeat(3, 1fr) !important; gap: 24px !important; }
+  }
+
+  @media(min-width: 1024px) {
+    .grid-4col { grid-template-columns: repeat(4, 1fr) !important; gap: 24px !important; }
+  }
+
+</style>
+
+{% schema %}
+{
+  "name": "Collection Page",
+  "settings": []
+}
+{% endschema %}
+
