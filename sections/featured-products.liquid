@@ -1,63 +1,257 @@
-<div class="section">
+{%- liquid
+  assign heading = section.settings.heading | default: 'Trending Now'
+  assign subheading = section.settings.subheading | default: 'Best sellers & most viewed right now'
+  assign product_limit = section.settings.products_to_show | default: 8
+  assign trending_collection = section.settings.collection
+
+  if trending_collection == blank
+    assign trending_collection = collections.trending
+  endif
+
+  assign trending_products = blank
+  assign trending_count = 0
+
+  if trending_collection != blank and trending_collection.products_count > 0
+    assign trending_products = trending_collection.products
+    assign trending_count = trending_collection.products_count
+  endif
+
+  if trending_count == 0 and section.settings.fallback_to_tags
+    assign trending_products = collections.all.products
+  endif
+-%}
+
+<div class="section pl-trending-section" id="TrendingSection-{{ section.id }}" data-section-id="{{ section.id }}">
   <div class="container">
-    <div class="section__header" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28px;">
+    <div class="pl-trending-section__header">
       <div>
-        <h2 style="font-size: 26px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em;">{{ section.settings.heading | escape }}</h2>
-        <p style="font-size: 13px; color: #666666; margin: 0;">Top trending designs & customer favorites</p>
+        <h2 class="pl-trending-section__title">{{ heading | escape }}</h2>
+        <p class="pl-trending-section__subtitle">{{ subheading | escape }}</p>
       </div>
-      {% assign target_coll = section.settings.collection | default: collections.all %}
-      {% if section.settings.show_view_all and target_coll != blank %}
-        <a href="{{ target_coll.url | default: '/collections/all' }}" style="font-size: 13px; font-weight: 600; text-decoration: underline; color: #111111;">View All &rarr;</a>
+      {% assign view_all_collection = trending_collection | default: collections.all %}
+      {% if section.settings.show_view_all and view_all_collection != blank %}
+        <a href="{{ view_all_collection.url | default: '/collections/all?sort_by=best-selling' }}" class="pl-trending-section__view-all">
+          View All &rarr;
+        </a>
       {% endif %}
     </div>
 
-    {% assign featured = target_coll.products | limit: section.settings.products_to_show %}
-    {% if featured.size > 0 %}
-      <div class="grid-4col">
-        {% for product in featured %}
-          {% render 'product-card', product: product, card_index: forloop.index %}
+    <div class="pl-trending-grid grid-4col" id="TrendingGrid-{{ section.id }}" data-product-limit="{{ product_limit }}">
+      {% if trending_count > 0 %}
+        {% for product in trending_products limit: product_limit %}
+          {% render 'product-card', product: product, card_index: forloop.index, show_trending_badge: true %}
         {% endfor %}
-      </div>
-    {% else %}
-      <div style="background: #F9F9F9; border: 1px dashed #DDD; padding: 48px 24px; text-align: center; border-radius: 8px;">
-        <h3 style="font-size: 18px; margin-bottom: 8px; color: #111;">No products found yet</h3>
-        <p style="font-size: 13px; color: #666; max-width: 400px; margin: 0 auto 20px;">Upload products in your Shopify Admin, and they will automatically appear right here!</p>
-        <a href="/admin/products/new" class="btn btn--primary btn--sm" target="_blank">Add Product in Admin</a>
-      </div>
-    {% endif %}
+      {% elsif section.settings.fallback_to_tags %}
+        {% assign shown = 0 %}
+        {% for product in trending_products %}
+          {% if product.tags contains 'trending' or product.tags contains 'bestseller' %}
+            {% assign shown = shown | plus: 1 %}
+            {% render 'product-card', product: product, card_index: shown, show_trending_badge: true %}
+            {% if shown >= product_limit %}
+              {% break %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if shown == 0 %}
+          <div class="pl-trending-empty" data-trending-empty>
+            <h3>No trending products yet</h3>
+            <p>Create a <strong>Trending</strong> collection (sort: Best selling) in Shopify Admin, or tag hot products with <code>trending</code>.</p>
+            <a href="/collections/all?sort_by=best-selling" class="btn btn--primary btn--sm">Shop best sellers &rarr;</a>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="pl-trending-empty" data-trending-empty>
+          <h3>No trending products yet</h3>
+          <p>Add a collection named <strong>Trending</strong> and set sort order to <strong>Best selling</strong>.</p>
+        </div>
+      {% endif %}
+    </div>
   </div>
 </div>
 
 <style>
-.grid-4col {
+.pl-trending-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.pl-trending-section__title {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+
+.pl-trending-section__subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  margin: 0;
+}
+
+.pl-trending-section__view-all {
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.pl-trending-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
-@media(min-width: 768px) {
-  .grid-4col { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.pl-trending-empty {
+  grid-column: 1 / -1;
+  background: var(--color-bg-secondary, #f9f9f9);
+  border: 1px dashed var(--color-border, #ddd);
+  padding: 48px 24px;
+  text-align: center;
+  border-radius: 8px;
 }
 
-@media(min-width: 1024px) {
-  .grid-4col { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.pl-trending-empty h3 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.pl-trending-empty p {
+  font-size: 13px;
+  color: var(--color-text-muted, #666);
+  max-width: 460px;
+  margin: 0 auto 20px;
+  line-height: 1.5;
+}
+
+.pl-trending-empty code {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 768px) {
+  .pl-trending-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+}
+
+@media (min-width: 1024px) {
+  .pl-trending-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+}
+
+html[data-theme="dark"] .pl-trending-empty {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .pl-trending-empty code {
+  background: rgba(255, 255, 255, 0.08);
 }
 </style>
 
+<script>
+  (function () {
+    var section = document.getElementById('TrendingSection-{{ section.id }}');
+    var grid = document.getElementById('TrendingGrid-{{ section.id }}');
+    if (!section || !grid) return;
+
+    var limit = parseInt(grid.getAttribute('data-product-limit'), 10) || 8;
+    var hasProducts = grid.querySelector('.product-card');
+    if (hasProducts) return;
+
+    if (!window.PLTrending || typeof window.PLTrending.getTopHandles !== 'function') return;
+
+    var handles = window.PLTrending.getTopHandles(limit);
+    if (!handles.length) return;
+
+    var empty = grid.querySelector('[data-trending-empty]');
+    if (empty) empty.remove();
+
+    function formatMoney(cents) {
+      if (typeof cents !== 'number' || isNaN(cents)) return '';
+      var amount = (cents / 100).toFixed(2).replace(/\.00$/, '');
+      return '\u20b9' + amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    // Mirrors the price logic in snippets/product-card.liquid (price_min/price_max
+    // "From" prefix, then compare-at strikethrough) so fallback cards match
+    // server-rendered ones instead of re-deriving their own price rules.
+    function buildPriceHtml(product) {
+      var priceMin = typeof product.price_min === 'number' ? product.price_min : product.price;
+      var priceMax = typeof product.price_max === 'number' ? product.price_max : product.price;
+
+      if (typeof priceMin !== 'number') return '';
+
+      if (priceMax !== priceMin) {
+        return 'From ' + formatMoney(priceMin);
+      }
+
+      if (product.compare_at_price && product.compare_at_price > priceMin) {
+        return formatMoney(priceMin) + '<s style="font-weight:400;font-size:12px;color:#888;margin-left:6px;">' + formatMoney(product.compare_at_price) + '</s>';
+      }
+
+      return formatMoney(priceMin);
+    }
+
+    Promise.all(
+      handles.map(function (handle) {
+        return fetch('/products/' + encodeURIComponent(handle) + '.js')
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .catch(function () { return null; });
+      })
+    ).then(function (products) {
+      products.filter(Boolean).forEach(function (product, index) {
+        var priceHtml = buildPriceHtml(product);
+
+        var card = document.createElement('div');
+        card.className = 'product-card pl-trending-card-fallback';
+        card.innerHTML =
+          '<a href="' + product.url + '" class="product-card__link" style="display:block;text-decoration:none;color:inherit;">' +
+            '<div class="product-card__image sticker-card__stage" style="aspect-ratio:1/1;background:#f7f7f5;display:flex;align-items:center;justify-content:center;padding:14%;">' +
+              '<img src="' + (product.featured_image || '') + '" alt="' + (product.title || '').replace(/"/g, '&quot;') + '" style="width:100%;height:100%;object-fit:contain;" loading="lazy">' +
+            '</div>' +
+            '<div class="product-card__body" style="padding:14px 12px;">' +
+              '<h3 class="product-card__title" style="font-size:14px;font-weight:600;margin:0 0 6px;">' + product.title + '</h3>' +
+              '<div class="product-card__price" style="font-size:15px;font-weight:700;">' + priceHtml + '</div>' +
+            '</div>' +
+          '</a>';
+        grid.appendChild(card);
+      });
+    });
+  })();
+</script>
+
 {% schema %}
 {
-  "name": "Featured Products",
+  "name": "Trending Now",
   "settings": [
     {
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Featured Art Prints"
+      "default": "Trending Now"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Best sellers & most viewed right now"
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Collection (defaults to All Products if empty)"
+      "label": "Trending collection",
+      "info": "Create a collection called “Trending” (handle: trending). Set sort to Best selling — uses real order data from Shopify."
+    },
+    {
+      "type": "checkbox",
+      "id": "fallback_to_tags",
+      "label": "Fallback to trending / bestseller tags",
+      "default": true,
+      "info": "If the collection is empty, show products tagged trending or bestseller. Also fills from on-site view activity in the visitor’s browser."
     },
     {
       "type": "range",
@@ -71,13 +265,13 @@
     {
       "type": "checkbox",
       "id": "show_view_all",
-      "label": "Show 'View All' link",
+      "label": "Show View All link",
       "default": true
     }
   ],
   "presets": [
     {
-      "name": "Featured Products"
+      "name": "Trending Now"
     }
   ]
 }

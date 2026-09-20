@@ -1162,3 +1162,26 @@ svg {
   user-select: none;
 }
 
+
+/* ─── Dark mode: price & title text visibility fix ─────────── */
+html[data-theme="dark"] .product-card__price {
+  color: #FFFFFF;
+}
+
+html[data-theme="dark"] .product-card__price s {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+html[data-theme="dark"] .product-card__title {
+  color: #FFFFFF;
+}
+
+html[data-theme="dark"] .poster-card__body .product-card__price,
+html[data-theme="dark"] .poster-card__body .product-card__title {
+  color: #FFFFFF;
+}
+
+html[data-theme="dark"] .sticker-card .product-card__price,
+html[data-theme="dark"] .sticker-card .product-card__title {
+  color: #FFFFFF;
+}

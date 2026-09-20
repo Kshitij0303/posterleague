@@ -4,6 +4,7 @@
 
 {% assign show_vendor = show_vendor | default: false %}
 {% assign show_badge = show_badge | default: true %}
+{% assign show_trending_badge = show_trending_badge | default: false %}
 {% assign lazy = lazy | default: true %}
 
 {%- liquid
@@ -106,7 +107,9 @@
           {% unless product.available %}
             <span class="badge badge--dark">Sold Out</span>
           {% else %}
-            {% if product.tags contains 'bestseller' %}
+            {% if show_trending_badge %}
+              <span class="badge badge--amber">Trending</span>
+            {% elsif product.tags contains 'bestseller' %}
               <span class="badge badge--amber">Bestseller</span>
             {% elsif product.tags contains 'new' %}
               <span class="badge badge--dark">New</span>

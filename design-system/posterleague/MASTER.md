@@ -18,24 +18,30 @@
 
 | Role | Hex | CSS Variable |
 |------|-----|--------------|
-| Primary | `#1C1917` | `--color-primary` |
-| On Primary | `#FFFFFF` | `--color-on-primary` |
-| Secondary | `#44403C` | `--color-secondary` |
-| On Secondary | `#FFFFFF` | `--color-on-secondary` |
-| Accent/CTA | `#A16207` | `--color-accent` |
-| On Accent/CTA | `#FFFFFF` | `--color-on-accent` |
-| Background | `#FAFAF9` | `--color-background` |
-| Foreground | `#0C0A09` | `--color-foreground` |
-| Card | `#FFFFFF` | `--color-card` |
-| Card Foreground | `#0C0A09` | `--color-card-foreground` |
-| Muted | `#E8ECF0` | `--color-muted` |
-| Muted Foreground | `#475569` | `--color-muted-foreground` |
-| Border | `#D6D3D1` | `--color-border` |
-| Destructive | `#DC2626` | `--color-destructive` |
-| On Destructive | `#FFFFFF` | `--color-on-destructive` |
-| Ring | `#1C1917` | `--color-ring` |
+| Primary | `#0B0C10` | `--color-text` |
+| On Primary | `#FFFFFF` | `--color-accent-on` |
+| Secondary | `#5C6370` | `--color-text-muted` |
+| On Secondary | `#FFFFFF` | — |
+| Accent/CTA | `#45A29E` | `--color-accent` |
+| Accent Hover | `#3B8A87` | `--color-accent-hover` |
+| Accent Light | `#E6F7F6` | `--color-accent-light` |
+| Accent Secondary | `#66FCF1` | `--color-accent-secondary` |
+| On Accent/CTA | `#FFFFFF` | `--color-accent-on` |
+| Background | `#F4F5F7` | `--color-bg` |
+| Background Secondary | `#FFFFFF` | `--color-bg-secondary` |
+| Foreground | `#0B0C10` | `--color-text` |
+| Card | `#FFFFFF` | `--color-bg-secondary` |
+| Card Foreground | `#0B0C10` | `--color-text` |
+| Muted | `#E6F7F6` | `--color-accent-light` |
+| Muted Foreground | `#5C6370` | `--color-text-muted` |
+| Border | `#DDE2E8` | `--color-border` |
+| Hero Background | `#0B0C10` | `--color-hero-bg` |
+| Hero Text | `#FFFFFF` | `--color-hero-text` |
+| Destructive | `#DC2626` | — |
+| On Destructive | `#FFFFFF` | — |
+| Ring / Focus | `#45A29E` | `--color-accent` |
 
-**Color Notes:** Premium dark + gold accent [Accent adjusted from #CA8A04]
+**Color Notes:** Teal accent `#45A29E` on near-black `#0B0C10` — dark premium aesthetic. ⚠️ Cart page uses a local gold override `#FFBA00` for its CTA (see `pages/cart.md`).
 
 ### Typography
 
@@ -79,7 +85,7 @@
 ```css
 /* Primary Button */
 .btn-primary {
-  background: #A16207;
+  background: #45A29E;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -89,15 +95,15 @@
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  background: #3B8A87;
   transform: translateY(-1px);
 }
 
 /* Secondary Button */
 .btn-secondary {
   background: transparent;
-  color: #1C1917;
-  border: 2px solid #1C1917;
+  color: #0B0C10;
+  border: 2px solid #0B0C10;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -110,7 +116,7 @@
 
 ```css
 .card {
-  background: #FAFAF9;
+  background: #F4F5F7;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -129,16 +135,16 @@
 ```css
 .input {
   padding: 12px 16px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #DDE2E8;
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 200ms ease;
 }
 
 .input:focus {
-  border-color: #1C1917;
+  border-color: #45A29E;
   outline: none;
-  box-shadow: 0 0 0 3px #1C191720;
+  box-shadow: 0 0 0 3px rgba(69, 162, 158, 0.2);
 }
 ```
 

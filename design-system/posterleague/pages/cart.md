@@ -19,13 +19,15 @@
 - **Summary card:** `backdrop-filter: blur(20px)` on dark glass panel
 - **Cards:** White on `#F4F4F2` background, 12px radius, subtle shadow on hover
 
-## Brand tokens (override MASTER accent)
+## Brand tokens (local overrides — cart page only)
 
-| Token | Value |
-|-------|-------|
-| Primary | `#0C0C0C` |
-| Accent / CTA | `#FFBA00` |
-| Background | `#F4F4F2` |
+> These override the global teal palette defined in `MASTER.md`. The gold CTA is intentional to signal "checkout mode" and increase urgency at the conversion point.
+
+| Token | Global value | Cart override |
+|-------|-------------|---------------|
+| Primary | `#0B0C10` | `#0C0C0C` (same) |
+| Accent / CTA | `#45A29E` | `#FFBA00` ✦ gold checkout CTA |
+| Background | `#F4F5F7` | `#F4F4F2` |
 
 ## Accessibility (required)
 

@@ -20,7 +20,13 @@
     },
     "featured": {
       "type": "featured-products",
-      "settings": {}
+      "settings": {
+        "heading": "Trending Now",
+        "subheading": "Best sellers & most viewed right now",
+        "fallback_to_tags": true,
+        "products_to_show": 8,
+        "show_view_all": true
+      }
     },
     "customization_promo": {
       "type": "customization-promo",
