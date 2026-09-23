@@ -598,8 +598,8 @@
             {% assign splits_url = '/collections/splits' %}
           {% endif %}
           <div class="nav-item--has-dropdown">
-            <a href="{{ splits_url }}" class="nav-item__link highlight-link">
-              <span class="t-shimmer" data-text="Splits">Splits</span> <span class="nav-pill-badge">HOT</span>
+            <a href="{{ splits_url }}" class="nav-item__link">
+              <span class="t-shimmer" data-text="Splits">Splits</span>
               <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             <div class="nav-dropdown">
@@ -721,7 +721,7 @@
 
       <!-- Mobile Splits: full accordion always shown; links route to #coming-soon until stocked -->
       <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-splits-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-splits-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
-        <span><span class="t-shimmer" data-text="Split Posters">Split Posters</span> (3, 4, 8 Piece) <span style="background:var(--color-accent-secondary);color:#000;font-size:9px;padding:2px 6px;border-radius:100px;margin-left:4px;">HOT</span></span>
+        <span><span class="t-shimmer" data-text="Split Posters">Split Posters</span> (3, 4, 8 Piece)</span>
         <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
       </button>
       <div class="mobile-submenu" id="mobile-splits-sub">

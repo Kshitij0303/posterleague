@@ -70,7 +70,6 @@ html[data-theme="dark"] .mobile-nav-drawer .t-shimmer {
   --shimmer-highlight: #1F2833;
 }
 
-html[data-theme="dark"] .site-header__nav a.highlight-link .nav-pill-badge,
 html[data-theme="dark"] .dropdown-badge {
   background: #45A29E !important;
   color: #FFFFFF !important;
