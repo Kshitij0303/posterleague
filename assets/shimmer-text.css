@@ -41,11 +41,11 @@
   100% { background-position: 0% 0; }
 }
 
-/* Header nav — dark text on white */
+/* Header nav — accent color, matching the dark-mode treatment */
 .site-header .t-shimmer,
 .mobile-nav-drawer .t-shimmer {
-  --shimmer-base: #111111;
-  --shimmer-highlight: #c8c8c8;
+  --shimmer-base: var(--color-accent);
+  --shimmer-highlight: var(--color-accent-light);
 }
 
 @media (prefers-reduced-motion: reduce) {

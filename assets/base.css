@@ -809,8 +809,9 @@ label {
 }
 
 .site-header__nav a.highlight-link {
-  color: #000000;
-  font-weight: 700;
+  /* Weight/color match the other nav items now — the HOT badge alone
+     is enough to flag this item, text no longer needs extra boldness. */
+  font-weight: 600;
 }
 
 .site-header__nav a.highlight-link .nav-pill-badge {
