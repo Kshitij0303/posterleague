@@ -2,7 +2,9 @@
   <div class="container">
     <div class="custom-promo {% if section.settings.image_position == 'right' %}custom-promo--reverse{% endif %}">
       <div class="custom-promo__image">
-        {% if section.settings.image %}
+        {% if section.blocks.size > 1 %}
+          {% render 'promo-carousel', section: section %}
+        {% elsif section.settings.image %}
           <img srcset="{{ section.settings.image | image_url: width: 600 }} 600w,
                        {{ section.settings.image | image_url: width: 1000 }} 1000w,
                        {{ section.settings.image | image_url: width: 1500 }} 1500w"
@@ -20,9 +22,6 @@
         <span class="badge badge--accent">{{ section.settings.eyebrow | escape }}</span>
         <h2 class="h2">{{ section.settings.heading | escape }}</h2>
         <div class="rte">{{ section.settings.body_text }}</div>
-        {% if section.settings.cta_label != blank %}
-          <a href="{{ section.settings.cta_url }}" class="btn btn--primary" style="margin-top: 24px; display: inline-block;">{{ section.settings.cta_label | escape }}</a>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -48,7 +47,8 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image"
+      "label": "Fallback image",
+      "info": "Only used if fewer than 2 carousel slides (blocks) are added below."
     },
     {
       "type": "text",
@@ -69,17 +69,6 @@
       "default": "<p>Upload your image or idea. We'll handle the rest — 300gsm paper, precision lamination, and a pricing quote sent straight to your inbox. No checkout confusion, no upfront payment for custom work.</p>"
     },
     {
-      "type": "text",
-      "id": "cta_label",
-      "label": "CTA Label",
-      "default": "Request a Custom Quote"
-    },
-    {
-      "type": "url",
-      "id": "cta_url",
-      "label": "CTA Link",
-      },
-    {
       "type": "select",
       "id": "image_position",
       "label": "Image Position on Desktop",
@@ -88,11 +77,89 @@
         { "value": "right", "label": "Right" }
       ],
       "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "slide_duration",
+      "label": "Carousel auto-play interval (seconds)",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "carousel_slide",
+      "name": "Carousel Slide",
+      "settings": [
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Slide type",
+          "options": [
+            { "value": "image", "label": "Single image" },
+            { "value": "image_grid", "label": "2x2 image grid" },
+            { "value": "video", "label": "Video (autoplay, muted, loop)" }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (single image slide, or grid image 1)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Grid image 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Grid image 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Grid image 4"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video (Shopify-hosted)"
+        },
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "External video URL (.mp4)",
+          "info": "Used only if no Shopify-hosted video is selected above."
+        },
+        {
+          "type": "checkbox",
+          "id": "polaroid_style",
+          "label": "Polaroid frame style",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Image alt text"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Customization Promo"
+      "name": "Customization Promo",
+      "blocks": [
+        { "type": "carousel_slide", "settings": { "media_type": "image", "alt_text": "Custom poster in a premium living room" } },
+        { "type": "carousel_slide", "settings": { "media_type": "image_grid" } },
+        { "type": "carousel_slide", "settings": { "media_type": "image", "alt_text": "Limited Edition, museum-quality print" } },
+        { "type": "carousel_slide", "settings": { "media_type": "image", "alt_text": "300 GSM paper macro with laminated edge" } },
+        { "type": "carousel_slide", "settings": { "media_type": "video" } },
+        { "type": "carousel_slide", "settings": { "media_type": "image_grid", "polaroid_style": true } }
+      ]
     }
   ]
 }

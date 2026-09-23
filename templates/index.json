@@ -30,7 +30,54 @@
     },
     "customization_promo": {
       "type": "customization-promo",
-      "settings": {}
+      "settings": {
+        "slide_duration": 4
+      },
+      "blocks": {
+        "hero_wall": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "alt_text": "Custom poster in a premium living room"
+          }
+        },
+        "gallery_mockups": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image_grid",
+            "alt_text": "Anime, travel, car and minimal poster styles"
+          }
+        },
+        "limited_edition": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "alt_text": "Limited Edition, museum-quality print"
+          }
+        },
+        "paper_quality": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image",
+            "alt_text": "300 GSM paper macro with laminated edge"
+          }
+        },
+        "unboxing_video": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "video"
+          }
+        },
+        "customer_gallery": {
+          "type": "carousel_slide",
+          "settings": {
+            "media_type": "image_grid",
+            "polaroid_style": true,
+            "alt_text": "Customer photos of posters on their walls"
+          }
+        }
+      },
+      "block_order": ["hero_wall", "gallery_mockups", "limited_edition", "paper_quality", "unboxing_video", "customer_gallery"]
     },
     "coming_soon": {
       "type": "coming-soon",
