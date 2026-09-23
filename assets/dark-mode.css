@@ -12,6 +12,11 @@ html[data-theme="dark"] {
   --color-accent-secondary: #45A29E;
   --color-accent-on: #0B0C10;
   --color-hero-bg: #0B0C10;
+
+  /* Shared product card surface — used by .product-card, .poster-card, .sticker-card */
+  --card-border-color: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
   color-scheme: dark;
 }
 
@@ -153,14 +158,9 @@ html[data-theme="dark"] .mobile-nav-overlay {
   background: rgba(11, 12, 16, 0.8) !important;
 }
 
-html[data-theme="dark"] .product-card {
-  background-color: #1F2833;
-  border-color: #2A3540;
-}
-
 html[data-theme="dark"] .product-card__title,
 html[data-theme="dark"] .product-card__price {
-  color: #FFFFFF;
+  color: var(--color-text);
 }
 
 html[data-theme="dark"] .section {

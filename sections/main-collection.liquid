@@ -2,13 +2,20 @@
   <div class="container">
     
     <!-- Breadcrumb -->
-    <nav class="breadcrumb collection-breadcrumb">
-      <a href="/">Home</a> &gt;
-      <span class="collection-breadcrumb__current">{{ collection.title }}</span>
-      {% if current_tags %}
-        &gt; <span class="collection-breadcrumb__tag">{{ current_tags | join: ', ' | capitalize }}</span>
-      {% endif %}
-    </nav>
+    {% if current_tags %}
+      {% assign current_tags_label = current_tags | join: ', ' | capitalize %}
+      {% render 'breadcrumb',
+        crumb_1_label: 'Home', crumb_1_url: '/',
+        crumb_2_label: collection.title, crumb_2_url: collection.url,
+        current_label: current_tags_label,
+        current_class: 'breadcrumb-page--accent'
+      %}
+    {% else %}
+      {% render 'breadcrumb',
+        crumb_1_label: 'Home', crumb_1_url: '/',
+        current_label: collection.title
+      %}
+    {% endif %}
 
     <!-- Collection Header -->
     <header class="collection-header">
@@ -88,23 +95,6 @@
 </div>
 
 <style>
-  .collection-breadcrumb {
-    font-size: 13px;
-    margin-bottom: 20px;
-    color: var(--color-text-muted);
-  }
-  .collection-breadcrumb a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .collection-breadcrumb__current {
-    color: var(--color-text);
-    font-weight: 600;
-  }
-  .collection-breadcrumb__tag {
-    color: var(--color-accent);
-    font-weight: 700;
-  }
   .collection-header {
     margin-bottom: 28px;
     display: flex;

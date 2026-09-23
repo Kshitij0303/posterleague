@@ -2,13 +2,15 @@
  * Sticker products — plain PNG on clean solid background (no room mockup, no checkerboard)
  */
 
-/* ─── Collection / grid card ───────────────────────────────── */
+/* ─── Collection / grid card ───────────────────────────────────
+   Background/border/shadow reuse the shared --card-* tokens from
+   base.css so poster, sticker, and fallback cards stay in sync. */
 .product-card.sticker-card {
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid var(--color-border, #e8e8e8);
-  background: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border-color);
+  background: var(--color-bg);
+  box-shadow: var(--card-shadow);
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
@@ -91,17 +93,15 @@
   background: #ececea;
 }
 
-/* Dark mode — keep sticker image on a light surface (die-cut white edges read correctly) */
-html[data-theme="dark"] .product-card.sticker-card {
-  background: var(--color-bg-secondary, #1a1c22);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
-}
-
+/* Dark mode: shell background/border/shadow already come from the
+   shared --color-bg / --card-border-color / --card-shadow tokens
+   (see .product-card.sticker-card above) — only the hover shadow and
+   the image stage need theme-specific values here. */
 html[data-theme="dark"] .product-card.sticker-card:hover {
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
 }
 
+/* Keep sticker image on a light surface (die-cut white edges read correctly) */
 html[data-theme="dark"] .sticker-card__stage {
   background: #f7f7f5;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);

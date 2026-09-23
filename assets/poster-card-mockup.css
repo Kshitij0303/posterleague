@@ -3,15 +3,15 @@
  * Loaded from layout/theme.liquid. Backgrounds assigned by poster-card-mockup.js.
  */
 
-/* ─── Card shell ───────────────────────────────────────────── */
+/* ─── Card shell ─────────────────────────────────────────────
+   Background/border/shadow reuse the shared --card-* tokens from
+   base.css so poster, sticker, and fallback cards stay in sync. */
 .product-card.poster-card {
   border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #0B0C10;
-  box-shadow:
-    0 4px 18px rgba(0, 0, 0, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  border: 1px solid var(--card-border-color);
+  background: var(--color-bg);
+  box-shadow: var(--card-shadow);
   transition:
     transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
@@ -136,15 +136,10 @@
 }
 
 
-/* ─── Dark mode ─────────────────────────────────────────────── */
-html[data-theme="dark"] .product-card.poster-card {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: #0B0C10;
-}
-
-html[data-theme="dark"] .poster-card__body {
-  background: #1F2833;
-}
+/* Dark mode: no override needed — .product-card.poster-card and
+   .poster-card__body already read background/border from the shared
+   --color-bg / --card-border-color tokens, which resolve correctly
+   for both themes (see :root in base.css / dark-mode.css). */
 
 /* ─── Product page gallery (slide 1) ───────────────────────── */
 .poster-card--gallery,

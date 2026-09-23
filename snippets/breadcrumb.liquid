@@ -1,0 +1,53 @@
+{% comment %}
+  Accessible breadcrumb trail.
+  Structure/a11y pattern adapted from shadcn/ui's Breadcrumb component:
+  nav[aria-label] > ol > li, aria-current="page" on the active crumb,
+  aria-hidden separators, non-link current page.
+
+  Params:
+    crumb_1_label / crumb_1_url  — optional linked crumb
+    crumb_2_label / crumb_2_url  — optional linked crumb
+    crumb_3_label / crumb_3_url  — optional linked crumb
+    current_label   — required, the current page (rendered as plain text)
+    current_class   — optional extra class on the current crumb (e.g. accent color)
+
+  Usage:
+    {% render 'breadcrumb',
+       crumb_1_label: 'Home', crumb_1_url: '/',
+       crumb_2_label: collection.title, crumb_2_url: collection.url,
+       current_label: product.title
+    %}
+{% endcomment %}
+
+<nav class="breadcrumb-nav" aria-label="Breadcrumb">
+  <ol class="breadcrumb-list">
+    {% for i in (1..3) %}
+      {% case i %}
+        {% when 1 %}
+          {% assign crumb_label = crumb_1_label %}
+          {% assign crumb_url = crumb_1_url %}
+        {% when 2 %}
+          {% assign crumb_label = crumb_2_label %}
+          {% assign crumb_url = crumb_2_url %}
+        {% when 3 %}
+          {% assign crumb_label = crumb_3_label %}
+          {% assign crumb_url = crumb_3_url %}
+      {% endcase %}
+
+      {% if crumb_label != blank %}
+        <li class="breadcrumb-item">
+          {% if crumb_url != blank %}
+            <a class="breadcrumb-link" href="{{ crumb_url }}">{{ crumb_label }}</a>
+          {% else %}
+            <span class="breadcrumb-link">{{ crumb_label }}</span>
+          {% endif %}
+        </li>
+        <li class="breadcrumb-separator" role="presentation" aria-hidden="true">/</li>
+      {% endif %}
+    {% endfor %}
+
+    <li class="breadcrumb-item">
+      <span class="breadcrumb-page{% if current_class %} {{ current_class }}{% endif %}" aria-current="page">{{ current_label }}</span>
+    </li>
+  </ol>
+</nav>

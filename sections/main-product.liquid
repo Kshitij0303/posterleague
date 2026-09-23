@@ -1,12 +1,10 @@
 <div class="section" style="padding: 40px 0;">
   <div class="container">
-    <nav class="breadcrumb" style="font-size: 13.5px; margin-bottom: 24px; color: var(--color-text-muted);">
-      <a href="/" style="color: inherit; text-decoration: none;">Home</a> 
-      {% if collection %}
-        > <a href="{{ collection.url }}" style="color: inherit; text-decoration: none;">{{ collection.title }}</a> 
-      {% endif %}
-      > <span style="color: var(--color-text); font-weight: 600;">{{ product.title }}</span>
-    </nav>
+    {% render 'breadcrumb',
+      crumb_1_label: 'Home', crumb_1_url: '/',
+      crumb_2_label: collection.title, crumb_2_url: collection.url,
+      current_label: product.title
+    %}
     
     {%- liquid
       assign is_sticker = false
