@@ -1,14 +1,22 @@
 {% comment %}
   Sticker category list — renders nav, mobile, or filter-pill links.
   @param context {string} nav | mobile | pills
-  @param stickers_base {string} optional, for pills context
+
+  Only genres with at least one matching product tag in the Stickers
+  collection are rendered, so this list never links to an empty page —
+  it grows automatically as new stickers get tagged, no code change needed.
 {% endcomment %}
-{% assign sticker_categories = "anime:Anime,gaming:Gaming,cars-bikes:Cars & Bikes,movies-series:Movies & Series,music:Music,spotify:Spotify,tech-code:Tech & Code,sports:Sports,kpop-pop-culture:K-Pop & Pop Culture,love:Love,food-drinks:Food & Drinks,sarcasm-quotes:Sarcasm & Quotes,abstract:Abstract,animals:Animals,spiritual:Spiritual,warning:Warning" | split: "," %}
+{% assign sticker_categories = "anime:Anime,gaming:Gaming,cars-bikes:Cars & Bikes,movies-series:Movies & Series,music:Music,spotify:Spotify,tech-code:Tech & Code,sports:Sports,kpop-pop-culture:K-Pop & Pop Culture,love:Love,food-and-drinks:Food & Drinks,sarcasm-quotes:Sarcasm & Quotes,abstract:Abstract,animals:Animals,spiritual:Spiritual,warning:Warning" | split: "," %}
+{% assign available_tags = collections.stickers.all_tags %}
 
 {% for item in sticker_categories %}
   {% assign parts = item | split: ":" %}
   {% assign genre_handle = parts[0] %}
   {% assign genre_title = parts[1] %}
+
+  {% unless available_tags contains genre_handle %}
+    {% continue %}
+  {% endunless %}
 
   {% if context == 'nav' %}
     <a href="/collections/stickers/{{ genre_handle }}" class="nav-dropdown__item">

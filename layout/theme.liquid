@@ -517,81 +517,116 @@
 
         <!-- Navigation Bar with Exact Poster Categories -->
         <nav class="site-header__nav">
-          
-          <!-- Dropdown: Posters -->
-          <div class="nav-item--has-dropdown">
-            <a href="/collections/posters" class="nav-item__link">
-              <span class="t-shimmer" data-text="Posters">Posters</span>
-              <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            
-            <div class="nav-dropdown">
-              <a href="/collections/posters" class="nav-dropdown__item nav-dropdown__item--featured">
-                <span>All Posters</span>
-                <span style="font-size: 12px; color: #888;">&rarr;</span>
-              </a>
-              <div class="nav-dropdown__divider"></div>
-              <a href="/collections/posters/anime" class="nav-dropdown__item">
-                <span>Anime</span>
-                <span class="dropdown-badge">Popular</span>
-              </a>
-              <a href="/collections/posters/cars" class="nav-dropdown__item">
-                <span>Cars</span>
-              </a>
-              <a href="/collections/posters/bikes" class="nav-dropdown__item">
-                <span>Bikes</span>
-              </a>
-              <a href="/collections/posters/movies-series" class="nav-dropdown__item">
-                <span>Movies &amp; Series</span>
-              </a>
-              <a href="/collections/posters/gaming" class="nav-dropdown__item">
-                <span>Gaming</span>
-              </a>
-              <a href="/collections/posters/sports" class="nav-dropdown__item">
-                <span>Sports</span>
-              </a>
-              <a href="/collections/posters/spiritual" class="nav-dropdown__item">
-                <span>Spiritual</span>
-              </a>
-              <div class="nav-dropdown__divider"></div>
-              <a href="/pages/custom-quote" class="nav-dropdown__item nav-dropdown__item--custom">
-                <span>Make Your Own Poster (Custom)</span>
-                <span style="font-size: 12px;">&rarr;</span>
-              </a>
-            </div>
-          </div>
 
-          <!-- Dropdown: Splits -->
-          <div class="nav-item--has-dropdown">
-            <a href="/collections/splits" class="nav-item__link highlight-link">
-              <span class="t-shimmer" data-text="Splits">Splits</span> <span class="nav-pill-badge">HOT</span>
-              <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            <div class="nav-dropdown">
-              <a href="/collections/splits" class="nav-dropdown__item nav-dropdown__item--featured">
-                <span>All Split Sets</span>
-                <span style="font-size: 12px; color: #888;">&rarr;</span>
-              </a>
-              <div class="nav-dropdown__divider"></div>
-              <a href="/collections/splits/3-piece" class="nav-dropdown__item">
-                <span>3-Piece Wall Sets</span>
-                <span class="dropdown-badge">Popular</span>
-              </a>
-              <a href="/collections/splits/4-piece" class="nav-dropdown__item">
-                <span>4-Piece Grid Sets</span>
-              </a>
-              <a href="/collections/splits/8-piece" class="nav-dropdown__item">
-                <span>8-Piece Panel Sets</span>
-              </a>
-              <div class="nav-dropdown__divider"></div>
-              <a href="/pages/custom-quote" class="nav-dropdown__item nav-dropdown__item--custom">
-                <span>Custom Wall Split Quote</span>
-                <span style="font-size: 12px;">&rarr;</span>
-              </a>
-            </div>
-          </div>
+          {%- liquid
+            assign posters_stocked = false
+            if collections.posters.products_count > 0
+              assign posters_stocked = true
+            endif
 
-          <!-- Dropdown: Stickers -->
+            assign splits_stocked = false
+            if collections.splits.products_count > 0
+              assign splits_stocked = true
+            endif
+
+            assign bookmarks_stocked = false
+            if collections.bookmarks.products_count > 0
+              assign bookmarks_stocked = true
+            endif
+
+            assign magnets_stocked = false
+            if collections.magnets.products_count > 0
+              assign magnets_stocked = true
+            endif
+
+            assign cards_stocked = false
+            if collections['trading-cards'].products_count > 0
+              assign cards_stocked = true
+            endif
+          -%}
+
+          <!-- Posters: dropdown once stocked, "Coming Soon" link until then -->
+          {% if posters_stocked %}
+            <div class="nav-item--has-dropdown">
+              <a href="/collections/posters" class="nav-item__link">
+                <span class="t-shimmer" data-text="Posters">Posters</span>
+                <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+
+              <div class="nav-dropdown">
+                <a href="/collections/posters" class="nav-dropdown__item nav-dropdown__item--featured">
+                  <span>All Posters</span>
+                  <span style="font-size: 12px; color: #888;">&rarr;</span>
+                </a>
+                <div class="nav-dropdown__divider"></div>
+                <a href="/collections/posters/anime" class="nav-dropdown__item">
+                  <span>Anime</span>
+                  <span class="dropdown-badge">Popular</span>
+                </a>
+                <a href="/collections/posters/cars" class="nav-dropdown__item">
+                  <span>Cars</span>
+                </a>
+                <a href="/collections/posters/bikes" class="nav-dropdown__item">
+                  <span>Bikes</span>
+                </a>
+                <a href="/collections/posters/movies-series" class="nav-dropdown__item">
+                  <span>Movies &amp; Series</span>
+                </a>
+                <a href="/collections/posters/gaming" class="nav-dropdown__item">
+                  <span>Gaming</span>
+                </a>
+                <a href="/collections/posters/sports" class="nav-dropdown__item">
+                  <span>Sports</span>
+                </a>
+                <a href="/collections/posters/spiritual" class="nav-dropdown__item">
+                  <span>Spiritual</span>
+                </a>
+                <div class="nav-dropdown__divider"></div>
+                <a href="/pages/custom-quote" class="nav-dropdown__item nav-dropdown__item--custom">
+                  <span>Make Your Own Poster (Custom)</span>
+                  <span style="font-size: 12px;">&rarr;</span>
+                </a>
+              </div>
+            </div>
+          {% else %}
+            <a href="#coming-soon" class="nav-link--coming-soon">Posters</a>
+          {% endif %}
+
+          <!-- Splits: dropdown once stocked, "Coming Soon" link until then -->
+          {% if splits_stocked %}
+            <div class="nav-item--has-dropdown">
+              <a href="/collections/splits" class="nav-item__link highlight-link">
+                <span class="t-shimmer" data-text="Splits">Splits</span> <span class="nav-pill-badge">HOT</span>
+                <svg class="dropdown-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+              <div class="nav-dropdown">
+                <a href="/collections/splits" class="nav-dropdown__item nav-dropdown__item--featured">
+                  <span>All Split Sets</span>
+                  <span style="font-size: 12px; color: #888;">&rarr;</span>
+                </a>
+                <div class="nav-dropdown__divider"></div>
+                <a href="/collections/splits/3-piece" class="nav-dropdown__item">
+                  <span>3-Piece Wall Sets</span>
+                  <span class="dropdown-badge">Popular</span>
+                </a>
+                <a href="/collections/splits/4-piece" class="nav-dropdown__item">
+                  <span>4-Piece Grid Sets</span>
+                </a>
+                <a href="/collections/splits/8-piece" class="nav-dropdown__item">
+                  <span>8-Piece Panel Sets</span>
+                </a>
+                <div class="nav-dropdown__divider"></div>
+                <a href="/pages/custom-quote" class="nav-dropdown__item nav-dropdown__item--custom">
+                  <span>Custom Wall Split Quote</span>
+                  <span style="font-size: 12px;">&rarr;</span>
+                </a>
+              </div>
+            </div>
+          {% else %}
+            <a href="#coming-soon" class="nav-link--coming-soon">Splits</a>
+          {% endif %}
+
+          <!-- Dropdown: Stickers (always stocked today; sub-genres filter to real tags) -->
           <div class="nav-item--has-dropdown">
             <a href="/collections/stickers" class="nav-item__link">
               <span class="t-shimmer" data-text="Stickers">Stickers</span>
@@ -607,10 +642,25 @@
             </div>
           </div>
 
-          <!-- Other Navigation Items -->
-          <a href="/collections/bookmarks">Bookmarks</a>
-          <a href="/collections/magnets">Magnets</a>
-          <a href="/collections/trading-cards">Cards</a>
+          <!-- Other Navigation Items: "Coming Soon" link until each collection has stock -->
+          {% if bookmarks_stocked %}
+            <a href="/collections/bookmarks">Bookmarks</a>
+          {% else %}
+            <a href="#coming-soon" class="nav-link--coming-soon">Bookmarks</a>
+          {% endif %}
+
+          {% if magnets_stocked %}
+            <a href="/collections/magnets">Magnets</a>
+          {% else %}
+            <a href="#coming-soon" class="nav-link--coming-soon">Magnets</a>
+          {% endif %}
+
+          {% if cards_stocked %}
+            <a href="/collections/trading-cards">Cards</a>
+          {% else %}
+            <a href="#coming-soon" class="nav-link--coming-soon">Cards</a>
+          {% endif %}
+
           <a href="/pages/custom-quote" class="nav-link--custom">
             <span>Custom</span>
           </a>
@@ -666,37 +716,45 @@
     </div>
     <div class="mobile-nav-drawer__body">
     <nav>
-      <!-- Mobile Posters Accordion -->
-      <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-posters-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-posters-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
-        <span><span class="t-shimmer" data-text="Posters">Posters</span> (Categories)</span>
-        <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
-      </button>
-      <div class="mobile-submenu" id="mobile-posters-sub">
-        <a href="/collections/posters" class="mobile-submenu__featured">&bull; All Posters</a>
-        <a href="/collections/posters/anime">&bull; Anime</a>
-        <a href="/collections/posters/cars">&bull; Cars</a>
-        <a href="/collections/posters/bikes">&bull; Bikes</a>
-        <a href="/collections/posters/movies-series">&bull; Movies &amp; Series</a>
-        <a href="/collections/posters/gaming">&bull; Gaming</a>
-        <a href="/collections/posters/sports">&bull; Sports</a>
-        <a href="/collections/posters/spiritual">&bull; Spiritual</a>
-        <a href="/pages/custom-quote" style="color: #926300 !important; font-weight: 700;">Custom Quote</a>
-      </div>
+      <!-- Mobile Posters -->
+      {% if posters_stocked %}
+        <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-posters-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-posters-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
+          <span><span class="t-shimmer" data-text="Posters">Posters</span> (Categories)</span>
+          <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
+        </button>
+        <div class="mobile-submenu" id="mobile-posters-sub">
+          <a href="/collections/posters" class="mobile-submenu__featured">&bull; All Posters</a>
+          <a href="/collections/posters/anime">&bull; Anime</a>
+          <a href="/collections/posters/cars">&bull; Cars</a>
+          <a href="/collections/posters/bikes">&bull; Bikes</a>
+          <a href="/collections/posters/movies-series">&bull; Movies &amp; Series</a>
+          <a href="/collections/posters/gaming">&bull; Gaming</a>
+          <a href="/collections/posters/sports">&bull; Sports</a>
+          <a href="/collections/posters/spiritual">&bull; Spiritual</a>
+          <a href="/pages/custom-quote" style="color: #926300 !important; font-weight: 700;">Custom Quote</a>
+        </div>
+      {% else %}
+        <a href="#coming-soon" style="color:#888888;">Posters</a>
+      {% endif %}
 
-      <!-- Mobile Splits Accordion -->
-      <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-splits-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-splits-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
-        <span><span class="t-shimmer" data-text="Split Posters">Split Posters</span> (3, 4, 8 Piece) <span style="background:var(--color-accent-secondary);color:#000;font-size:9px;padding:2px 6px;border-radius:100px;margin-left:4px;">HOT</span></span>
-        <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
-      </button>
-      <div class="mobile-submenu" id="mobile-splits-sub">
-        <a href="/collections/splits" class="mobile-submenu__featured">&bull; All Split Posters</a>
-        <a href="/collections/splits/3-piece">&bull; 3-Piece Wall Sets</a>
-        <a href="/collections/splits/4-piece">&bull; 4-Piece Grid Sets</a>
-        <a href="/collections/splits/8-piece">&bull; 8-Piece Panel Sets</a>
-        <a href="/pages/custom-quote" style="color: #926300 !important; font-weight: 700;">Custom Split Request</a>
-      </div>
+      <!-- Mobile Splits -->
+      {% if splits_stocked %}
+        <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-splits-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-splits-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
+          <span><span class="t-shimmer" data-text="Split Posters">Split Posters</span> (3, 4, 8 Piece) <span style="background:var(--color-accent-secondary);color:#000;font-size:9px;padding:2px 6px;border-radius:100px;margin-left:4px;">HOT</span></span>
+          <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
+        </button>
+        <div class="mobile-submenu" id="mobile-splits-sub">
+          <a href="/collections/splits" class="mobile-submenu__featured">&bull; All Split Posters</a>
+          <a href="/collections/splits/3-piece">&bull; 3-Piece Wall Sets</a>
+          <a href="/collections/splits/4-piece">&bull; 4-Piece Grid Sets</a>
+          <a href="/collections/splits/8-piece">&bull; 8-Piece Panel Sets</a>
+          <a href="/pages/custom-quote" style="color: #926300 !important; font-weight: 700;">Custom Split Request</a>
+        </div>
+      {% else %}
+        <a href="#coming-soon" style="color:#888888;">Splits</a>
+      {% endif %}
 
-      <!-- Mobile Stickers Accordion -->
+      <!-- Mobile Stickers Accordion (always stocked today; sub-genres filter to real tags) -->
       <button type="button" class="mobile-accordion-toggle" onclick="document.getElementById('mobile-stickers-sub').classList.toggle('is-open'); this.querySelector('.accordion-arrow').style.transform = document.getElementById('mobile-stickers-sub').classList.contains('is-open') ? 'rotate(180deg)' : 'rotate(0deg)';">
         <span><span class="t-shimmer" data-text="Stickers">Stickers</span> (Categories)</span>
         <span class="accordion-arrow" style="transition: transform 0.2s; font-size: 11px;">&#9660;</span>
@@ -706,9 +764,21 @@
         {% render 'sticker-categories', context: 'mobile' %}
       </div>
 
-      <a href="/collections/bookmarks">Bookmarks</a>
-      <a href="/collections/magnets">Magnets</a>
-      <a href="/collections/trading-cards">Trading Cards</a>
+      {% if bookmarks_stocked %}
+        <a href="/collections/bookmarks">Bookmarks</a>
+      {% else %}
+        <a href="#coming-soon" style="color:#888888;">Bookmarks</a>
+      {% endif %}
+      {% if magnets_stocked %}
+        <a href="/collections/magnets">Magnets</a>
+      {% else %}
+        <a href="#coming-soon" style="color:#888888;">Magnets</a>
+      {% endif %}
+      {% if cards_stocked %}
+        <a href="/collections/trading-cards">Trading Cards</a>
+      {% else %}
+        <a href="#coming-soon" style="color:#888888;">Trading Cards</a>
+      {% endif %}
       <a href="/pages/custom-quote">Custom Orders</a>
       <a href="#wishlist" onclick="event.preventDefault(); document.querySelector('.mobile-nav-drawer').classList.remove('is-open'); document.getElementById('mobile-nav-overlay').classList.remove('is-open'); document.getElementById('wishlist-trigger').click();">
         Saved Wishlist
