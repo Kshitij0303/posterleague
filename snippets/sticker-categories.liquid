@@ -7,7 +7,8 @@
   this filter" state (see main-collection.liquid) rather than a 404,
   since /collections/stickers itself always exists.
 {% endcomment %}
-{% assign sticker_categories = "anime:Anime,gaming:Gaming,cars-bikes:Cars & Bikes,movies-series:Movies & Series,music:Music,spotify:Spotify,tech-code:Tech & Code,sports:Sports,kpop-pop-culture:K-Pop & Pop Culture,love:Love,food-and-drinks:Food & Drinks,sarcasm-quotes:Sarcasm & Quotes,abstract:Abstract,animals:Animals,spiritual:Spiritual,warning:Warning" | split: "," %}
+{%- capture genre_list -%}{% render 'genre-list' %}{%- endcapture -%}
+{% assign sticker_categories = genre_list | strip | split: "," %}
 
 {% for item in sticker_categories %}
   {% assign parts = item | split: ":" %}

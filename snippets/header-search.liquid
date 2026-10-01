@@ -1,10 +1,9 @@
 {% comment %}
   Header search row (rendered inside <header>, under the main header bar).
   Hidden until the header search icon is clicked. Typing shows quick
-  suggestions under the bar; pressing Enter shows every matching product as
-  a full product-card grid — all in place, never navigating to /search.
-  Fragments: sections/header-search-results.liquid (suggestions) and
-  sections/header-search-grid.liquid (full results). Logic: assets/header-search.js.
+  suggestions under the bar; pressing Enter goes to the /search results
+  page (filters + sort). Suggestions: sections/header-search-results.liquid.
+  Logic: assets/header-search.js.
   The form still targets /search so search works without JavaScript.
 {% endcomment %}
 
@@ -169,25 +168,11 @@
 
   .header-search__panel[hidden] { display: none; }
 
-  /* Enter pressed: full results, wider and taller */
-  .header-search__panel.is-full {
-    right: 24px;
-    max-height: calc(100vh - 210px);
-    padding: 16px 18px 20px;
-  }
-
   .header-search__meta {
     font-size: 12px;
     color: var(--color-text-muted);
     padding: 6px 10px 4px;
     margin: 0;
-  }
-
-  .header-search__heading {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--color-text);
-    margin: 2px 2px 14px;
   }
 
   .header-search__hint {
@@ -276,21 +261,6 @@
 
   .header-search__price s { margin-left: 6px; opacity: 0.7; }
 
-  /* Full results (after Enter) — the site's own product cards */
-  .header-search__grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  @media (min-width: 768px) {
-    .header-search__grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  }
-
-  @media (min-width: 1024px) {
-    .header-search__grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
-  }
-
   .header-search__more {
     display: block;
     width: 100%;
@@ -333,8 +303,7 @@
     .header-search__form { height: 48px; }
     .header-search__submit { width: 48px; }
     .header-search__close { width: 42px; height: 42px; }
-    .header-search__panel,
-    .header-search__panel.is-full {
+    .header-search__panel {
       left: 16px;
       right: 16px;
       max-height: calc(100vh - 170px);

@@ -1,103 +1,820 @@
-<div class="section search-page" style="padding: 64px 0;">
+{%- comment -%}
+  Search results page (/search) — reached by pressing Enter in the header
+  search bar. Layout: heading, search box, filter sidebar with counts,
+  Hide/Show filter, sort dropdown, product grid, pagination.
+
+  Filters:
+  - If Shopify storefront filters are configured (Search & Discovery app),
+    they're rendered and applied server-side (search.filters).
+  - Otherwise (current state of this store) the sidebar is built from the
+    products on the page — Theme (genre tags, see snippets/genre-list),
+    Product type, Price, Availability — and filtering happens instantly in
+    the browser. 48 results per page so that covers the whole catalog today.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_sort = search.sort_by | default: search.default_sort_by
+  assign native_filters = false
+  if search.filters.size > 0
+    assign native_filters = true
+  endif
+
+  assign per_page = 48
+
+  assign native_active_count = 0
+  for filter in search.filters
+    assign native_active_count = native_active_count | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value != blank or filter.max_value.value != blank
+        assign native_active_count = native_active_count | plus: 1
+      endif
+    endif
+  endfor
+-%}
+{%- capture genre_list -%}{% render 'genre-list' %}{%- endcapture -%}
+{%- assign genres = genre_list | strip | split: ',' -%}
+
+<div class="section pl-search" id="SearchPage-{{ section.id }}">
   <div class="container">
-    <div class="search-page__head">
-      <h1 class="search-page__title">Search</h1>
+    <h1 class="pl-search__title">Search results</h1>
 
-      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page-form">
-        <input type="hidden" name="type" value="product">
-        <div class="t-clear search-field{% if search.terms != blank %} has-value{% endif %}">
-          <input
-            type="text"
-            name="q"
-            id="SearchInput"
-            value="{{ search.terms | escape }}"
-            placeholder="Search posters..."
-            autocomplete="off"
-            inputmode="search"
-            enterkeyhint="search"
-            aria-label="Search posters"
-          >
-          <div class="t-clear-mirror" aria-hidden="true">
-            {% if search.terms != blank %}{{ search.terms | escape }}{% endif %}
+    <form action="{{ routes.search_url }}" method="get" role="search" class="pl-search__box">
+      <input type="hidden" name="type" value="product">
+      <input
+        type="text"
+        name="q"
+        value="{{ search.terms | escape }}"
+        class="pl-search__input"
+        placeholder="Search"
+        autocomplete="off"
+        inputmode="search"
+        enterkeyhint="search"
+        aria-label="Search products"
+      >
+      <button type="submit" class="pl-search__box-btn" aria-label="Search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7.5"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      </button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by per_page -%}
+        <form
+          action="{{ routes.search_url }}"
+          method="get"
+          class="pl-search__layout"
+          id="SearchFilterForm"
+          data-search-filters
+          data-mode="{% if native_filters %}native{% else %}client{% endif %}"
+          data-total="{{ search.results_count }}"
+          data-terms="{{ search.terms | escape }}"
+        >
+          <input type="hidden" name="q" value="{{ search.terms | escape }}">
+          <input type="hidden" name="type" value="product">
+
+          {%- if search.results_count > 0 or native_filters -%}
+            {%- liquid
+              assign types_seen = '|'
+              for item in search.results
+                if item.object_type == 'product' and item.type != blank
+                  assign type_key = '|' | append: item.type | append: '|'
+                  unless types_seen contains type_key
+                    assign types_seen = types_seen | append: item.type | append: '|'
+                  endunless
+                endif
+              endfor
+              assign product_types = types_seen | remove_first: '|' | split: '|' | sort_natural
+
+              assign p_under = 0
+              assign p_low = 0
+              assign p_mid = 0
+              assign p_high = 0
+              assign in_stock = 0
+              assign out_stock = 0
+              for item in search.results
+                if item.object_type == 'product'
+                  if item.price < 10000
+                    assign p_under = p_under | plus: 1
+                  elsif item.price < 30000
+                    assign p_low = p_low | plus: 1
+                  elsif item.price < 50000
+                    assign p_mid = p_mid | plus: 1
+                  else
+                    assign p_high = p_high | plus: 1
+                  endif
+                  if item.available
+                    assign in_stock = in_stock | plus: 1
+                  else
+                    assign out_stock = out_stock | plus: 1
+                  endif
+                endif
+              endfor
+            -%}
+            <aside class="pl-search__filters" id="SearchFilters" aria-label="Filters">
+              {%- comment -%} Theme + Product type: built from our catalog, filter instantly in the browser {%- endcomment -%}
+              {%- capture theme_options -%}
+                {%- assign shown = 0 -%}
+                {%- for genre in genres -%}
+                  {%- assign parts = genre | split: ':' -%}
+                  {%- assign g_count = 0 -%}
+                  {%- for item in search.results -%}
+                    {%- if item.object_type == 'product' and item.tags contains parts[0] -%}
+                      {%- assign g_count = g_count | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  {%- if g_count > 0 -%}
+                    {%- assign shown = shown | plus: 1 -%}
+                    <li{% if shown > 8 %} class="is-extra" hidden{% endif %}>
+                      <label class="pl-filter__option">
+                        <input type="checkbox" value="{{ parts[0] }}" data-client-filter="theme">
+                        <span class="pl-filter__label">{{ parts[1] | escape }}</span>
+                        <span class="pl-filter__count">{{ g_count }}</span>
+                      </label>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if shown > 8 -%}<!--more-->{%- endif -%}
+              {%- endcapture -%}
+              {%- if theme_options contains '<li' -%}
+                <details class="pl-filter" open>
+                  <summary class="pl-filter__head"><span>Theme</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
+                  <ul class="pl-filter__list">{{ theme_options | remove: '<!--more-->' }}</ul>
+                  {%- if theme_options contains '<!--more-->' -%}
+                    <button type="button" class="pl-filter__more" data-show-more>+ Show more</button>
+                  {%- endif -%}
+                </details>
+              {%- endif -%}
+
+              {%- if product_types.size > 0 -%}
+                <details class="pl-filter" open>
+                  <summary class="pl-filter__head"><span>Product type</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
+                  <ul class="pl-filter__list">
+                    {%- for ptype in product_types -%}
+                      {%- assign t_count = 0 -%}
+                      {%- for item in search.results -%}
+                        {%- if item.object_type == 'product' and item.type == ptype -%}
+                          {%- assign t_count = t_count | plus: 1 -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      <li{% if forloop.index > 8 %} class="is-extra" hidden{% endif %}>
+                        <label class="pl-filter__option">
+                          <input type="checkbox" value="{{ ptype | handleize }}" data-client-filter="type">
+                          <span class="pl-filter__label">{{ ptype | escape }}</span>
+                          <span class="pl-filter__count">{{ t_count }}</span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                  {%- if product_types.size > 8 -%}
+                    <button type="button" class="pl-filter__more" data-show-more>+ Show more</button>
+                  {%- endif -%}
+                </details>
+              {%- endif -%}
+
+              {%- if native_filters -%}
+                {%- comment -%} Availability / Price etc. from Shopify (applied server-side, covers every page) {%- endcomment -%}
+              {%- for filter in search.filters -%}
+                <details class="pl-filter" open>
+                  <summary class="pl-filter__head">
+                    <span>{{ filter.label | escape }}</span>
+                    <span class="pl-filter__icon" aria-hidden="true"></span>
+                  </summary>
+                  {%- if filter.type == 'price_range' -%}
+                    <div class="pl-filter__price">
+                      <label>
+                        <span>Min</span>
+                        <input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | remove: ',' }}{% endif %}" placeholder="0" min="0" inputmode="decimal" data-filter-auto>
+                      </label>
+                      <span class="pl-filter__dash">–</span>
+                      <label>
+                        <span>Max</span>
+                        <input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | remove: ',' }}{% endif %}" placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}" min="0" inputmode="decimal" data-filter-auto>
+                      </label>
+                    </div>
+                  {%- else -%}
+                    <ul class="pl-filter__list">
+                      {%- for value in filter.values -%}
+                        <li{% if forloop.index > 8 %} class="is-extra" hidden{% endif %}>
+                          <label class="pl-filter__option{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                            <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %} data-filter-auto>
+                            <span class="pl-filter__label">{{ value.label | escape }}</span>
+                            <span class="pl-filter__count">{{ value.count }}</span>
+                          </label>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    {%- if filter.values.size > 8 -%}
+                      <button type="button" class="pl-filter__more" data-show-more>+ Show more</button>
+                    {%- endif -%}
+                  {%- endif -%}
+                </details>
+              {%- endfor -%}
+              {%- else -%}
+              <details class="pl-filter" open>
+                <summary class="pl-filter__head"><span>Price</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
+                <ul class="pl-filter__list">
+                  {%- if p_under > 0 -%}
+                    <li><label class="pl-filter__option"><input type="checkbox" value="under-100" data-client-filter="price"><span class="pl-filter__label">Under {{ 10000 | money_without_trailing_zeros }}</span><span class="pl-filter__count">{{ p_under }}</span></label></li>
+                  {%- endif -%}
+                  {%- if p_low > 0 -%}
+                    <li><label class="pl-filter__option"><input type="checkbox" value="100-299" data-client-filter="price"><span class="pl-filter__label">{{ 10000 | money_without_trailing_zeros }} – {{ 29900 | money_without_trailing_zeros }}</span><span class="pl-filter__count">{{ p_low }}</span></label></li>
+                  {%- endif -%}
+                  {%- if p_mid > 0 -%}
+                    <li><label class="pl-filter__option"><input type="checkbox" value="300-499" data-client-filter="price"><span class="pl-filter__label">{{ 30000 | money_without_trailing_zeros }} – {{ 49900 | money_without_trailing_zeros }}</span><span class="pl-filter__count">{{ p_mid }}</span></label></li>
+                  {%- endif -%}
+                  {%- if p_high > 0 -%}
+                    <li><label class="pl-filter__option"><input type="checkbox" value="500-plus" data-client-filter="price"><span class="pl-filter__label">{{ 50000 | money_without_trailing_zeros }} &amp; above</span><span class="pl-filter__count">{{ p_high }}</span></label></li>
+                  {%- endif -%}
+                </ul>
+              </details>
+
+              <details class="pl-filter" open>
+                <summary class="pl-filter__head"><span>Availability</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
+                <ul class="pl-filter__list">
+                  <li><label class="pl-filter__option{% if in_stock == 0 %} is-disabled{% endif %}"><input type="checkbox" value="in" data-client-filter="stock"{% if in_stock == 0 %} disabled{% endif %}><span class="pl-filter__label">In Stock</span><span class="pl-filter__count">{{ in_stock }}</span></label></li>
+                  <li><label class="pl-filter__option{% if out_stock == 0 %} is-disabled{% endif %}"><input type="checkbox" value="out" data-client-filter="stock"{% if out_stock == 0 %} disabled{% endif %}><span class="pl-filter__label">Out Of Stock</span><span class="pl-filter__count">{{ out_stock }}</span></label></li>
+                </ul>
+              </details>
+              {%- endif -%}
+
+              <a class="pl-search__clear" href="{{ routes.search_url }}?q={{ search.terms | url_encode }}&type=product" data-clear-all{% if native_active_count == 0 %} hidden{% endif %}>Clear all filters</a>
+              <noscript><button type="submit" class="btn btn--primary btn--sm">Apply filters</button></noscript>
+            </aside>
+          {%- endif -%}
+
+          <div class="pl-search__main">
+            <div class="pl-search__toolbar">
+              <p class="pl-search__count" data-results-count>
+                {{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;
+              </p>
+              <div class="pl-search__actions">
+                {%- if native_filters or search.results_count > 0 -%}
+                  <button type="button" class="pl-search__toggle" data-filter-toggle aria-controls="SearchFilters" aria-expanded="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    <span data-filter-toggle-label>Hide filter</span>
+                    <span class="pl-search__badge" data-filter-badge{% if native_active_count == 0 %} hidden{% endif %}>{{ native_active_count }}</span>
+                  </button>
+                {%- endif -%}
+                <label class="pl-search__sort">
+                  <span class="visually-hidden">Sort by</span>
+                  <select name="sort_by" aria-label="Sort by" data-sort>
+                    {%- for option in search.sort_options -%}
+                      <option value="{{ option.value | escape }}"{% if option.value == current_sort %} selected{% endif %}>{{ option.name | escape }}</option>
+                    {%- endfor -%}
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            {%- if search.results_count == 0 -%}
+              <div class="pl-search__empty">
+                <p>
+                  {%- if native_active_count > 0 -%}
+                    No products match these filters.
+                  {%- else -%}
+                    No results for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different word.
+                  {%- endif -%}
+                </p>
+                <a href="/collections/stickers" class="btn btn--ghost btn--sm">Browse stickers</a>
+              </div>
+            {%- else -%}
+              <div class="pl-search__grid">
+                {%- for item in search.results -%}
+                  {%- if item.object_type == 'product' -%}
+                    {%- liquid
+                      assign item_themes = ''
+                      for genre in genres
+                        assign g_handle = genre | split: ':' | first
+                        if item.tags contains g_handle
+                          assign item_themes = item_themes | append: ' ' | append: g_handle
+                        endif
+                      endfor
+                      if item.price < 10000
+                        assign item_price = 'under-100'
+                      elsif item.price < 30000
+                        assign item_price = '100-299'
+                      elsif item.price < 50000
+                        assign item_price = '300-499'
+                      else
+                        assign item_price = '500-plus'
+                      endif
+                    -%}
+                    <div
+                      class="pl-search__item"
+                      data-theme="{{ item_themes | strip }}"
+                      data-type="{{ item.type | handleize }}"
+                      data-price="{{ item_price }}"
+                      data-stock="{% if item.available %}in{% else %}out{% endif %}"
+                    >
+                      {% render 'product-card', product: item, card_index: forloop.index %}
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
+              <div class="pl-search__empty" data-client-empty hidden>
+                <p>No products match these filters.</p>
+                <button type="button" class="btn btn--ghost btn--sm" data-client-clear>Clear all filters</button>
+              </div>
+
+              {% render 'collection-pagination', paginate: paginate %}
+            {%- endif -%}
           </div>
-          <div class="t-clear-placeholder" aria-hidden="true">Search posters...</div>
-          <div class="t-clear-glow" aria-hidden="true"></div>
-          <button type="button" class="t-clear-btn" aria-label="Clear search">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-        </div>
-        <button type="submit" class="btn btn--primary search-page-form__submit">Search</button>
-      </form>
-    </div>
-
-    {% if search.performed %}
-      <p class="search-page__meta">
-        {{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;
-      </p>
-
-      {% if search.results_count == 0 %}
-        <div class="search-page__empty">
-          <p>No results found. Try different keywords or browse posters.</p>
-          <a href="/collections/posters" class="btn btn--ghost">Browse posters</a>
-        </div>
-      {% else %}
-        {% paginate search.results by 16 %}
-          <div class="search-page__grid">
-            {% for item in search.results %}
-              {% if item.object_type == 'product' %}
-                {% render 'product-card', product: item, card_index: forloop.index %}
-              {% endif %}
-            {% endfor %}
-          </div>
-
-          {% render 'collection-pagination', paginate: paginate %}
-        {% endpaginate %}
-      {% endif %}
-    {% endif %}
+        </form>
+      {%- endpaginate -%}
+    {%- else -%}
+      <p class="pl-search__prompt">Type a word above to search posters, stickers &amp; more.</p>
+    {%- endif -%}
   </div>
 </div>
 
-{{ 'input-clear.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'input-clear.js' | asset_url }}" defer></script>
-
 <style>
-  .search-page__head {
-    max-width: 640px;
-    margin: 0 auto 48px;
+  .pl-search { padding: 48px 0 72px; }
+
+  .pl-search__title {
     text-align: center;
-  }
-  .search-page__title {
-    margin: 0 0 24px;
-    font-size: clamp(28px, 5vw, 36px);
+    font-size: clamp(32px, 5vw, 56px);
     font-weight: 700;
     letter-spacing: -0.02em;
-  }
-  .search-page__meta {
-    text-align: center;
     margin: 0 0 32px;
-    color: var(--color-text-muted, #666);
-    font-size: 14px;
+    color: var(--color-text);
   }
-  .search-page__empty {
-    text-align: center;
-    padding: 32px 0;
+
+  .pl-search__box {
+    display: flex;
+    align-items: center;
+    max-width: 600px;
+    height: 72px;
+    margin: 0 auto 48px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .search-page__empty p {
-    margin: 0 0 16px;
-    color: #666;
+
+  .pl-search__box:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(69, 162, 158, 0.15);
   }
-  .search-page__grid {
+
+  .pl-search__box .pl-search__input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    height: 100%;
+    border: none;
+    background: transparent;
+    padding: 0 20px;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--color-text);
+    outline: none;
+    box-shadow: none;
+  }
+
+  .pl-search__box .pl-search__input:focus { border: none; }
+
+  .pl-search__box-btn {
+    width: 64px;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .pl-search__box-btn:hover { color: var(--color-accent); }
+
+  .pl-search__prompt { text-align: center; color: var(--color-text-muted); }
+
+  /* Sidebar + results */
+  .pl-search__layout {
     display: grid;
-    gap: 24px;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .pl-search__layout.is-filters-hidden { grid-template-columns: minmax(0, 1fr); }
+  .pl-search__layout.is-filters-hidden .pl-search__filters { display: none; }
+  .pl-search__layout:not(:has(.pl-search__filters)) { grid-template-columns: minmax(0, 1fr); }
+
+  .pl-search__filters {
+    position: sticky;
+    top: 110px;
+    max-height: calc(100vh - 130px);
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+
+  .pl-filter {
+    border-bottom: 1px solid var(--color-border);
+    padding: 16px 0 18px;
+  }
+
+  .pl-filter:first-child { padding-top: 4px; }
+
+  .pl-filter__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .pl-filter__head::-webkit-details-marker { display: none; }
+
+  .pl-filter__icon { position: relative; width: 11px; height: 11px; }
+
+  .pl-filter__icon::before,
+  .pl-filter__icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4.5px;
+    width: 11px;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.2s ease;
+  }
+
+  .pl-filter__icon::after { transform: rotate(90deg); }
+  .pl-filter[open] .pl-filter__icon::after { transform: rotate(0deg); }
+
+  .pl-filter__list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .pl-filter__list li[hidden] { display: none; }
+
+  .pl-filter__option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .pl-filter__option.is-disabled { opacity: 0.45; cursor: default; }
+
+  .pl-filter__option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: var(--color-accent);
+    cursor: inherit;
+  }
+
+  .pl-filter__label { flex: 1; min-width: 0; }
+
+  .pl-filter__count {
+    min-width: 30px;
+    padding: 1px 6px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+  }
+
+  .pl-filter__more {
+    margin-top: 8px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .pl-filter__more:hover { color: var(--color-accent); }
+
+  .pl-filter__price { display: flex; align-items: flex-end; gap: 8px; margin-top: 12px; }
+
+  .pl-filter__price label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .pl-filter__price input { padding: 8px 10px; font-size: 14px; }
+  .pl-filter__dash { padding-bottom: 10px; color: var(--color-text-muted); }
+
+  .pl-search__clear {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .pl-search__clear[hidden] { display: none; }
+
+  .pl-search__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .pl-search__count { margin: 0; font-size: 14px; color: var(--color-text-muted); }
+
+  .pl-search__actions { display: flex; align-items: center; gap: 12px; }
+
+  .pl-search__toggle,
+  .pl-search__sort select {
+    height: 52px;
+    border-radius: 8px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .pl-search__toggle { display: inline-flex; align-items: center; gap: 10px; padding: 0 22px; }
+  .pl-search__toggle:hover { border-color: var(--color-text-muted); }
+
+  .pl-search__badge {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 100px;
+    background: var(--color-accent);
+    color: var(--color-accent-on);
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pl-search__badge[hidden] { display: none; }
+
+  .pl-search__sort select {
+    width: auto;
+    min-width: 220px;
+    padding: 0 44px 0 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+  }
+
+  .pl-search__grid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
+
+  .pl-search__item[hidden] { display: none; }
+
   @media (min-width: 768px) {
-    .search-page__grid { grid-template-columns: repeat(3, 1fr); }
+    .pl-search__grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
   }
-  @media (min-width: 1024px) {
-    .search-page__grid { grid-template-columns: repeat(4, 1fr); }
+
+  @media (min-width: 1200px) {
+    .pl-search__layout.is-filters-hidden .pl-search__grid,
+    .pl-search__layout:not(:has(.pl-search__filters)) .pl-search__grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .pl-search__empty {
+    text-align: center;
+    padding: 48px 16px;
+    border: 1px dashed var(--color-border);
+    border-radius: 10px;
+  }
+
+  .pl-search__empty[hidden] { display: none; }
+  .pl-search__empty p { margin: 0 0 16px; color: var(--color-text-muted); }
+
+  @media (max-width: 989px) {
+    .pl-search { padding: 32px 0 56px; }
+    .pl-search__title { margin-bottom: 20px; }
+    .pl-search__box { height: 56px; margin-bottom: 28px; }
+    .pl-search__layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .pl-search__filters {
+      position: static;
+      max-height: none;
+      order: 2;
+      margin-bottom: 24px;
+      padding: 4px 16px 8px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      background: var(--color-bg-secondary);
+    }
+    .pl-search__main { display: contents; }
+    .pl-search__toolbar { order: 1; margin-bottom: 16px; }
+    .pl-search__grid,
+    .pl-search__empty,
+    .pl-search__main > .pl-pagination { order: 3; }
+    .pl-search__actions { width: 100%; }
+    .pl-search__toggle { flex: 1; justify-content: center; padding: 0 14px; height: 46px; }
+    .pl-search__sort { flex: 1; }
+    .pl-search__sort select { width: 100%; min-width: 0; height: 46px; }
   }
 </style>
+
+<script>
+  (function () {
+    var form = document.querySelector('#SearchPage-{{ section.id }} [data-search-filters]');
+    if (!form) return;
+
+    // Theme / Product type (and Price / Availability when Shopify has none)
+    // are filtered instantly here; Shopify's own filters reload the page.
+    var CLIENT_GROUPS = ['theme', 'type', 'price', 'stock'];
+    var items = Array.prototype.slice.call(form.querySelectorAll('.pl-search__item'));
+    var boxes = Array.prototype.slice.call(form.querySelectorAll('[data-client-filter]'));
+    var countEl = form.querySelector('[data-results-count]');
+    var emptyEl = form.querySelector('[data-client-empty]');
+    var clearAll = form.querySelector('[data-clear-all]');
+    var badge = form.querySelector('[data-filter-badge]');
+    var nativeActive = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+    var total = parseInt(form.getAttribute('data-total'), 10) || items.length;
+    var terms = form.getAttribute('data-terms') || '';
+    var defaultCountText = countEl ? countEl.innerHTML : '';
+
+    function selected() {
+      var sel = {};
+      boxes.forEach(function (box) {
+        if (!box.checked) return;
+        var group = box.getAttribute('data-client-filter');
+        (sel[group] = sel[group] || []).push(box.value);
+      });
+      return sel;
+    }
+
+    function setClientParams(params, sel) {
+      CLIENT_GROUPS.forEach(function (group) {
+        if (sel[group]) params.set(group, sel[group].join(','));
+        else params.delete(group);
+      });
+    }
+
+    function matches(item, sel) {
+      return Object.keys(sel).every(function (group) {
+        var values = (item.getAttribute('data-' + group) || '').split(' ');
+        return sel[group].some(function (v) { return values.indexOf(v) !== -1; });
+      });
+    }
+
+    function apply() {
+      var sel = selected();
+      var active = boxes.filter(function (b) { return b.checked; }).length;
+      var visible = 0;
+
+      items.forEach(function (item) {
+        var show = !active || matches(item, sel);
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      if (countEl) {
+        countEl.innerHTML = active
+          ? visible + ' of ' + total + ' result' + (total === 1 ? '' : 's') + ' for &ldquo;' + terms + '&rdquo;'
+          : defaultCountText;
+      }
+      if (emptyEl) emptyEl.hidden = !(active && visible === 0);
+      if (clearAll) clearAll.hidden = !(active || nativeActive);
+      if (badge) {
+        badge.textContent = active + nativeActive;
+        badge.hidden = !(active + nativeActive);
+      }
+
+      // Keep selections in the URL (shareable, survives back/forward and paging).
+      var params = new URLSearchParams(window.location.search);
+      setClientParams(params, sel);
+      window.history.replaceState(null, '', window.location.pathname + '?' + params.toString());
+      form.querySelectorAll('.pl-pagination a').forEach(function (a) {
+        var u = new URL(a.href, window.location.origin);
+        setClientParams(u.searchParams, sel);
+        a.href = u.pathname + u.search;
+      });
+    }
+
+    // Restore selections from the URL.
+    var urlParams = new URLSearchParams(window.location.search);
+    boxes.forEach(function (box) {
+      var values = (urlParams.get(box.getAttribute('data-client-filter')) || '').split(',');
+      if (values.indexOf(box.value) !== -1 && !box.disabled) box.checked = true;
+      box.addEventListener('change', apply);
+    });
+
+    form.querySelectorAll('[data-client-clear]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        boxes.forEach(function (b) { b.checked = false; });
+        apply();
+      });
+    });
+
+    if (boxes.length) apply();
+
+    /* ---- Shopify filters: reload, carrying our selections along ---- */
+    form.addEventListener('change', function (e) {
+      if (!e.target.matches('[data-filter-auto]')) return;
+      if (form.requestSubmit) form.requestSubmit(); else form.submit();
+    });
+
+    form.addEventListener('submit', function () {
+      form.querySelectorAll('input[type="number"]').forEach(function (input) {
+        if (input.value === '') input.disabled = true;
+      });
+      var sel = selected();
+      Object.keys(sel).forEach(function (group) {
+        var hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = group;
+        hidden.value = sel[group].join(',');
+        form.appendChild(hidden);
+      });
+    });
+
+    /* ---- Sort: reload with sort_by, keeping every other URL param ---- */
+    var sort = form.querySelector('[data-sort]');
+    if (sort) {
+      sort.addEventListener('change', function () {
+        var params = new URLSearchParams(window.location.search);
+        params.set('sort_by', sort.value);
+        params.delete('page');
+        window.location.search = params.toString();
+      });
+    }
+
+    /* ---- "+ Show more" in long filter lists ---- */
+    form.querySelectorAll('[data-show-more]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var list = btn.previousElementSibling;
+        var extras = list ? list.querySelectorAll('.is-extra') : [];
+        var expand = btn.textContent.indexOf('more') !== -1;
+        extras.forEach(function (li) { li.hidden = !expand; });
+        btn.textContent = expand ? '− Show less' : '+ Show more';
+      });
+    });
+
+    /* ---- Hide / Show filter ---- */
+    var toggle = form.querySelector('[data-filter-toggle]');
+    if (!toggle) return;
+    var label = toggle.querySelector('[data-filter-toggle-label]');
+    var KEY = 'pl-search-filters-hidden';
+    var isMobile = window.matchMedia('(max-width: 989px)').matches;
+
+    function setHidden(hidden) {
+      form.classList.toggle('is-filters-hidden', hidden);
+      toggle.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+      if (label) label.textContent = hidden ? 'Show filter' : 'Hide filter';
+    }
+
+    // Desktop remembers the choice; mobile starts collapsed to save space.
+    var stored = null;
+    try { stored = localStorage.getItem(KEY); } catch (err) {}
+    setHidden(isMobile ? true : stored === '1');
+
+    toggle.addEventListener('click', function () {
+      var hidden = !form.classList.contains('is-filters-hidden');
+      setHidden(hidden);
+      if (!isMobile) {
+        try { localStorage.setItem(KEY, hidden ? '1' : '0'); } catch (err) {}
+      }
+    });
+  })();
+</script>
 
 {% schema %}
 {

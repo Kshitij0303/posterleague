@@ -1,0 +1,7 @@
+{%- comment -%}
+  Single source of truth for sticker genres ("handle:Label", comma-separated).
+  Handles must match product tags exactly. Used by sticker-categories.liquid
+  (nav/pills) and main-search.liquid (Theme filter) via
+  {% capture genre_list %}{% render 'genre-list' %}{% endcapture %}.
+{%- endcomment -%}
+anime:Anime,gaming:Gaming,cars-bikes:Cars & Bikes,movies-series:Movies & Series,music:Music,spotify:Spotify,tech-code:Tech & Code,sports:Sports,kpop-pop-culture:K-Pop & Pop Culture,love:Love,food-and-drinks:Food & Drinks,sarcasm-quotes:Sarcasm & Quotes,abstract:Abstract,animals:Animals,spiritual:Spiritual,warning:Warning

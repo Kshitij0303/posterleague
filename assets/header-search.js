@@ -1,13 +1,11 @@
 /**
  * POSTERLEAGUE — header search bar.
  * The header search icon opens a full-width search bar under the header.
- *  - Typing: quick suggestions drop down under the bar.
- *  - Enter (or the search button): every matching product is shown as a
- *    full product-card grid, in place.
- * Never navigates to /search; only clicking a product goes to that product.
- * Results come from the full search engine via the Section Rendering API:
- * sections/header-search-results.liquid (suggestions) and
- * sections/header-search-grid.liquid (full results).
+ *  - Typing: quick suggestions drop down under the bar, without leaving
+ *    the page (fetched from sections/header-search-results.liquid via the
+ *    Section Rendering API — same search engine as the results page).
+ *  - Enter (or the search button): goes to the /search results page,
+ *    which has filters and sorting (sections/main-search.liquid).
  */
 (function () {
   'use strict';
@@ -15,7 +13,6 @@
   var DEBOUNCE_MS = 250;
   var MIN_CHARS = 2;
   var SUGGEST_SECTION = 'header-search-results';
-  var FULL_SECTION = 'header-search-grid';
 
   var trigger, root, form, input, panel, closeBtn, dim;
   var debounceTimer = null;
@@ -28,7 +25,7 @@
 
   function buildUrl(query, mode, page) {
     return '/search?q=' + encodeURIComponent(query) +
-      '&type=product&section_id=' + (mode === 'full' ? FULL_SECTION : SUGGEST_SECTION) +
+      '&type=product&section_id=' + SUGGEST_SECTION +
       (page > 1 ? '&page=' + page : '');
   }
 
@@ -50,7 +47,6 @@
 
   function showPanel(html, mode) {
     panel.innerHTML = html;
-    panel.classList.toggle('is-full', mode === 'full');
     panel.hidden = false;
     input.setAttribute('aria-expanded', 'true');
     if (dim) dim.classList.add('is-open');
@@ -109,7 +105,6 @@
           ? '<p class="header-search__hint">Press Enter to see all results</p>'
           : moreButtonHtml(fragment.getAttribute('data-next-page'));
         showPanel(fragment.innerHTML + footer, mode);
-        if (mode === 'full' && window.plWishlist && window.plWishlist.updateUI) window.plWishlist.updateUI();
       })
       .catch(function (err) {
         if (err && err.name === 'AbortError') return;
@@ -212,11 +207,14 @@
       debounceTimer = window.setTimeout(function () { search(query, 'suggest'); }, DEBOUNCE_MS);
     });
 
-    // Enter / search button → everything related to the word, in place.
+    // Enter / search button → full results page (/search) with filters & sort.
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
       window.clearTimeout(debounceTimer);
-      search(input.value.trim(), 'full');
+      if (!input.value.trim()) {
+        e.preventDefault();
+        input.focus();
+      }
+      // otherwise let the form submit normally to /search?q=…&type=product
     });
 
     // Coming back to the field re-shows whatever was there.
