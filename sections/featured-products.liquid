@@ -21,133 +21,75 @@
   endif
 -%}
 
-<div class="section pl-trending-section" id="TrendingSection-{{ section.id }}" data-section-id="{{ section.id }}">
+<div class="section" id="TrendingSection-{{ section.id }}" data-section-id="{{ section.id }}">
   <div class="container">
-    <div class="pl-trending-section__header">
+    <div class="product-rail-section__header">
       <div>
-        <h2 class="pl-trending-section__title">{{ heading | escape }}</h2>
-        <p class="pl-trending-section__subtitle">{{ subheading | escape }}</p>
+        <h2 class="product-rail-section__title">{{ heading | escape }}</h2>
+        <p class="product-rail-section__subtitle">{{ subheading | escape }}</p>
       </div>
       {% assign view_all_collection = trending_collection | default: collections.all %}
       {% if section.settings.show_view_all and view_all_collection != blank %}
-        <a href="{{ view_all_collection.url | default: '/collections/all?sort_by=best-selling' }}" class="pl-trending-section__view-all">
+        <a href="{{ view_all_collection.url | default: '/collections/all?sort_by=best-selling' }}" class="product-rail-section__view-all">
           View All &rarr;
         </a>
       {% endif %}
     </div>
 
-    <div class="pl-trending-grid grid-4col" id="TrendingGrid-{{ section.id }}" data-product-limit="{{ product_limit }}">
-      {% if trending_count > 0 %}
-        {% for product in trending_products limit: product_limit %}
-          {% render 'product-card', product: product, card_index: forloop.index, show_trending_badge: true %}
-        {% endfor %}
-      {% elsif section.settings.fallback_to_tags %}
-        {% assign shown = 0 %}
-        {% for product in trending_products %}
-          {% if product.tags contains 'trending' or product.tags contains 'bestseller' %}
-            {% assign shown = shown | plus: 1 %}
-            {% render 'product-card', product: product, card_index: shown, show_trending_badge: true %}
-            {% if shown >= product_limit %}
-              {% break %}
+    <div class="product-rail-wrap">
+      <button type="button" class="product-rail__arrow product-rail__arrow--prev" data-rail-prev aria-label="Scroll left">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button type="button" class="product-rail__arrow product-rail__arrow--next" data-rail-next aria-label="Scroll right">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+
+      <div class="product-rail" id="TrendingGrid-{{ section.id }}" data-product-limit="{{ product_limit }}" tabindex="0" aria-label="{{ heading | escape }} — scrollable product list">
+        {% if trending_count > 0 %}
+          {% for product in trending_products limit: product_limit %}
+            {% render 'product-card', product: product, card_index: forloop.index, show_trending_badge: true %}
+          {% endfor %}
+        {% elsif section.settings.fallback_to_tags %}
+          {% assign shown = 0 %}
+          {% for product in trending_products %}
+            {% if product.tags contains 'trending' or product.tags contains 'bestseller' %}
+              {% assign shown = shown | plus: 1 %}
+              {% render 'product-card', product: product, card_index: shown, show_trending_badge: true %}
+              {% if shown >= product_limit %}
+                {% break %}
+              {% endif %}
             {% endif %}
+          {% endfor %}
+          {% if shown == 0 %}
+            <div class="product-rail-empty" data-trending-empty>
+              <h3>No trending products yet</h3>
+              <p>Create a <strong>Trending</strong> collection (sort: Best selling) in Shopify Admin, or tag hot products with <code>trending</code>.</p>
+              <a href="/collections/all?sort_by=best-selling" class="btn btn--primary btn--sm">Shop best sellers &rarr;</a>
+            </div>
           {% endif %}
-        {% endfor %}
-        {% if shown == 0 %}
-          <div class="pl-trending-empty" data-trending-empty>
+        {% else %}
+          <div class="product-rail-empty" data-trending-empty>
             <h3>No trending products yet</h3>
-            <p>Create a <strong>Trending</strong> collection (sort: Best selling) in Shopify Admin, or tag hot products with <code>trending</code>.</p>
-            <a href="/collections/all?sort_by=best-selling" class="btn btn--primary btn--sm">Shop best sellers &rarr;</a>
+            <p>Add a collection named <strong>Trending</strong> and set sort order to <strong>Best selling</strong>.</p>
           </div>
         {% endif %}
-      {% else %}
-        <div class="pl-trending-empty" data-trending-empty>
-          <h3>No trending products yet</h3>
-          <p>Add a collection named <strong>Trending</strong> and set sort order to <strong>Best selling</strong>.</p>
-        </div>
-      {% endif %}
+      </div>
     </div>
   </div>
 </div>
 
 <style>
-.pl-trending-section__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.pl-trending-section__title {
-  font-size: 26px;
-  font-weight: 700;
-  margin: 0 0 6px;
-  letter-spacing: -0.01em;
-}
-
-.pl-trending-section__subtitle {
-  font-size: 13px;
-  color: var(--color-text-muted, #666);
-  margin: 0;
-}
-
-.pl-trending-section__view-all {
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: underline;
-  color: var(--color-text);
-  white-space: nowrap;
-}
-
-.pl-trending-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.pl-trending-empty {
-  grid-column: 1 / -1;
-  background: var(--color-bg-secondary, #f9f9f9);
-  border: 1px dashed var(--color-border, #ddd);
-  padding: 48px 24px;
-  text-align: center;
-  border-radius: 8px;
-}
-
-.pl-trending-empty h3 {
-  font-size: 18px;
-  margin: 0 0 8px;
-}
-
-.pl-trending-empty p {
-  font-size: 13px;
-  color: var(--color-text-muted, #666);
-  max-width: 460px;
-  margin: 0 auto 20px;
-  line-height: 1.5;
-}
-
-.pl-trending-empty code {
+/* Rail/header/empty-state styling lives in base.css (.product-rail-section__*,
+   .product-rail, .product-rail-empty) — reused as-is. Only this section's
+   extra "code" tag (inside the empty-state copy) needs its own rule. */
+.product-rail-empty code {
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.06);
 }
 
-@media (min-width: 768px) {
-  .pl-trending-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-}
-
-@media (min-width: 1024px) {
-  .pl-trending-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
-}
-
-html[data-theme="dark"] .pl-trending-empty {
-  background: var(--color-bg-secondary);
-  border-color: var(--color-border);
-}
-
-html[data-theme="dark"] .pl-trending-empty code {
+html[data-theme="dark"] .product-rail-empty code {
   background: rgba(255, 255, 255, 0.08);
 }
 </style>
@@ -157,6 +99,30 @@ html[data-theme="dark"] .pl-trending-empty code {
     var section = document.getElementById('TrendingSection-{{ section.id }}');
     var grid = document.getElementById('TrendingGrid-{{ section.id }}');
     if (!section || !grid) return;
+
+    var prevBtn = section.querySelector('[data-rail-prev]');
+    var nextBtn = section.querySelector('[data-rail-next]');
+    if (prevBtn && nextBtn) {
+      var scrollStep = function () {
+        var card = grid.querySelector('.product-card');
+        var cardWidth = card ? card.getBoundingClientRect().width : 220;
+        return (cardWidth + 16) * 2;
+      };
+      prevBtn.addEventListener('click', function () {
+        grid.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', function () {
+        grid.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+      });
+      var updateArrows = function () {
+        var maxScroll = grid.scrollWidth - grid.clientWidth - 2;
+        prevBtn.disabled = grid.scrollLeft <= 0;
+        nextBtn.disabled = grid.scrollLeft >= maxScroll;
+      };
+      grid.addEventListener('scroll', updateArrows, { passive: true });
+      window.addEventListener('resize', updateArrows);
+      updateArrows();
+    }
 
     var limit = parseInt(grid.getAttribute('data-product-limit'), 10) || 8;
     var hasProducts = grid.querySelector('.product-card');

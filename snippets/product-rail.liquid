@@ -1,0 +1,100 @@
+{% comment %}
+  Shared horizontally-scrollable, 2-row product rail.
+  Used by every homepage category row (Trending Now, Posters, Splits,
+  Stickers, Bookmarks, Magnets, Trading Cards) so there's one styling/
+  behavior source instead of duplicating a grid per section.
+
+  Usage:
+    {% render 'product-rail',
+       rail_id: section.id,
+       heading: section.settings.heading,
+       subheading: section.settings.subheading,
+       products: collection.products,
+       products_count: collection.products_count,
+       limit: section.settings.products_to_show,
+       view_all_url: collection.url,
+       show_view_all: section.settings.show_view_all,
+       empty_title: 'Posters — coming soon',
+       empty_text: 'We are still stocking this category.'
+    %}
+{% endcomment %}
+
+{%- liquid
+  assign rail_limit = limit | default: 12
+  assign has_products = false
+  if products_count > 0
+    assign has_products = true
+  endif
+-%}
+
+<div class="product-rail-section" id="ProductRail-{{ rail_id }}">
+  <div class="product-rail-section__header">
+    <div>
+      <h2 class="product-rail-section__title">{{ heading | escape }}</h2>
+      {% if subheading != blank %}
+        <p class="product-rail-section__subtitle">{{ subheading | escape }}</p>
+      {% endif %}
+    </div>
+    {% if show_view_all and view_all_url != blank %}
+      <a href="{{ view_all_url }}" class="product-rail-section__view-all">View All &rarr;</a>
+    {% endif %}
+  </div>
+
+  {% if has_products %}
+    <div class="product-rail-wrap">
+      <button type="button" class="product-rail__arrow product-rail__arrow--prev" data-rail-prev aria-label="Scroll left">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="product-rail" id="ProductRailTrack-{{ rail_id }}" tabindex="0" aria-label="{{ heading | escape }} — scrollable product list">
+        {% for product in products limit: rail_limit %}
+          {% render 'product-card', product: product, card_index: forloop.index %}
+        {% endfor %}
+      </div>
+      <button type="button" class="product-rail__arrow product-rail__arrow--next" data-rail-next aria-label="Scroll right">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  {% else %}
+    <div class="product-rail-empty">
+      <h3>{{ empty_title | default: heading | append: ' — coming soon' }}</h3>
+      <p>{{ empty_text | default: 'We are still stocking this category — check back soon.' }}</p>
+      <a href="/collections/stickers" class="btn btn--primary btn--sm">Shop Stickers &rarr;</a>
+      <a href="/pages/custom-quote" class="btn btn--ghost btn--sm">Request Custom Order</a>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  (function () {
+    var track = document.getElementById('ProductRailTrack-{{ rail_id }}');
+    var root = document.getElementById('ProductRail-{{ rail_id }}');
+    if (!track || !root) return;
+
+    var prevBtn = root.querySelector('[data-rail-prev]');
+    var nextBtn = root.querySelector('[data-rail-next]');
+    if (!prevBtn || !nextBtn) return;
+
+    function scrollStep() {
+      var card = track.querySelector('.product-card');
+      var cardWidth = card ? card.getBoundingClientRect().width : 220;
+      return (cardWidth + 16) * 2;
+    }
+
+    prevBtn.addEventListener('click', function () {
+      track.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+    });
+    nextBtn.addEventListener('click', function () {
+      track.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+    });
+
+    function updateArrows() {
+      var maxScroll = track.scrollWidth - track.clientWidth - 2;
+      prevBtn.disabled = track.scrollLeft <= 0;
+      nextBtn.disabled = track.scrollLeft >= maxScroll;
+    }
+
+    track.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    updateArrows();
+  })();
+</script>

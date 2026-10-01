@@ -2,42 +2,131 @@
   "sections": {
     "hero": {
       "type": "hero-banner",
+      "blocks": {
+        "slide_1": {
+          "type": "review_media",
+          "settings": {
+            "video_url": ""
+          }
+        },
+        "slide_2": {
+          "type": "review_media",
+          "settings": {
+            "video_url": ""
+          }
+        },
+        "slide_3": {
+          "type": "review_media",
+          "settings": {
+            "video_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2",
+        "slide_3"
+      ],
       "settings": {
+        "hero_background_video": "shopify://files/videos/vidssave.com Gypsy kid dancing at club can't be bothered. 1997. 360P.mp4",
+        "hero_background_video_url": "",
         "eyebrow": "NEW DROPS WEEKLY",
         "heading": "YOUR WALLS.\nYOUR STYLE.",
         "subheading": "Custom posters, stickers, bookmarks & magnets — 300gsm. Laminated. Made to order.",
         "cta_primary_label": "Shop Now",
+        "cta_primary_url": "",
         "cta_secondary_label": "Explore All Posters",
+        "cta_secondary_url": "",
         "overlay_opacity": 75,
         "slide_duration": 4
-      },
-      "blocks": {
-        "slide_1": { "type": "review_media", "settings": {} },
-        "slide_2": { "type": "review_media", "settings": {} },
-        "slide_3": { "type": "review_media", "settings": {} }
-      },
-      "block_order": ["slide_1", "slide_2", "slide_3"]
+      }
     },
     "featured": {
       "type": "featured-products",
       "settings": {
         "heading": "Trending Now",
         "subheading": "Best sellers & most viewed right now",
+        "collection": "",
         "fallback_to_tags": true,
         "products_to_show": 8,
         "show_view_all": true
       }
     },
+    "category_posters": {
+      "type": "category-rail",
+      "settings": {
+        "collection": "posters",
+        "heading": "Posters",
+        "subheading": "Anime, cars, bikes, movies, gaming, sports & spiritual",
+        "products_to_show": 12,
+        "show_view_all": true,
+        "empty_text": "We are still stocking Posters — check back soon."
+      }
+    },
+    "category_splits": {
+      "type": "category-rail",
+      "settings": {
+        "collection": "splits",
+        "heading": "Splits",
+        "subheading": "3, 4 & 8-piece connected wall sets",
+        "products_to_show": 12,
+        "show_view_all": true,
+        "empty_text": "We are still stocking Split Wall Sets — check back soon."
+      }
+    },
+    "category_stickers": {
+      "type": "category-rail",
+      "settings": {
+        "collection": "stickers",
+        "heading": "Stickers",
+        "subheading": "Die-cut laminated stickers",
+        "products_to_show": 12,
+        "show_view_all": true,
+        "empty_text": "We are still stocking Stickers — check back soon."
+      }
+    },
+    "category_bookmarks": {
+      "type": "category-rail",
+      "settings": {
+        "collection": "bookmarks",
+        "heading": "Bookmarks",
+        "subheading": "Laminated bookmarks to match your posters",
+        "products_to_show": 12,
+        "show_view_all": true,
+        "empty_text": "We are still stocking Bookmarks — check back soon."
+      }
+    },
+    "category_magnets": {
+      "type": "category-rail",
+      "settings": {
+        "collection": "magnets",
+        "heading": "Magnets",
+        "subheading": "Fridge-ready magnets in your favourite designs",
+        "products_to_show": 12,
+        "show_view_all": true,
+        "empty_text": "We are still stocking Magnets — check back soon."
+      }
+    },
+    "category_trading_cards": {
+      "type": "category-rail",
+      "settings": {
+        "collection": "trading-cards",
+        "heading": "Trading Cards",
+        "subheading": "Collectible-style cards for your favourite characters & teams",
+        "products_to_show": 12,
+        "show_view_all": true,
+        "empty_text": "We are still stocking Trading Cards — check back soon."
+      }
+    },
     "customization_promo": {
       "type": "customization-promo",
-      "settings": {
-        "slide_duration": 4
-      },
       "blocks": {
         "hero_wall": {
           "type": "carousel_slide",
           "settings": {
             "media_type": "image",
+            "video_url": "",
+            "polaroid_style": false,
             "alt_text": "Custom poster in a premium living room"
           }
         },
@@ -45,6 +134,8 @@
           "type": "carousel_slide",
           "settings": {
             "media_type": "image_grid",
+            "video_url": "",
+            "polaroid_style": false,
             "alt_text": "Anime, travel, car and minimal poster styles"
           }
         },
@@ -52,6 +143,8 @@
           "type": "carousel_slide",
           "settings": {
             "media_type": "image",
+            "video_url": "",
+            "polaroid_style": false,
             "alt_text": "Limited Edition, museum-quality print"
           }
         },
@@ -59,29 +152,48 @@
           "type": "carousel_slide",
           "settings": {
             "media_type": "image",
+            "video_url": "",
+            "polaroid_style": false,
             "alt_text": "300 GSM paper macro with laminated edge"
           }
         },
         "unboxing_video": {
           "type": "carousel_slide",
           "settings": {
-            "media_type": "video"
+            "media_type": "video",
+            "video_url": "",
+            "polaroid_style": false,
+            "alt_text": ""
           }
         },
         "customer_gallery": {
           "type": "carousel_slide",
           "settings": {
             "media_type": "image_grid",
+            "video_url": "",
             "polaroid_style": true,
             "alt_text": "Customer photos of posters on their walls"
           }
         }
       },
-      "block_order": ["hero_wall", "gallery_mockups", "limited_edition", "paper_quality", "unboxing_video", "customer_gallery"]
+      "block_order": [
+        "hero_wall",
+        "gallery_mockups",
+        "limited_edition",
+        "paper_quality",
+        "unboxing_video",
+        "customer_gallery"
+      ],
+      "settings": {
+        "eyebrow": "Made For You",
+        "heading": "Custom Prints, Your Way",
+        "body_text": "<p>Upload your image or idea. We'll handle the rest — 300gsm paper, precision lamination, and a pricing quote sent straight to your inbox. No checkout confusion, no upfront payment for custom work.</p>",
+        "image_position": "left",
+        "slide_duration": 4
+      }
     },
     "coming_soon": {
       "type": "coming-soon",
-      "settings": {},
       "blocks": {
         "posters": {
           "type": "coming_soon_item",
@@ -124,25 +236,60 @@
           }
         }
       },
-      "block_order": ["posters", "splits", "bookmarks", "magnets", "trading_cards"]
+      "block_order": [
+        "posters",
+        "splits",
+        "bookmarks",
+        "magnets",
+        "trading_cards"
+      ],
+      "settings": {
+        "heading": "Coming Soon",
+        "subheading": "More ways to fill your walls."
+      }
     },
     "brand_story": {
       "type": "brand-story",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Our Story",
+        "heading": "Print That Means Something",
+        "body_text": "<p>We started with a simple idea: your walls should reflect you, not a generic catalog. Every piece we make is crafted to order on premium materials.</p>"
+      }
     },
     "reviews": {
       "type": "reviews",
-      "settings": {}
+      "settings": {
+        "heading": "What Customers Say"
+      }
     },
     "newsletter": {
       "type": "newsletter",
-      "settings": {}
+      "settings": {
+        "heading": "Stay in the Loop",
+        "subheading": "New drops, custom order updates, and early access — straight to your inbox."
+      }
     },
     "faq": {
       "type": "faq",
-      "settings": {}
+      "settings": {
+        "heading": "Frequently Asked Questions"
+      }
     }
   },
-  "order": ["hero","featured","customization_promo","coming_soon","brand_story","reviews","newsletter","faq"]
+  "order": [
+    "hero",
+    "featured",
+    "category_posters",
+    "category_splits",
+    "category_stickers",
+    "category_bookmarks",
+    "category_magnets",
+    "category_trading_cards",
+    "customization_promo",
+    "coming_soon",
+    "brand_story",
+    "reviews",
+    "newsletter",
+    "faq"
+  ]
 }
-
