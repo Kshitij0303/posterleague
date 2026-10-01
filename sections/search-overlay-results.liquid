@@ -1,0 +1,53 @@
+{% comment %}
+  Results fragment for the header search overlay. Never placed in a
+  template — fetched via the Section Rendering API from
+  /search?q=…&type=product&section_id=search-overlay-results so the
+  overlay uses the same full search engine as the /search page (complete
+  results, store-currency formatting via `money`) without navigating.
+  See assets/predictive-search.js.
+{% endcomment %}
+
+{%- if search.performed -%}
+  {%- paginate search.results by 10 -%}
+    <div
+      data-search-results
+      data-total="{{ search.results_count }}"
+      data-next-page="{% if paginate.next %}{{ paginate.current_page | plus: 1 }}{% endif %}"
+    >
+      {%- if search.results_count == 0 -%}
+        <p class="search-panel__empty">No results for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different word.</p>
+      {%- else -%}
+        {%- if paginate.current_page == 1 -%}
+          <p class="search-panel__meta">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;</p>
+        {%- endif -%}
+        <div class="predictive-search__list" data-results-list>
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              <a href="{{ item.url }}" class="predictive-search__result" data-predictive-result>
+                <span class="predictive-search__thumb">
+                  {%- if item.featured_image -%}
+                    <img src="{{ item.featured_image | image_url: width: 120 }}" alt="" loading="lazy" width="60" height="60">
+                  {%- endif -%}
+                </span>
+                <span class="predictive-search__info">
+                  <span class="predictive-search__title">{{ item.title | escape }}</span>
+                  <span class="predictive-search__price">
+                    {%- if item.price_varies -%}From {% endif -%}
+                    {{ item.price_min | money }}
+                    {%- if item.compare_at_price > item.price -%}<s>{{ item.compare_at_price | money }}</s>{%- endif -%}
+                  </span>
+                </span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endpaginate -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Search overlay results"
+}
+{% endschema %}
