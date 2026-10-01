@@ -1,0 +1,39 @@
+{% comment %}
+  Full results for the header search (shown when the shopper presses Enter):
+  every product matching the word, as the site's normal product cards.
+  Never placed in a template — fetched via the Section Rendering API from
+  /search?q=…&type=product&section_id=header-search-grid and shown in place
+  under the search bar (see assets/header-search.js). Paginated by 12;
+  "Show more results" appends the next page.
+{% endcomment %}
+
+{%- if search.performed -%}
+  {%- paginate search.results by 12 -%}
+    <div
+      data-search-results
+      data-total="{{ search.results_count }}"
+      data-next-page="{% if paginate.next %}{{ paginate.current_page | plus: 1 }}{% endif %}"
+    >
+      {%- if search.results_count == 0 -%}
+        <p class="header-search__status">No results for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different word.</p>
+      {%- else -%}
+        {%- if paginate.current_page == 1 -%}
+          <p class="header-search__heading">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;</p>
+        {%- endif -%}
+        <div class="header-search__grid" data-results-list>
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item, card_index: forloop.index %}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endpaginate -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Search full results"
+}
+{% endschema %}

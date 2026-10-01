@@ -1,10 +1,10 @@
 {% comment %}
-  Results fragment for the header search overlay. Never placed in a
+  Results fragment for the header search dropdown. Never placed in a
   template — fetched via the Section Rendering API from
-  /search?q=…&type=product&section_id=search-overlay-results so the
-  overlay uses the same full search engine as the /search page (complete
-  results, store-currency formatting via `money`) without navigating.
-  See assets/predictive-search.js.
+  /search?q=…&type=product&section_id=header-search-results so the dropdown
+  uses the same full search engine as the /search page (complete results,
+  store-currency formatting via `money`) without navigating.
+  See snippets/header-search.liquid and assets/header-search.js.
 {% endcomment %}
 
 {%- if search.performed -%}
@@ -15,23 +15,23 @@
       data-next-page="{% if paginate.next %}{{ paginate.current_page | plus: 1 }}{% endif %}"
     >
       {%- if search.results_count == 0 -%}
-        <p class="search-panel__empty">No results for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different word.</p>
+        <p class="header-search__status">No results for &ldquo;{{ search.terms | escape }}&rdquo;. Try a different word.</p>
       {%- else -%}
         {%- if paginate.current_page == 1 -%}
-          <p class="search-panel__meta">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;</p>
+          <p class="header-search__meta">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for &ldquo;{{ search.terms | escape }}&rdquo;</p>
         {%- endif -%}
-        <div class="predictive-search__list" data-results-list>
+        <div class="header-search__list" data-results-list role="listbox">
           {%- for item in search.results -%}
             {%- if item.object_type == 'product' -%}
-              <a href="{{ item.url }}" class="predictive-search__result" data-predictive-result>
-                <span class="predictive-search__thumb">
+              <a href="{{ item.url }}" class="header-search__result" role="option" data-search-result>
+                <span class="header-search__thumb">
                   {%- if item.featured_image -%}
                     <img src="{{ item.featured_image | image_url: width: 120 }}" alt="" loading="lazy" width="60" height="60">
                   {%- endif -%}
                 </span>
-                <span class="predictive-search__info">
-                  <span class="predictive-search__title">{{ item.title | escape }}</span>
-                  <span class="predictive-search__price">
+                <span class="header-search__info">
+                  <span class="header-search__title">{{ item.title | escape }}</span>
+                  <span class="header-search__price">
                     {%- if item.price_varies -%}From {% endif -%}
                     {{ item.price_min | money }}
                     {%- if item.compare_at_price > item.price -%}<s>{{ item.compare_at_price | money }}</s>{%- endif -%}
@@ -48,6 +48,6 @@
 
 {% schema %}
 {
-  "name": "Search overlay results"
+  "name": "Header search results"
 }
 {% endschema %}

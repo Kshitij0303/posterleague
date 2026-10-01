@@ -57,7 +57,8 @@
   </div>
 </div>
 
-{% comment %} input-clear.css/js are now loaded globally in theme.liquid (needed by the header search overlay too) {% endcomment %}
+{{ 'input-clear.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'input-clear.js' | asset_url }}" defer></script>
 
 <style>
   .search-page__head {

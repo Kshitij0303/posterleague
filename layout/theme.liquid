@@ -47,7 +47,6 @@
   {{ 'secure-data-protection.css' | asset_url | stylesheet_tag }}
   {{ 'social-icons.css' | asset_url | stylesheet_tag }}
   {{ 'cart-toast.css' | asset_url | stylesheet_tag }}
-  {{ 'input-clear.css' | asset_url | stylesheet_tag }}
   {{ 'trending-tracker.js' | asset_url | script_tag }}
   {% if request.page_type == 'product' %}
     {{ 'product-form-options.css' | asset_url | stylesheet_tag }}
@@ -659,7 +658,7 @@
       <div class="site-header__icons">
         {% render 'theme-toggle' %}
 
-        <button type="button" id="search-trigger" aria-label="Search" title="Search posters">
+        <button type="button" id="search-trigger" aria-label="Search" title="Search posters" aria-controls="HeaderSearch" aria-expanded="false">
           {% render 'icon-search' %}
         </button>
 
@@ -685,7 +684,11 @@
         </a>
       </div>
     </div>
+
+    <!-- Search bar row — opens from the search icon, results show in place -->
+    {% render 'header-search' %}
   </header>
+  <div class="header-search-dim" id="HeaderSearchDim" aria-hidden="true"></div>
 
   <!-- Mobile Navigation Drawer -->
   <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
@@ -761,7 +764,6 @@
   </main>
 
   <!-- Drawers & Widgets -->
-  {% render 'search-overlay' %}
   {% render 'wishlist-drawer' %}
   {% render 'floating-video-widget' %}
 
@@ -839,8 +841,7 @@
   <script src="{{ 'cart-upsells.js' | asset_url }}" defer></script>
   <script src="{{ 'dark-mode.js' | asset_url }}" defer></script>
   <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
-  <script src="{{ 'input-clear.js' | asset_url }}" defer></script>
-  <script src="{{ 'predictive-search.js' | asset_url }}" defer></script>
+  <script src="{{ 'header-search.js' | asset_url }}" defer></script>
   <script src="{{ 'poster-card-mockup.js' | asset_url }}" defer></script>
   <script src="{{ 'image-protection.js' | asset_url }}" defer></script>
   <script src="{{ 'secure-data-protection.js' | asset_url }}" defer></script>
