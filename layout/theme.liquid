@@ -211,6 +211,19 @@
       background: #F4F4F4;
     }
 
+    /* Account icon: small accent dot once the customer is signed in */
+    .header-account.is-signed-in::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      box-shadow: 0 0 0 2px var(--color-bg-secondary);
+    }
+
     /* Cart: bag icon with count badge on its top-left + subtotal beside it */
     .site-header__icons a.header-cart {
       gap: 10px;
@@ -718,6 +731,18 @@
           </span>
         </button>
 
+        <!-- Account: Shopify customer accounts (sign in with email code) -->
+        {%- if shop.customer_accounts_enabled -%}
+          <a
+            href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+            class="header-account{% if customer %} is-signed-in{% endif %}"
+            aria-label="{% if customer %}My account{% else %}Log in{% endif %}"
+            title="{% if customer %}My account{% else %}Log in / Sign up{% endif %}"
+          >
+            {% render 'icon-account' %}
+          </a>
+        {%- endif -%}
+
         <!-- Cart: bag icon + item count, with running subtotal — links to full cart page -->
         <a href="/cart" id="cart-trigger" class="header-cart" aria-label="Cart, subtotal {{ cart.total_price | money | strip_html | escape }}" title="Shopping Cart">
           <span class="header-cart__icon">
@@ -807,6 +832,11 @@
       <a href="#wishlist" onclick="event.preventDefault(); document.querySelector('.mobile-nav-drawer').classList.remove('is-open'); document.getElementById('mobile-nav-overlay').classList.remove('is-open'); document.getElementById('wishlist-trigger').click();">
         Saved Wishlist
       </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+          {% if customer %}My Account{% else %}Log In / Sign Up{% endif %}
+        </a>
+      {%- endif -%}
       <a href="#coming-soon" style="color:#888888;">Coming Soon</a>
     </nav>
     </div>
