@@ -7,8 +7,8 @@
   - If Shopify storefront filters are configured (Search & Discovery app),
     they're rendered and applied server-side (search.filters).
   - Otherwise (current state of this store) the sidebar is built from the
-    products on the page — Theme (genre tags, see snippets/genre-list),
-    Product type, Price, Availability — and filtering happens instantly in
+    products on the page — Category (Stickers, Posters, Splits, Bookmarks,
+    Magnets, Trading Cards), Price, Availability — and filtering happens instantly in
     the browser. 48 results per page so that covers the whole catalog today.
 {%- endcomment -%}
 
@@ -31,8 +31,9 @@
     endif
   endfor
 -%}
-{%- capture genre_list -%}{% render 'genre-list' %}{%- endcapture -%}
-{%- assign genres = genre_list | strip | split: ',' -%}
+{%- liquid
+  assign categories = 'stickers:Stickers:sticker,posters:Posters:poster,splits:Splits:split,bookmarks:Bookmarks:bookmark,magnets:Magnets:magnet,trading-cards:Trading Cards:trading-card' | split: ','
+-%}
 
 <div class="section pl-search" id="SearchPage-{{ section.id }}">
   <div class="container">
@@ -73,17 +74,6 @@
 
           {%- if search.results_count > 0 or native_filters -%}
             {%- liquid
-              assign types_seen = '|'
-              for item in search.results
-                if item.object_type == 'product' and item.type != blank
-                  assign type_key = '|' | append: item.type | append: '|'
-                  unless types_seen contains type_key
-                    assign types_seen = types_seen | append: item.type | append: '|'
-                  endunless
-                endif
-              endfor
-              assign product_types = types_seen | remove_first: '|' | split: '|' | sort_natural
-
               assign p_under = 0
               assign p_low = 0
               assign p_mid = 0
@@ -110,65 +100,32 @@
               endfor
             -%}
             <aside class="pl-search__filters" id="SearchFilters" aria-label="Filters">
-              {%- comment -%} Theme + Product type: built from our catalog, filter instantly in the browser {%- endcomment -%}
-              {%- capture theme_options -%}
-                {%- assign shown = 0 -%}
-                {%- for genre in genres -%}
-                  {%- assign parts = genre | split: ':' -%}
-                  {%- assign g_count = 0 -%}
-                  {%- for item in search.results -%}
-                    {%- if item.object_type == 'product' and item.tags contains parts[0] -%}
-                      {%- assign g_count = g_count | plus: 1 -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-                  {%- if g_count > 0 -%}
-                    {%- assign shown = shown | plus: 1 -%}
-                    <li{% if shown > 8 %} class="is-extra" hidden{% endif %}>
-                      <label class="pl-filter__option">
-                        <input type="checkbox" value="{{ parts[0] }}" data-client-filter="theme">
-                        <span class="pl-filter__label">{{ parts[1] | escape }}</span>
-                        <span class="pl-filter__count">{{ g_count }}</span>
+              {%- comment -%} Category: always lists every category; ones with no matching products are greyed out {%- endcomment -%}
+              <details class="pl-filter" open>
+                <summary class="pl-filter__head"><span>Category</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
+                <ul class="pl-filter__list">
+                  {%- for cat in categories -%}
+                    {%- assign cp = cat | split: ':' -%}
+                    {%- assign c_count = 0 -%}
+                    {%- for item in search.results -%}
+                      {%- if item.object_type == 'product' -%}
+                        {%- assign item_type = item.type | handleize -%}
+                        {%- assign item_collections = item.collections | map: 'handle' -%}
+                        {%- if item_collections contains cp[0] or item_type == cp[0] or item_type == cp[2] or item.tags contains cp[0] or item.tags contains cp[2] -%}
+                          {%- assign c_count = c_count | plus: 1 -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    <li>
+                      <label class="pl-filter__option{% if c_count == 0 %} is-disabled{% endif %}">
+                        <input type="checkbox" value="{{ cp[0] }}" data-client-filter="category"{% if c_count == 0 %} disabled{% endif %}>
+                        <span class="pl-filter__label">{{ cp[1] }}</span>
+                        <span class="pl-filter__count">{{ c_count }}</span>
                       </label>
                     </li>
-                  {%- endif -%}
-                {%- endfor -%}
-                {%- if shown > 8 -%}<!--more-->{%- endif -%}
-              {%- endcapture -%}
-              {%- if theme_options contains '<li' -%}
-                <details class="pl-filter" open>
-                  <summary class="pl-filter__head"><span>Theme</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
-                  <ul class="pl-filter__list">{{ theme_options | remove: '<!--more-->' }}</ul>
-                  {%- if theme_options contains '<!--more-->' -%}
-                    <button type="button" class="pl-filter__more" data-show-more>+ Show more</button>
-                  {%- endif -%}
-                </details>
-              {%- endif -%}
-
-              {%- if product_types.size > 0 -%}
-                <details class="pl-filter" open>
-                  <summary class="pl-filter__head"><span>Product type</span><span class="pl-filter__icon" aria-hidden="true"></span></summary>
-                  <ul class="pl-filter__list">
-                    {%- for ptype in product_types -%}
-                      {%- assign t_count = 0 -%}
-                      {%- for item in search.results -%}
-                        {%- if item.object_type == 'product' and item.type == ptype -%}
-                          {%- assign t_count = t_count | plus: 1 -%}
-                        {%- endif -%}
-                      {%- endfor -%}
-                      <li{% if forloop.index > 8 %} class="is-extra" hidden{% endif %}>
-                        <label class="pl-filter__option">
-                          <input type="checkbox" value="{{ ptype | handleize }}" data-client-filter="type">
-                          <span class="pl-filter__label">{{ ptype | escape }}</span>
-                          <span class="pl-filter__count">{{ t_count }}</span>
-                        </label>
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                  {%- if product_types.size > 8 -%}
-                    <button type="button" class="pl-filter__more" data-show-more>+ Show more</button>
-                  {%- endif -%}
-                </details>
-              {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              </details>
 
               {%- if native_filters -%}
                 {%- comment -%} Availability / Price etc. from Shopify (applied server-side, covers every page) {%- endcomment -%}
@@ -281,11 +238,13 @@
                 {%- for item in search.results -%}
                   {%- if item.object_type == 'product' -%}
                     {%- liquid
-                      assign item_themes = ''
-                      for genre in genres
-                        assign g_handle = genre | split: ':' | first
-                        if item.tags contains g_handle
-                          assign item_themes = item_themes | append: ' ' | append: g_handle
+                      assign item_cats = ''
+                      assign item_type = item.type | handleize
+                      assign item_collections = item.collections | map: 'handle'
+                      for cat in categories
+                        assign cp = cat | split: ':'
+                        if item_collections contains cp[0] or item_type == cp[0] or item_type == cp[2] or item.tags contains cp[0] or item.tags contains cp[2]
+                          assign item_cats = item_cats | append: ' ' | append: cp[0]
                         endif
                       endfor
                       if item.price < 10000
@@ -300,8 +259,7 @@
                     -%}
                     <div
                       class="pl-search__item"
-                      data-theme="{{ item_themes | strip }}"
-                      data-type="{{ item.type | handleize }}"
+                      data-category="{{ item_cats | strip }}"
                       data-price="{{ item_price }}"
                       data-stock="{% if item.available %}in{% else %}out{% endif %}"
                     >
@@ -657,9 +615,9 @@
     var form = document.querySelector('#SearchPage-{{ section.id }} [data-search-filters]');
     if (!form) return;
 
-    // Theme / Product type (and Price / Availability when Shopify has none)
+    // Category (and Price / Availability when Shopify has none)
     // are filtered instantly here; Shopify's own filters reload the page.
-    var CLIENT_GROUPS = ['theme', 'type', 'price', 'stock'];
+    var CLIENT_GROUPS = ['category', 'price', 'stock'];
     var items = Array.prototype.slice.call(form.querySelectorAll('.pl-search__item'));
     var boxes = Array.prototype.slice.call(form.querySelectorAll('[data-client-filter]'));
     var countEl = form.querySelector('[data-results-count]');
