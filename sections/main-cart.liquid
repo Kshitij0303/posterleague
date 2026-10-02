@@ -87,7 +87,7 @@
             <p>Tax and shipping applied at checkout.</p>
             {% assign free_ship_threshold = settings.cart_free_shipping_threshold | default: 999 | times: 100 %}
             {% if cart.total_price < free_ship_threshold %}
-              <p class="cart-minimal__ship-note">Free shipping on orders above ₹{{ settings.cart_free_shipping_threshold | default: 999 }}</p>
+              <p class="cart-minimal__ship-note">Free shipping on orders above {{ free_ship_threshold | money_without_trailing_zeros }}</p>
             {% endif %}
             {% if cart_compare_savings > 0 %}
               <p class="cart-minimal__save-note">You save {{ cart_compare_savings | money }} on this order</p>
@@ -577,39 +577,52 @@
   /* Total row */
   .cart-minimal__total {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 40px 0 0;
+    padding: 32px 0 0;
     border-top: 1px solid var(--cm-border);
     margin-top: 8px;
   }
   .cart-minimal__total h2 {
     margin: 0 0 6px;
-    font-size: 15px;
+    font-family: var(--font-body);
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
   .cart-minimal__total-copy p {
     margin: 0;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--cm-text-muted);
-    line-height: 1.5;
+    line-height: 1.6;
   }
   .cart-minimal__ship-note,
   .cart-minimal__save-note {
-    margin-top: 4px !important;
-    font-size: 11px !important;
+    margin-top: 2px !important;
+    font-size: 14px !important;
     color: var(--cm-text) !important;
     font-weight: 500;
   }
+  .cart-minimal__save-note {
+    color: var(--color-accent) !important;
+    font-weight: 600;
+  }
   .cart-minimal__total-amount {
     margin: 0;
-    font-size: clamp(32px, 6vw, 42px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
+    font-size: clamp(24px, 4vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
     white-space: nowrap;
+  }
+  @media (max-width: 480px) {
+    .cart-minimal__total { align-items: flex-start; gap: 16px; padding-top: 24px; }
+    .cart-minimal__total h2 { font-size: 16px; }
+    .cart-minimal__total-copy p,
+    .cart-minimal__ship-note,
+    .cart-minimal__save-note { font-size: 13px !important; }
+    .cart-minimal__total-amount { font-size: 22px; }
   }
 
   /* Checkout bar — same width as cart content */
