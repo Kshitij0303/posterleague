@@ -50,6 +50,18 @@
   </div>
 </div>
 
+<script>
+  // Dismissed earlier this visit? Remove before it paints (no flash, no video download).
+  (function () {
+    try {
+      if (sessionStorage.getItem('pl-floating-video-closed') === '1') {
+        var w = document.getElementById('FloatingVideoWidget');
+        if (w) w.remove();
+      }
+    } catch (e) {}
+  })();
+</script>
+
 <style>
   .floating-video-widget {
     position: fixed;
@@ -180,13 +192,15 @@
     const muteOff = document.getElementById('MuteIconOff');
     const muteOn = document.getElementById('MuteIconOn');
 
-    // Close button dismisses widget for current session
+    // Close button dismisses the widget for the rest of this visit (all pages)
     if (closeBtn && widget) {
       closeBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         widget.classList.add('is-closed');
         if (video) video.pause();
+        try { sessionStorage.setItem('pl-floating-video-closed', '1'); } catch (err) {}
+        window.setTimeout(function () { widget.remove(); }, 350);
       });
     }
 
