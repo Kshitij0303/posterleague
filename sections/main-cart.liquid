@@ -610,19 +610,20 @@
   }
   .cart-minimal__total-amount {
     margin: 0;
-    font-size: 18px;
+    align-self: center;
+    font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.01em;
     line-height: 1.2;
     white-space: nowrap;
   }
   @media (max-width: 480px) {
-    .cart-minimal__total { align-items: flex-start; gap: 16px; padding-top: 24px; }
+    .cart-minimal__total { gap: 16px; padding-top: 24px; }
     .cart-minimal__total h2 { font-size: 16px; }
     .cart-minimal__total-copy p,
     .cart-minimal__ship-note,
     .cart-minimal__save-note { font-size: 13px !important; }
-    .cart-minimal__total-amount { font-size: 16px; }
+    .cart-minimal__total-amount { font-size: 18px; }
   }
 
   /* Checkout bar — same width as cart content */
