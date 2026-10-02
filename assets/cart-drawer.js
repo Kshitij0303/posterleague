@@ -15,6 +15,7 @@
       const response = await fetch('/cart.js');
       const cart = await response.json();
       const count = cart.item_count || 0;
+      if (window.plCartSubtotal) window.plCartSubtotal(cart.total_price);
       if (window.plCartBadge) {
         window.plCartBadge(count);
       } else if (window.plNotificationBadge) {

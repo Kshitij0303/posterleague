@@ -211,6 +211,54 @@
       background: #F4F4F4;
     }
 
+    /* Cart: bag icon with count badge on its top-left + subtotal beside it */
+    .site-header__icons a.header-cart {
+      gap: 10px;
+      padding: 6px 10px 6px 8px;
+      border-radius: 10px;
+    }
+
+    .header-cart__icon {
+      position: relative;
+      display: flex;
+    }
+
+    .header-cart .t-badge {
+      top: -7px;
+      left: -8px;
+      right: auto;
+    }
+
+    /* Count stays visible at 0, like the reference */
+    .header-cart .t-badge[data-open="false"] .t-badge-dot {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .header-cart__text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+      text-align: left;
+    }
+
+    .header-cart__label {
+      font-size: 11.5px;
+      font-weight: 500;
+      opacity: 0.7;
+    }
+
+    .header-cart__total {
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 640px) {
+      .header-cart__text { display: none; }
+      .site-header__icons a.header-cart { padding: 5px; }
+    }
+
     .site-header__menu-btn {
       display: none;
       background: none;
@@ -670,16 +718,22 @@
           </span>
         </button>
 
-        <!-- Cart Icon & Counter — links to full cart page -->
-        <a href="/cart" id="cart-trigger" aria-label="Cart" title="Shopping Cart">
-          {% render 'icon-cart' %}
-          <span
-            class="t-badge"
-            id="cart-count-badge"
-            data-open="{% if cart.item_count > 0 %}true{% else %}false{% endif %}"
-            aria-hidden="{% if cart.item_count > 0 %}false{% else %}true{% endif %}"
-          >
-            <span class="t-badge-dot">{{ cart.item_count }}</span>
+        <!-- Cart: bag icon + item count, with running subtotal — links to full cart page -->
+        <a href="/cart" id="cart-trigger" class="header-cart" aria-label="Cart, subtotal {{ cart.total_price | money | strip_html | escape }}" title="Shopping Cart">
+          <span class="header-cart__icon">
+            {% render 'icon-cart' %}
+            <span
+              class="t-badge"
+              id="cart-count-badge"
+              data-open="{% if cart.item_count > 0 %}true{% else %}false{% endif %}"
+              aria-hidden="true"
+            >
+              <span class="t-badge-dot">{{ cart.item_count }}</span>
+            </span>
+          </span>
+          <span class="header-cart__text" aria-hidden="true">
+            <span class="header-cart__label">Subtotal</span>
+            <span class="header-cart__total" id="HeaderCartTotal" data-money-format="{{ shop.money_format | strip_html | escape }}">{{ cart.total_price | money | strip_html }}</span>
           </span>
         </a>
       </div>

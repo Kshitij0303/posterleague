@@ -89,6 +89,7 @@
   function updateCartUI(cart) {
     var subtotal = document.getElementById('cart-page-subtotal');
     if (subtotal) subtotal.textContent = formatMoney(cart.total_price);
+    if (window.plCartSubtotal) window.plCartSubtotal(cart.total_price);
 
     if (window.plCartBadge) {
       window.plCartBadge(cart.item_count);
