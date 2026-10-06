@@ -138,7 +138,7 @@
     }
 
     .site-header .header-container {
-      max-width: 1380px;
+      max-width: 1600px;
       width: 100%;
       margin: 0 auto;
       padding: 0 24px;
@@ -210,6 +210,23 @@
     .site-header__icons button:hover {
       background: #F4F4F4;
     }
+
+    /* Header fit levels — added by the fitHeader() script below the header
+       until the row stops overflowing (desktop widths only). */
+    .site-header.is-tight .site-header__left { gap: 18px; }
+    .site-header.is-tight .site-header__logo { font-size: 20px; }
+    .site-header.is-tight .site-header__nav { gap: 2px; }
+    .site-header.is-tight .site-header__nav a { padding: 8px 8px; font-size: 13px; }
+    .site-header.is-tight .site-header__icons { gap: 8px; }
+    .site-header.is-tight .header-container { gap: 16px; }
+
+    .site-header.is-tighter .header-cart__text,
+    .site-header.is-tighter .site-header__nav .nav-link--coming-soon { display: none; }
+    .site-header.is-tighter .site-header__icons a.header-cart { padding: 6px; }
+
+    .site-header.is-collapsed .site-header__nav { display: none !important; }
+    .site-header.is-collapsed .site-header__menu-btn { display: flex !important; }
+    .site-header.is-collapsed .site-header__left { flex: 1; min-width: 0; }
 
     /* Account icon: small accent dot once the customer is signed in */
     .header-account.is-signed-in::after {
@@ -769,6 +786,45 @@
     {% render 'header-search' %}
   </header>
   <div class="header-search-dim" id="HeaderSearchDim" aria-hidden="true"></div>
+
+  <script>
+    // Keep the header row on one line: step through tighter layouts until
+    // nothing overflows. Runs immediately (no flash), then on font load and resize.
+    (function () {
+      var header = document.querySelector('.site-header');
+      var row = header && header.querySelector('.header-container');
+      if (!row) return;
+      var LEVELS = ['is-tight', 'is-tighter', 'is-collapsed'];
+
+      var icons = row.querySelector('.site-header__icons');
+
+      // Overflowing = the icon group got pushed past the row's right edge.
+      // (Not scrollWidth: hidden dropdown panels would count towards it.)
+      function overflowing() {
+        if (!icons) return false;
+        var edge = row.getBoundingClientRect().right - parseFloat(getComputedStyle(row).paddingRight);
+        return icons.getBoundingClientRect().right > edge + 1;
+      }
+
+      function fitHeader() {
+        LEVELS.forEach(function (c) { header.classList.remove(c); });
+        // Below 1081px the stylesheet already uses the mobile header.
+        if (window.innerWidth <= 1080) return;
+        for (var i = 0; i < LEVELS.length && overflowing(); i++) {
+          header.classList.add(LEVELS[i]);
+        }
+      }
+
+      fitHeader();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeader);
+      window.addEventListener('load', fitHeader);
+      var t;
+      window.addEventListener('resize', function () {
+        clearTimeout(t);
+        t = setTimeout(fitHeader, 100);
+      });
+    })();
+  </script>
 
   <!-- Mobile Navigation Drawer -->
   <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
