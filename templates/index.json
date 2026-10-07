@@ -194,55 +194,8 @@
     },
     "coming_soon": {
       "type": "coming-soon",
-      "blocks": {
-        "posters": {
-          "type": "coming_soon_item",
-          "settings": {
-            "title": "Posters",
-            "description": "Anime, cars, bikes, movies, gaming, sports & spiritual — 300gsm laminated prints.",
-            "expected_text": "Stocking soon"
-          }
-        },
-        "splits": {
-          "type": "coming_soon_item",
-          "settings": {
-            "title": "Split Wall Sets",
-            "description": "3, 4 & 8-piece connected panel sets for statement walls.",
-            "expected_text": "Stocking soon"
-          }
-        },
-        "bookmarks": {
-          "type": "coming_soon_item",
-          "settings": {
-            "title": "Bookmarks",
-            "description": "Laminated bookmarks to match your favourite posters.",
-            "expected_text": "Stocking soon"
-          }
-        },
-        "magnets": {
-          "type": "coming_soon_item",
-          "settings": {
-            "title": "Magnets",
-            "description": "Fridge-ready magnets in the same designs you love.",
-            "expected_text": "Stocking soon"
-          }
-        },
-        "trading_cards": {
-          "type": "coming_soon_item",
-          "settings": {
-            "title": "Trading Cards",
-            "description": "Collectible-style cards for your favourite characters & teams.",
-            "expected_text": "Stocking soon"
-          }
-        }
-      },
-      "block_order": [
-        "posters",
-        "splits",
-        "bookmarks",
-        "magnets",
-        "trading_cards"
-      ],
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "heading": "Coming Soon",
         "subheading": "More ways to fill your walls."
