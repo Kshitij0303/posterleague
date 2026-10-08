@@ -184,7 +184,28 @@
     .site-header.is-tight .site-header__logo .site-logo { height: 42px; }
     .mobile-nav-drawer__brand .site-logo { height: 36px; }
     .site-footer__brand .site-logo { height: 56px; }
-    @media (max-width: 1080px) { .site-header__logo .site-logo { height: 40px; } }
+    @media (max-width: 1080px) {
+      /* Shrink into whatever room is left rather than slide under the icons */
+      .site-header__logo .site-logo {
+        height: 40px;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: left center;
+      }
+    }
+    @media (max-width: 640px) {
+      /* Phones: dark-mode switch and wishlist move into the ☰ menu */
+      .site-header__icons .theme-toggle,
+      .site-header__icons #wishlist-trigger { display: none; }
+    }
+    @media (min-width: 641px) {
+      .mobile-theme-row { display: none !important; }
+    }
+    .mobile-theme-row__state {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
     @media (max-width: 380px) { .site-header__logo .site-logo { height: 34px; } }
 
     .site-header__logo-badge {
@@ -904,6 +925,25 @@
       <a href="#wishlist" onclick="event.preventDefault(); document.querySelector('.mobile-nav-drawer').classList.remove('is-open'); document.getElementById('mobile-nav-overlay').classList.remove('is-open'); document.getElementById('wishlist-trigger').click();">
         Saved Wishlist
       </a>
+      <button type="button" class="mobile-accordion-toggle mobile-theme-row" id="mobile-theme-row" aria-pressed="false" onclick="document.getElementById('theme-toggle').click();">
+        <span>Dark Mode</span>
+        <span class="mobile-theme-row__state" id="mobile-theme-state">Off</span>
+      </button>
+      <script>
+        // Keep the menu's Dark Mode label in sync with the header switch.
+        (function () {
+          var row = document.getElementById('mobile-theme-row');
+          var state = document.getElementById('mobile-theme-state');
+          if (!row || !state) return;
+          function sync() {
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            state.textContent = dark ? 'On' : 'Off';
+            row.setAttribute('aria-pressed', dark ? 'true' : 'false');
+          }
+          sync();
+          new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        })();
+      </script>
       {%- if shop.customer_accounts_enabled -%}
         <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
           {% if customer %}My Account{% else %}Log In / Sign Up{% endif %}
