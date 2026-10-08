@@ -1,0 +1,42 @@
+{%- comment -%}
+  Site logo image. Uses the logo uploaded in Theme settings → Logo if set,
+  otherwise the bundled sample (assets/posterleague-logo.png), served
+  resized rather than the 2097px original.
+
+  @param height     {number} display height in px (default 44)
+  @param on_dark    {boolean} logo sits on an always-dark background (footer)
+  @param eager      {boolean} load eagerly (header)
+
+  The sample logo has a solid white background. In light areas
+  mix-blend-mode: multiply drops the white; on dark backgrounds (dark mode,
+  footer) the image is colour-inverted with hues rotated back, then screened,
+  so the text turns white, the teal mark stays teal and the box disappears.
+{%- endcomment -%}
+{%- liquid
+  assign logo_height = height | default: 44
+  assign logo_w1 = logo_height | times: 3
+  assign logo_w2 = logo_height | times: 6
+-%}
+{%- if settings.logo != blank -%}
+  <img
+    class="site-logo{% if on_dark %} site-logo--on-dark{% endif %}"
+    src="{{ settings.logo | image_url: width: logo_w2 }}"
+    srcset="{{ settings.logo | image_url: width: logo_w1 }} 1x, {{ settings.logo | image_url: width: logo_w2 }} 2x"
+    alt="{{ shop.name | escape }}"
+    height="{{ logo_height }}"
+    width="{{ logo_height | times: settings.logo.aspect_ratio | round }}"
+    {% if eager %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+  >
+{%- else -%}
+  {%- capture logo_1x -%}{{ logo_w1 }}x{%- endcapture -%}
+  {%- capture logo_2x -%}{{ logo_w2 }}x{%- endcapture -%}
+  <img
+    class="site-logo site-logo--sample{% if on_dark %} site-logo--on-dark{% endif %}"
+    src="{{ 'posterleague-logo.png' | asset_img_url: logo_2x }}"
+    srcset="{{ 'posterleague-logo.png' | asset_img_url: logo_1x }} 1x, {{ 'posterleague-logo.png' | asset_img_url: logo_2x }} 2x"
+    alt="{{ shop.name | escape }}"
+    height="{{ logo_height }}"
+    width="{{ logo_height | times: 2797 | divided_by: 1000 }}"
+    {% if eager %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+  >
+{%- endif -%}
